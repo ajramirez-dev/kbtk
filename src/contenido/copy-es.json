@@ -1,0 +1,85 @@
+{
+  "s0": {
+    "meta_obras": "OBRAS 04 · ENTREGADAS 03 · DEMOS CONSTRUIDAS 07",
+    "idioma_selector": "ES / EN",
+    "cta_contacto": "[ CONTACTO ]"
+  },
+  "s1": {
+    "kicker": "S1 · DECLARACIÓN",
+    "kicker_derecha": "ESTUDIO DE DISEÑO WEB Y COPY · ALBACETE",
+    "titular": "Su web ya existe.",
+    "subtitular": "La construimos entera antes de que usted decida si la paga.",
+    "meta": "07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL"
+  },
+  "s2": {
+    "kicker": "S2 · ÍNDICE DE OBRAS",
+    "kicker_derecha": "04 REGISTROS · 01 CARGADO EN VISOR",
+    "indice": {
+      "cabecera_izquierda": "Nº · OBRA",
+      "cabecera_derecha": "SECTOR · ESTADO",
+      "filas": [
+        { "numero": "01", "obra": "VISION GROUP BUILDING", "sector_estado": "CONSTRUCCIÓN · ENTREGADO" },
+        { "numero": "02", "obra": "FACHADAS VENTILADAS VISIÓN", "sector_estado": "CONSTRUCCIÓN · ENTREGADO" },
+        { "numero": "03", "obra": "ALBERTO MEDINA", "sector_estado": "PELUQUERÍA · ENTREGADO" },
+        { "numero": "04", "obra": "SOUL BARBER STUDIO", "sector_estado": "BARBERÍA · EN EXPOSICIÓN" }
+      ],
+      "pie_izquierda": "ESTADO ACTIVO · 01 / 04",
+      "pie_derecha": "CONMUTACIÓN EN CÓDIGO"
+    },
+    "visor": {
+      "etiqueta": "VISOR · REG 01 · VISION GROUP BUILDING",
+      "estado_conexion": "EN LÍNEA",
+      "ficha": {
+        "ESTADO": "ENTREGADO",
+        "SECTOR": "CONSTRUCCIÓN",
+        "ALCANCE": "DISEÑO + COPY",
+        "DESPLEGADA": "",
+        "_todo_desplegada": "PENDIENTE DE CONFIRMAR — el boceto solo trae un placeholder \"——\", no hay fecha ni URL real"
+      },
+      "cta": "[ VER LA OBRA ]"
+    }
+  },
+  "s3": {
+    "kicker": "S3 · HOJA DE ESPECIFICACIONES",
+    "kicker_derecha": "MÉTODO · 04 PASOS",
+    "titulo": "Método",
+    "intro": "Cuatro pasos, en este orden. Sin reunión inicial, sin presupuesto previo y sin brief. El riesgo lo asume el estudio hasta el paso 04.",
+    "pasos": [
+      { "numero": "01", "titulo": "Se elige el negocio", "texto": "Un negocio de Albacete que trabaja bien y se presenta mal. Lo elegimos nosotros. No hay llamada previa ni formulario que rellenar." },
+      { "numero": "02", "titulo": "Se construye la página entera", "texto": "Diseño, textos y desarrollo completos. No es un mockup ni una plantilla con su logotipo: es la web terminada, con su nombre, sus servicios y sus fotos, ya desplegada en una dirección real." },
+      { "numero": "03", "titulo": "Se enseña en persona, en el móvil", "texto": "Vamos al local sin avisar de nada más. Se abre en su teléfono, se recorre entera y se responden las dudas ahí mismo. Diez minutos." },
+      { "numero": "04", "titulo": "Se decide", "texto": "Si la quiere, se paga y se le transfiere todo: código, dominio y accesos. Si no la quiere, se apaga el mismo día y no se vuelve a mencionar." }
+    ],
+    "pie": {
+      "estudio": "ESTUDIO KBTK DIGITAL · ALBACETE",
+      "doc": "DOC 02 — MÉTODO",
+      "rev": "REV 01 — 2026",
+      "hoja": "HOJA 1 DE 1"
+    }
+  },
+  "s4": {
+    "kicker": "S4 · QUÉ SE ENTREGA",
+    "kicker_derecha": "PRECIO ÚNICO · SIN PERMANENCIA",
+    "tabla_cabecera": { "partida": "PARTIDA", "alcance": "ALCANCE" },
+    "partidas": [
+      { "partida": "DISEÑO", "alcance": "Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada." },
+      { "partida": "COPY", "alcance": "Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local." },
+      { "partida": "IMAGEN", "alcance": "Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado." },
+      { "partida": "TÉCNICA", "alcance": "Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real." },
+      { "partida": "ENTREGA", "alcance": "Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia." },
+      { "partida": "NO INCLUYE", "alcance": "Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales." }
+    ]
+  },
+  "s5": {
+    "kicker": "S5 · CIERRE",
+    "kicker_derecha": "SIGUIENTE REGISTRO · 05",
+    "titular": "La obra 05 es la suya.",
+    "cta": "[ HABLAR CON KBTK ]",
+    "colofon": {
+      "estudio": "KBTK DIGITAL · ALBACETE",
+      "email": "",
+      "_todo_email": "PENDIENTE DE CONFIRMAR — nunca kbtk.digital",
+      "copyright": "© 2026"
+    }
+  }
+}

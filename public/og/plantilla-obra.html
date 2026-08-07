@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KBTK Digital — OG obra</title>
+<style>
+  @import url("../../raw/tokens-v1.css");
+
+  @font-face {
+    font-family: "Archivo";
+    src: url("../fuentes/Archivo[wdth,wght].woff2") format("woff2-variations"),
+         url("../fuentes/Archivo[wdth,wght].woff2") format("woff2");
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Fragment Mono";
+    src: url("../fuentes/FragmentMono-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-display: block;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    background: var(--k);
+    overflow: hidden;
+  }
+
+  /* --obra-accent / --obra-ink: variables, NUNCA valores fijos aqui.
+     Las pone el script de generacion por obra, medidas sobre la
+     captura real (ver tokens-v1.css, "GATE DE ACENTO", 4.5:1 min.).
+     Sin override caen al initial-value de @property (#EDEEF0, neutro),
+     asi la plantilla se puede previsualizar sin datos de una obra real. */
+  body {
+    position: relative;
+    font-family: var(--ff-body);
+    color: var(--w1);
+  }
+
+  .edge {
+    position: absolute;
+    inset: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lockup { color: var(--w1); }
+  .lockup svg { height: 72px; width: auto; display: block; }
+
+  .estado {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--ff-mono);
+    font-size: 20px;
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+    color: var(--obra-ink);
+  }
+  .estado .led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--obra-accent);
+  }
+
+  .nombre-obra {
+    margin-top: 20px;
+    font-family: var(--ff-display);
+    font-weight: var(--fw-display);
+    font-variation-settings: "wdth" var(--wdth-display);
+    letter-spacing: var(--tr-display);
+    line-height: var(--lh-display);
+    font-size: 84px;
+    color: var(--w1);
+    max-width: 980px;
+  }
+
+  .sector {
+    margin-top: 20px;
+    font-family: var(--ff-mono);
+    font-size: 22px;
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+    color: var(--w2);
+    border-left: 3px solid var(--obra-accent);
+    padding-left: 16px;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: var(--ff-mono);
+    font-size: 18px;
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+    color: var(--g1);
+  }
+
+  .footer .accent { color: var(--obra-ink); }
+</style>
+</head>
+<body>
+  <div class="edge">
+    <div class="lockup" id="lockup"><!-- kbtk-logotipo-lockup.svg inline --></div>
+
+    <div>
+      <div class="estado"><span class="led"></span><span data-slot="estado">{{ESTADO}}</span></div>
+      <div class="nombre-obra" data-slot="nombre-obra">{{NOMBRE_OBRA}}</div>
+      <div class="sector" data-slot="sector">{{SECTOR}}</div>
+    </div>
+
+    <div class="footer">
+      <span>KBTK.DEV</span>
+      <span class="accent" data-slot="url">{{URL_O_SLUG}}</span>
+    </div>
+  </div>
+</body>
+</html>

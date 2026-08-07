@@ -1,0 +1,85 @@
+{
+  "s0": {
+    "meta_obras": "",
+    "idioma_selector": "",
+    "cta_contacto": ""
+  },
+  "s1": {
+    "kicker": "",
+    "kicker_derecha": "",
+    "titular": "",
+    "subtitular": "",
+    "meta": ""
+  },
+  "s2": {
+    "kicker": "",
+    "kicker_derecha": "",
+    "indice": {
+      "cabecera_izquierda": "",
+      "cabecera_derecha": "",
+      "filas": [
+        { "numero": "", "obra": "", "sector_estado": "" },
+        { "numero": "", "obra": "", "sector_estado": "" },
+        { "numero": "", "obra": "", "sector_estado": "" },
+        { "numero": "", "obra": "", "sector_estado": "" }
+      ],
+      "pie_izquierda": "",
+      "pie_derecha": ""
+    },
+    "visor": {
+      "etiqueta": "",
+      "estado_conexion": "",
+      "ficha": {
+        "ESTADO": "",
+        "SECTOR": "",
+        "ALCANCE": "",
+        "DESPLEGADA": "",
+        "_todo_desplegada": ""
+      },
+      "cta": ""
+    }
+  },
+  "s3": {
+    "kicker": "",
+    "kicker_derecha": "",
+    "titulo": "",
+    "intro": "",
+    "pasos": [
+      { "numero": "", "titulo": "", "texto": "" },
+      { "numero": "", "titulo": "", "texto": "" },
+      { "numero": "", "titulo": "", "texto": "" },
+      { "numero": "", "titulo": "", "texto": "" }
+    ],
+    "pie": {
+      "estudio": "",
+      "doc": "",
+      "rev": "",
+      "hoja": ""
+    }
+  },
+  "s4": {
+    "kicker": "",
+    "kicker_derecha": "",
+    "tabla_cabecera": { "partida": "", "alcance": "" },
+    "partidas": [
+      { "partida": "", "alcance": "" },
+      { "partida": "", "alcance": "" },
+      { "partida": "", "alcance": "" },
+      { "partida": "", "alcance": "" },
+      { "partida": "", "alcance": "" },
+      { "partida": "", "alcance": "" }
+    ]
+  },
+  "s5": {
+    "kicker": "",
+    "kicker_derecha": "",
+    "titular": "",
+    "cta": "",
+    "colofon": {
+      "estudio": "",
+      "email": "",
+      "_todo_email": "",
+      "copyright": ""
+    }
+  }
+}

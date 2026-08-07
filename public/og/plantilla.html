@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>KBTK Digital — OG home</title>
+<style>
+  /* @import debe ser la primera regla del stylesheet o el navegador la
+     descarta en silencio (paso en falso ya pisado una vez: con el
+     @import despues de @font-face, tokens-v1.css nunca se aplicaba,
+     --ff-display quedaba sin definir y Archivo no llegaba a solicitarse
+     -> document.fonts.check() daba false). */
+  @import url("../../raw/tokens-v1.css");
+
+  @font-face {
+    font-family: "Archivo";
+    src: url("../fuentes/Archivo[wdth,wght].woff2") format("woff2-variations"),
+         url("../fuentes/Archivo[wdth,wght].woff2") format("woff2");
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Fragment Mono";
+    src: url("../fuentes/FragmentMono-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-display: block;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    background: var(--k);
+    overflow: hidden;
+  }
+
+  body {
+    position: relative;
+    font-family: var(--ff-body);
+    color: var(--w1);
+  }
+
+  .edge {
+    position: absolute;
+    inset: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lockup { color: var(--w1); }
+  .lockup svg { height: 72px; width: auto; display: block; }
+
+  .declaracion {
+    font-family: var(--ff-display);
+    font-weight: var(--fw-display);
+    font-variation-settings: "wdth" var(--wdth-display);
+    letter-spacing: var(--tr-display);
+    line-height: var(--lh-display);
+    font-size: 84px;
+    color: var(--w1);
+    max-width: 920px;
+  }
+
+  .sub {
+    margin-top: 28px;
+    font-family: var(--ff-mono);
+    font-size: 22px;
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+    color: var(--w2);
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: var(--ff-mono);
+    font-size: 18px;
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+    color: var(--g1);
+  }
+
+  .footer .signal { color: var(--signal); }
+</style>
+</head>
+<body>
+  <div class="edge">
+    <div class="lockup" id="lockup"><!-- kbtk-logotipo-lockup.svg inline --></div>
+
+    <div>
+      <div class="declaracion">SU WEB YA EXISTE.</div>
+      <div class="sub">La construimos entera antes de que usted decida si la paga.</div>
+    </div>
+
+    <div class="footer">
+      <span>KBTK.DEV</span>
+      <span class="signal">07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#08090B;-webkit-font-smoothing:antialiased}
+a{color:#EDEEF0;text-decoration:none}
+a:hover{color:#A6ACB5}
+</style>
+</helmet>
+
+<div style="width:1440px;margin:0 auto;background:#08090B;color:#EDEEF0;font-family:Archivo,sans-serif;position:relative;overflow:hidden">
+
+<sc-if value="{{ reticula }}">
+<div style="position:absolute;inset:0;z-index:60;pointer-events:none;padding:0 40px">
+<div style="height:100%;display:grid;grid-template-columns:repeat(12,1fr);gap:24px">
+<div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div><div style="background:rgba(237,238,240,0.05)"></div>
+</div>
+</div>
+</sc-if>
+
+<!-- S0 -->
+<div style="position:sticky;top:0;z-index:50;height:56px;background:#08090B;border-bottom:1px solid rgba(237,238,240,0.14);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 40px">
+  <div style="display:flex;align-items:center">
+    <img src="uploads/kbtk-logotipo-lockup.svg" alt="KBTK Digital" style="display:block;height:26px;width:auto;filter:invert(1) brightness(0.93)">
+  </div>
+  <div style="font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#A6ACB5;white-space:nowrap">OBRAS 04 · ENTREGADAS 03 · DEMOS CONSTRUIDAS 07</div>
+  <div style="display:flex;align-items:center;justify-content:flex-end;gap:24px">
+    <div style="font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A"><span style="color:#EDEEF0">ES</span> / EN</div>
+    <div style="background:#EDEEF0;color:#08090B;font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:9px 14px;border-radius:2px">[ CONTACTO ]</div>
+  </div>
+</div>
+
+<!-- S1 -->
+<div style="padding:0 40px">
+<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding:118px 0 104px">
+  <div style="grid-column:1 / span 10">
+    <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(237,238,240,0.14);padding-top:11px;margin-bottom:56px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+      <span>S1 · DECLARACIÓN</span><span>ESTUDIO DE DISEÑO WEB Y COPY · ALBACETE</span>
+    </div>
+    <h1 style="margin:0;font-weight:800;font-variation-settings:'wdth' 118;text-transform:uppercase;letter-spacing:-0.025em;line-height:0.86;font-size:96px;color:#EDEEF0">Su web ya existe.</h1>
+    <p style="margin:26px 0 0;font-weight:400;font-size:48px;line-height:1.08;letter-spacing:-0.018em;color:#EDEEF0;max-width:1060px;text-wrap:pretty">La construimos entera antes de que usted decida si la paga.</p>
+    <div style="margin-top:44px;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL</div>
+  </div>
+</div>
+</div>
+
+<!-- S2 -->
+<div style="padding:0 40px 128px">
+<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px">
+
+  <div style="grid-column:1 / span 12;display:flex;justify-content:space-between;border-top:1px solid rgba(237,238,240,0.14);padding-top:11px;margin-bottom:52px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+    <span>S2 · ÍNDICE DE OBRAS</span><span>04 REGISTROS · 01 CARGADO EN VISOR</span>
+  </div>
+
+  <!-- índice -->
+  <div style="grid-column:1 / span 5;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;padding-bottom:10px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+      <span>Nº · OBRA</span><span>SECTOR · ESTADO</span>
+    </div>
+
+    <div style="height:84px;display:grid;grid-template-columns:44px 1fr;align-items:center;column-gap:12px;padding:0 16px;margin:0 -16px;background:#1A1D22;border-top:1px solid rgba(237,238,240,0.28);border-bottom:1px solid rgba(237,238,240,0.28)">
+      <span style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#266FFF">01</span>
+      <div>
+        <div style="font-weight:500;font-size:21px;letter-spacing:-0.012em;color:#EDEEF0">VISION GROUP BUILDING</div>
+        <div style="margin-top:6px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#266FFF">CONSTRUCCIÓN · ENTREGADO</div>
+      </div>
+    </div>
+
+    <div style="height:84px;display:grid;grid-template-columns:44px 1fr;align-items:center;column-gap:12px;padding:0 16px;margin:0 -16px;border-bottom:1px solid rgba(237,238,240,0.14)">
+      <span style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#7A818A">02</span>
+      <div>
+        <div style="font-weight:500;font-size:21px;letter-spacing:-0.012em;color:#EDEEF0">FACHADAS VENTILADAS VISIÓN</div>
+        <div style="margin-top:6px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">CONSTRUCCIÓN · ENTREGADO</div>
+      </div>
+    </div>
+
+    <div style="height:84px;display:grid;grid-template-columns:44px 1fr;align-items:center;column-gap:12px;padding:0 16px;margin:0 -16px;border-bottom:1px solid rgba(237,238,240,0.14)">
+      <span style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#7A818A">03</span>
+      <div>
+        <div style="font-weight:500;font-size:21px;letter-spacing:-0.012em;color:#EDEEF0">ALBERTO MEDINA</div>
+        <div style="margin-top:6px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">PELUQUERÍA · ENTREGADO</div>
+      </div>
+    </div>
+
+    <div style="height:84px;display:grid;grid-template-columns:44px 1fr;align-items:center;column-gap:12px;padding:0 16px;margin:0 -16px;border-bottom:1px solid rgba(237,238,240,0.14)">
+      <span style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#7A818A">04</span>
+      <div>
+        <div style="font-weight:500;font-size:21px;letter-spacing:-0.012em;color:#EDEEF0">SOUL BARBER STUDIO</div>
+        <div style="margin-top:6px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">BARBERÍA · EN EXPOSICIÓN</div>
+      </div>
+    </div>
+
+    <div style="margin-top:auto;padding-top:22px;display:flex;justify-content:space-between;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+      <span>ESTADO ACTIVO · 01 / 04</span><span>CONMUTACIÓN EN CÓDIGO</span>
+    </div>
+  </div>
+
+  <!-- visor -->
+  <div style="grid-column:7 / span 6;position:relative">
+    <div style="position:absolute;left:-124px;top:-206px;width:900px;height:900px;background:radial-gradient(closest-side,rgba(10,92,255,0.20),rgba(10,92,255,0) 78%);pointer-events:none;z-index:0;opacity:{{ haloOp }}"></div>
+
+    <div style="position:relative;z-index:1;width:652px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+        <span>VISOR · REG 01 · VISION GROUP BUILDING</span>
+        <span style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#0A5CFF;display:block"></span>EN LÍNEA</span>
+      </div>
+
+      <div style="padding:16px;background:linear-gradient(#2B3037,#171A1F);border:1px solid #0A5CFF;border-radius:3px;box-shadow:0 26px 0 rgba(3,4,5,0.82)">
+        <img src="uploads/obra-vision-group-building-poster-v1.jpg" alt="Vision Group Building" style="display:block;width:620px;height:388px;object-fit:cover;object-position:left top;border-radius:1px">
+      </div>
+
+      <div style="margin-top:36px;display:grid;grid-template-columns:150px 1fr;font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border-top:1px solid rgba(237,238,240,0.14)">
+        <div style="padding:12px 0;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.14)">ESTADO</div>
+        <div style="padding:12px 0;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">ENTREGADO</div>
+        <div style="padding:12px 0;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.14)">SECTOR</div>
+        <div style="padding:12px 0;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">CONSTRUCCIÓN</div>
+        <div style="padding:12px 0;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.14)">ALCANCE</div>
+        <div style="padding:12px 0;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">DISEÑO + COPY</div>
+        <div style="padding:12px 0;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.14)">DESPLEGADA</div>
+        <div style="padding:12px 0;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">——</div>
+      </div>
+
+      <div style="margin-top:28px;display:inline-block;background:#EDEEF0;color:#08090B;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:14px 22px;border-radius:2px">[ VER LA OBRA ]</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- S3 -->
+<div style="background:#E4E4E0;color:#0B0C0E;padding:0 40px 40px">
+<div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(11,12,14,0.18);padding:14px 0;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(11,12,14,0.55)">
+  <span>S3 · HOJA DE ESPECIFICACIONES</span><span>MÉTODO · 04 PASOS</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding:76px 0 0">
+  <div style="grid-column:1 / span 4">
+    <h2 style="margin:0;font-weight:800;font-variation-settings:'wdth' 118;text-transform:uppercase;letter-spacing:-0.025em;line-height:0.88;font-size:68px">Método</h2>
+    <p style="margin:26px 0 0;font-size:16px;line-height:1.5;color:rgba(11,12,14,0.66);max-width:330px;text-wrap:pretty">Cuatro pasos, en este orden. Sin reunión inicial, sin presupuesto previo y sin brief. El riesgo lo asume el estudio hasta el paso 04.</p>
+  </div>
+
+  <div style="grid-column:6 / span 7">
+    <div style="display:grid;grid-template-columns:56px 1fr;column-gap:20px;border-top:1px solid rgba(11,12,14,0.18);padding:22px 0">
+      <div style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;padding-top:5px;color:rgba(11,12,14,0.55)">01</div>
+      <div>
+        <div style="font-weight:500;font-size:23px;letter-spacing:-0.012em">Se elige el negocio</div>
+        <p style="margin:9px 0 0;font-size:15px;line-height:1.5;color:rgba(11,12,14,0.66);max-width:520px;text-wrap:pretty">Un negocio de Albacete que trabaja bien y se presenta mal. Lo elegimos nosotros. No hay llamada previa ni formulario que rellenar.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 1fr;column-gap:20px;border-top:1px solid rgba(11,12,14,0.18);padding:22px 0">
+      <div style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;padding-top:5px;color:rgba(11,12,14,0.55)">02</div>
+      <div>
+        <div style="font-weight:500;font-size:23px;letter-spacing:-0.012em">Se construye la página entera</div>
+        <p style="margin:9px 0 0;font-size:15px;line-height:1.5;color:rgba(11,12,14,0.66);max-width:520px;text-wrap:pretty">Diseño, textos y desarrollo completos. No es un mockup ni una plantilla con su logotipo: es la web terminada, con su nombre, sus servicios y sus fotos, ya desplegada en una dirección real.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 1fr;column-gap:20px;border-top:1px solid rgba(11,12,14,0.18);padding:22px 0">
+      <div style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;padding-top:5px;color:rgba(11,12,14,0.55)">03</div>
+      <div>
+        <div style="font-weight:500;font-size:23px;letter-spacing:-0.012em">Se enseña en persona, en el móvil</div>
+        <p style="margin:9px 0 0;font-size:15px;line-height:1.5;color:rgba(11,12,14,0.66);max-width:520px;text-wrap:pretty">Vamos al local sin avisar de nada más. Se abre en su teléfono, se recorre entera y se responden las dudas ahí mismo. Diez minutos.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:56px 1fr;column-gap:20px;border-top:1px solid rgba(11,12,14,0.18);border-bottom:1px solid rgba(11,12,14,0.18);padding:22px 0">
+      <div style="font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;padding-top:5px;color:rgba(11,12,14,0.55)">04</div>
+      <div>
+        <div style="font-weight:500;font-size:23px;letter-spacing:-0.012em">Se decide</div>
+        <p style="margin:9px 0 0;font-size:15px;line-height:1.5;color:rgba(11,12,14,0.66);max-width:520px;text-wrap:pretty">Si la quiere, se paga y se le transfiere todo: código, dominio y accesos. Si no la quiere, se apaga el mismo día y no se vuelve a mencionar.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(11,12,14,0.18);margin-top:72px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(11,12,14,0.55)">
+  <div style="padding:15px 0">ESTUDIO KBTK DIGITAL · ALBACETE</div>
+  <div style="padding:15px 0 15px 20px;border-left:1px solid rgba(11,12,14,0.18)">DOC 02 — MÉTODO</div>
+  <div style="padding:15px 0 15px 20px;border-left:1px solid rgba(11,12,14,0.18)">REV 01 — 2026</div>
+  <div style="padding:15px 0 15px 20px;border-left:1px solid rgba(11,12,14,0.18)">HOJA 1 DE 1</div>
+</div>
+</div>
+
+<!-- S4 -->
+<div style="padding:0 40px 120px">
+<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding-top:110px">
+  <div style="grid-column:1 / span 12;display:flex;justify-content:space-between;border-top:1px solid rgba(237,238,240,0.14);padding-top:11px;margin-bottom:54px;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+    <span>S4 · QUÉ SE ENTREGA</span><span>PRECIO ÚNICO · SIN PERMANENCIA</span>
+  </div>
+
+  <div style="grid-column:1 / span 10">
+    <div style="display:grid;grid-template-columns:290px 1fr;font-family:Archivo,sans-serif">
+      <div style="padding:0 0 11px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.28)">PARTIDA</div>
+      <div style="padding:0 0 11px;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.28)">ALCANCE</div>
+
+      <div style="padding:22px 0;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">DISEÑO</div>
+      <div style="padding:22px 0;font-size:17px;line-height:1.5;color:#A6ACB5;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada.</div>
+
+      <div style="padding:22px 0;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">COPY</div>
+      <div style="padding:22px 0;font-size:17px;line-height:1.5;color:#A6ACB5;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local.</div>
+
+      <div style="padding:22px 0;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">IMAGEN</div>
+      <div style="padding:22px 0;font-size:17px;line-height:1.5;color:#A6ACB5;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado.</div>
+
+      <div style="padding:22px 0;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">TÉCNICA</div>
+      <div style="padding:22px 0;font-size:17px;line-height:1.5;color:#A6ACB5;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real.</div>
+
+      <div style="padding:22px 0;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">ENTREGA</div>
+      <div style="padding:22px 0;font-size:17px;line-height:1.5;color:#A6ACB5;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia.</div>
+
+      <div style="padding:22px 16px 22px 16px;margin-left:-16px;background:#14161A;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#EDEEF0;border-bottom:1px solid rgba(237,238,240,0.14)">NO INCLUYE</div>
+      <div style="padding:22px 16px 22px 0;margin-right:-16px;background:#14161A;font-size:17px;line-height:1.5;color:#7A818A;border-bottom:1px solid rgba(237,238,240,0.14);text-wrap:pretty">Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S5 -->
+<div style="padding:0 40px 0">
+<div style="border-top:1px solid rgba(237,238,240,0.14);padding-top:11px;display:flex;justify-content:space-between;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+  <span>S5 · CIERRE</span><span>SIGUIENTE REGISTRO · 05</span>
+</div>
+<div style="padding:88px 0 0">
+  <h2 style="margin:0;font-weight:800;font-variation-settings:'wdth' 118;text-transform:uppercase;letter-spacing:-0.025em;line-height:0.9;font-size:88px;color:#EDEEF0">La obra 05 es la suya.</h2>
+</div>
+<div style="margin-top:64px;padding:26px 0 30px;border-top:1px solid rgba(237,238,240,0.14);display:flex;align-items:center;justify-content:space-between">
+  <img src="uploads/kbtk-logotipo-lockup.svg" alt="KBTK Digital" style="display:block;height:22px;width:auto;filter:invert(1) brightness(0.7)">
+  <div style="background:#EDEEF0;color:#08090B;font-family:'Fragment Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:15px 24px;border-radius:2px">[ HABLAR CON KBTK ]</div>
+</div>
+<div style="border-top:1px solid rgba(237,238,240,0.14);padding:14px 0 22px;display:grid;grid-template-columns:1fr auto 1fr;white-space:nowrap;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A">
+  <span>KBTK DIGITAL · ALBACETE</span>
+  <span style="text-align:center">HOLA@KBTK.DIGITAL</span>
+  <span style="text-align:right">© 2026</span>
+</div>
+</div>
+
+<!-- notas de maquetación -->
+<sc-if value="{{ notas }}" hint-placeholder-val="{{ true }}">
+<div style="background:#0B0C0E;border-top:1px solid rgba(237,238,240,0.28);padding:26px 40px 40px">
+  <div style="display:flex;justify-content:space-between;font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#7A818A;white-space:nowrap;padding-bottom:16px">
+    <span style="color:#A6ACB5">NOTAS DE MAQUETACIÓN · S2 A 390 PX</span><span>NO FORMA PARTE DE LA PÁGINA</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px;font-family:'Fragment Mono',monospace;font-size:11px;line-height:1.7;letter-spacing:0.04em;text-transform:uppercase;color:#7A818A">
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">01 — EL VISOR DESAPARECE. NO HAY ESTADO ACTIVO NI FILA SELECCIONADA: LAS CUATRO OBRAS PESAN LO MISMO.</div>
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">02 — CADA FILA SE CONVIERTE EN UNA FICHA APILADA: POSTER 350×219, NOMBRE, Nº Y META DEBAJO. MARGEN 20 PX.</div>
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">03 — CADA FICHA LLEVA SU PROPIO ACENTO, TOMADO DE SU POSTER: 01 AZUL, 02 NARANJA, 03 ORO, 04 VERDE.</div>
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">04 — EL ACENTO SOLO APARECE DOS VECES POR FICHA: HAIRLINE SUPERIOR DEL POSTER Y META DE LA FICHA.</div>
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">05 — LA FICHA TÉCNICA SE PLIEGA DENTRO DE CADA TARJETA COMO PAR ETIQUETA-VALOR A UNA COLUMNA.</div>
+    <div style="border-top:1px solid rgba(237,238,240,0.14);padding:12px 0">06 — S1 CAE A 44 PX / 24 PX. S3 Y S4 PASAN A UNA COLUMNA. LOS BLOQUES [ ] OCUPAN EL ANCHO COMPLETO.</div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;reticula&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Boceto&quot;},&quot;notas&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Boceto&quot;},&quot;halo&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:20,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:2,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Visor&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      reticula: this.props.reticula ?? false,
+      notas: this.props.notas ?? true,
+      haloOp: (this.props.halo ?? 20) / 20
+    };
+  }
+}
+</script>
+</body>
+</html>

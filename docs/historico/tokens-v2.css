@@ -1,0 +1,165 @@
+/* ============================================================
+   KBTK Digital — portfolio kbtk.dev
+   tokens-v1.css · dirección "Cuarto de Máquinas"
+   CONTRATO. Única fuente de estilo. Cualquier valor que no
+   salga de aquí es un bug.
+   Regla del flujo v6: antes de tocar código, diff literal de
+   css/tokens.css contra este fichero.
+   ============================================================ */
+
+/* --- Variables animadas: declaradas para que interpolen y
+       para que un nombre mal escrito falle de forma visible --- */
+@property --obra-accent { syntax: "<color>";      inherits: true;  initial-value: #EDEEF0; }
+@property --obra-ink    { syntax: "<color>";      inherits: true;  initial-value: #EDEEF0; }
+@property --glow-op     { syntax: "<number>";     inherits: true;  initial-value: 0; }
+@property --reveal-y    { syntax: "<length>";     inherits: false; initial-value: 0px; }
+@property --scan-y      { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+
+:root {
+
+  /* ---------- 1 · COLOR ----------
+     La casa NO tiene color propio. El croma pertenece siempre a
+     una obra. --signal es funcional, no decorativo.
+     Ratios calculados, no estimados (WCAG 2.1, sobre --k):     */
+
+  --k:          #08090B;   /* lienzo. estado neutro del sistema */
+  --surface:    #14161A;   /* interior del visor · 1.10:1 vs --k */
+  --surface-2:  #1A1D22;   /* bisel iluminado, fila activa · 1.18:1 */
+
+  --w1:         #EDEEF0;   /* texto principal   · 17.16:1 */
+  --w2:         #A6ACB5;   /* texto secundario  ·  8.72:1 */
+  --g1:         #7A818A;   /* datos apagados    ·  5.06:1 */
+
+  --line:       rgb(237 238 240 / 0.14);  /* hairline base */
+  --line-hi:    rgb(237 238 240 / 0.28);  /* hairline activa */
+
+  --signal:     #FF3D00;   /* 5.61:1 vs --k. Censo: máx. 3 apariciones
+                              por pantalla — CTA principal, LED de
+                              estado, estado SIN SEÑAL. Nunca de relleno */
+  --signal-ink: #08090B;   /* texto sobre --signal · 5.61:1 */
+
+  /* Por qué el visor NO se separa del lienzo por relleno:
+     ni siquiera #1A1D22 pasa de 1.18:1 contra #08090B. En el
+     rango casi-negro la separación por luminancia es imposible.
+     Se separa por hairline + sombra + halo de acento. Medido. */
+  --shadow-panel: 0 24px 64px -24px rgb(0 0 0 / 0.9);
+
+  /* ---------- 1b · ACENTOS POR OBRA ----------
+     Los hex REALES se miden sobre las capturas en el Paso 0.
+     Prohibido inventarlos aquí. Estos son marcadores.
+     GATE DE ACENTO: --obra-N-ink debe alcanzar 4.5:1 contra --k.
+     Si el acento medido no llega, se aclara SOLO el rol de tinta
+     (subir L en HSL en pasos de 0.005 hasta pasar); el acento
+     crudo se conserva para halo y hairline.
+     Ej. medido: azul #2F6FE4 = 4.28:1 -> ink #3674E5 = 4.54:1     */
+  --obra-01-accent: #0A5CFF; /* medido vision-group-building · 3.78:1 vs --k */
+  --obra-01-ink:    #266FFF; /* 3.78:1 -> +0.055 L (11 pasos x0.005) -> 4.55:1 */
+  --obra-02-accent: #C9A227; /* medido alberto-medina · 8.23:1 vs --k */
+  --obra-02-ink:    #C9A227; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --obra-03-accent: #FF5A1F; /* medido fachadas-ventiladas-vision · 6.39:1 vs --k */
+  --obra-03-ink:    #FF5A1F; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --obra-04-accent: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
+  --obra-04-ink:    #81C280; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+
+  --halo: radial-gradient(60% 60% at 50% 45%,
+            color-mix(in oklab, var(--obra-accent) 20%, transparent) 0%,
+            transparent 70%);
+
+  /* ---------- 1c · SECCIÓN CLARA (Método) ----------
+     Única sección invertida del sitio: hoja de especificaciones
+     impresa. No es "modo claro": es papel técnico.              */
+  --paper:      #E4E4E0;
+  --paper-ink:  #0B0C0E;   /* 15.9:1 */
+  --paper-line: rgb(11 12 14 / 0.18);
+
+  /* ---------- 2 · TIPOGRAFÍA ----------
+     Solo dos familias. Ambas OFL, auto-alojadas woff2. Cero CDN.
+     Archivo gobierna display y cuerpo; Fragment Mono gobierna
+     TODO dato: etiquetas, estados, cifras, rutas, fechas.
+     AVISO DE SUBSET: el display exige el eje wdth de Archivo
+     (Expanded 112–125). Si el woff2 actual se instanció fijando
+     wdth, hay que re-subsetear conservando el eje. Verificar
+     antes de construir.                                          */
+  --ff-display: "Archivo", system-ui, sans-serif;
+  --ff-body:    "Archivo", system-ui, sans-serif;
+  --ff-mono:    "Fragment Mono", ui-monospace, monospace;
+
+  --fw-display: 800;
+  --wdth-display: 118;   /* font-variation-settings: "wdth" 118 */
+  --fw-body:    400;
+  --fw-body-md: 500;
+
+  /* Escala fluida */
+  --fs-display: clamp(2.75rem, 7.2vw, 6.5rem);
+  --fs-h1:      clamp(2rem,   4.4vw, 3.75rem);
+  --fs-h2:      clamp(1.5rem, 2.6vw, 2.25rem);
+  --fs-h3:      clamp(1.125rem, 1.4vw, 1.375rem);
+  --fs-body:    clamp(1rem, 1.05vw, 1.125rem);
+  --fs-data:    clamp(0.75rem, 0.85vw, 0.8125rem);
+  --fs-micro:   0.6875rem;
+
+  --lh-display: 0.92;
+  --lh-h:       1.06;
+  --lh-body:    1.55;
+  --lh-data:    1.35;
+
+  --tr-display: -0.025em;
+  --tr-h:       -0.015em;
+  --tr-body:     0em;
+  --tr-data:     0.08em;   /* mono siempre en caja alta + tracking */
+
+  /* ---------- 3 · RITMO Y REJILLA ---------- */
+  --sp-1:  0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;
+  --sp-4:  1rem;     --sp-5: 1.5rem;   --sp-6: 2rem;
+  --sp-7:  3rem;     --sp-8: 4rem;     --sp-9: 6rem;
+  --sp-section: clamp(6rem, 11vw, 9rem);
+
+  --content-max: 1360px;
+  --cols: 12;
+  --gutter: clamp(16px, 1.6vw, 24px);
+  --edge:   clamp(20px, 4vw, 40px);
+
+  --r-panel: 4px;
+  --r-chip:  2px;
+  --bezel:   16px;
+
+  /* ---------- 4 · TECHO DE RESOLUCIÓN (codificado, con cálculo) ----------
+     1440: contenido 1360 · col = (1360 - 11*24)/12 = 91.33
+           visor = 6 cols + 5 gutters = 548 + 120 = 668
+           menos bisel 2x16 y padding 2x8 -> 620 px de imagen útil.
+     Poster capturado a 1440 px de ancho:
+           cobertura Retina = 1440 / (620 * 2) = 1.16  -> APTO.
+     1024: contenido 960 · col 58 -> visor 468 -> útil 420.
+      390: ficha a sangre menos 2x20 -> 350.
+     Los tres pasan la compuerta de 200 px del momento estrella.   */
+  --visor-w-desktop: 620px;
+  --visor-w-tablet:  420px;
+  --visor-w-mobile:  350px;
+  --visor-ratio: 16 / 10;   /* idéntico en poster, WebM y MP4 */
+
+  /* ---------- 5 · MOVIMIENTO ----------
+     La conmutación imita hardware: corte, hueco, entrada.
+     No hay crossfade. El hueco es lo que la hace memorable.      */
+  --dur-swap-out: 120ms;
+  --dur-swap-gap:  40ms;
+  --dur-swap-in:  220ms;
+  --dur-accent:   400ms;
+  --dur-reveal:   500ms;
+  --stagger-row:   40ms;
+  --ease-mech: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---------- 6 · TEXTURA ----------
+     Grano global vía feTurbulence (skill grano-noise), nunca
+     horneado en un asset. Scanline solo dentro del visor.        */
+  --grain-op: 0.045;
+  --scan-op:  0.06;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-swap-out: 0ms; --dur-swap-gap: 0ms; --dur-swap-in: 0ms;
+    --dur-accent: 0ms; --dur-reveal: 0ms; --stagger-row: 0ms;
+    --scan-op: 0;
+  }
+}
