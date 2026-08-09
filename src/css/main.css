@@ -35,7 +35,29 @@ img, svg { display: block; max-width: 100%; height: auto; }
 picture { display: contents; }
 
 /* ---------- 2 · base ---------- */
-html { color-scheme: dark; overflow-x: hidden; }
+/* El lienzo se pinta en <html>, no en <body>. Medido con una sonda de
+   capa roja a z-index:-1: con el fondo solo en body funciona (el fondo
+   de body se PROPAGA al lienzo y se pinta por debajo de todo), pero
+   funciona por accidente — en cuanto alguien le da un background a
+   <html>, el de body deja de propagarse, pasa a pintarse como fondo de
+   elemento normal y TAPA el emisor (medido: [8,9,11] en vez de la capa).
+   Declarándolo aquí el lienzo es una capa nombrada y esa trampa deja
+   de existir.
+   overflow-x SOLO aquí: el de <html> es el que se propaga al viewport y
+   el que de verdad recorta; el de <body> era redundante para recortar y
+   además convertía a body en contenedor de scroll. Se quitó de body en
+   la fase anterior para desbloquear la view-timeline; esa timeline ya
+   no existe (el ancla es una constante de documento), pero el reparto
+   se queda como está porque es el correcto: una sola declaración, en el
+   único elemento cuyo overflow llega al viewport. Y body, que ahora es
+   el bloque contenedor del emisor, no recorta nada.
+   Esto NO reabre el descarte del overflow-x doble como causa del borde
+   duro: ése sigue descartado. */
+html {
+  color-scheme: dark;
+  overflow-x: hidden;
+  background: var(--k);
+}
 
 /* --obra-accent / --obra-ink se fijan en :root, nunca en un
    contenedor — color-mix() + @property en un pseudo-elemento (--halo)
@@ -51,15 +73,30 @@ html { color-scheme: dark; overflow-x: hidden; }
               --obra-ink var(--dur-accent) var(--ease-mech);
 }
 
+/* position: relative EXCLUSIVAMENTE para ser el bloque contenedor del
+   emisor (§5b). Sin esto, un position:absolute con inset:0 se resuelve
+   contra el bloque contenedor inicial, que mide lo que el VIEWPORT: la
+   caja volvería a tener la altura de la pantalla y el emisor seguiría
+   en coordenadas de pantalla, que es justo el fallo que esto corrige.
+   Con body relativo la caja es el padding-box de body, y body mide
+   exactamente el documento — verificado: body.offsetHeight ===
+   documentElement.scrollHeight en los tres anchos, en home y en obra
+   (5055/5618/6752 y 3695/3134/3441), con margin 0.
+   No rompe a nadie más: el censo de position:absolute del proyecto
+   —.s2__poster, .s2__video, .s2__visor-overlay(-scan),
+   .s2__visor-frame::after, .obra-visor__poster/-video— cuelga todo de
+   un ancestro ya posicionado, ninguno del bloque contenedor inicial.
+   Y no crea contexto de apilamiento (z-index sigue en auto), así que el
+   z-index:-1 del emisor se sigue resolviendo en el contexto raíz, por
+   encima del lienzo de <html> y por debajo del contenido. */
 body {
-  background: var(--k);
+  position: relative;
   color: var(--w1);
   font-family: var(--ff-body);
   font-weight: var(--fw-body);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   letter-spacing: var(--tr-body);
-  overflow-x: hidden;
 }
 
 :focus-visible {
@@ -140,6 +177,134 @@ body {
     gap: var(--sp-2);
   }
 }
+
+/* ============================================================
+   5b · EMISOR DE LUZ (halo) — un solo componente
+   ============================================================
+   Sustituye a las TRES implementaciones anteriores:
+     .s2__visor-halo::before        (escritorio)
+     .s2__fila:first-child::before  (móvil, 2º radial-gradient literal)
+     .obra-cabecera::before         (páginas de obra, + overflow:hidden)
+   A partir de aquí hay UNA sola declaración de degradado en src/css.
+
+   POR QUÉ ESTO NO PUEDE VOLVER A TENER BORDE DURO
+   El borde duro original era el borde de la caja del pseudo-elemento:
+   ocho bordes medidos, ocho coincidencias al píxel. Aquí los radios
+   nunca superan la distancia del centro al borde más cercano de la
+   caja, y la última parada del degradado está al 100% del radio: no
+   queda ningún borde de caja donde el degradado tenga alfa != 0.
+
+   POR QUÉ LA CAJA ES EL DOCUMENTO Y NO EL VIEWPORT
+   Con position:fixed el centro del degradado se expresaba en
+   coordenadas de PANTALLA, así que no se movía al scrollear: a scrollY
+   0 caía sobre la cabecera y al bajar la cabecera se iba y la luz se
+   quedaba clavada arriba. Perseguir un elemento del documento desde una
+   caja fija exige reescribir el centro en cada fotograma, y eso se
+   midió: con --halo-y animándose por scroll, el p95 de fotograma en la
+   página de obra pasaba de 18.7ms a 52.8ms y aparecían 6 fotogramas
+   largos por barrido. Aquí la caja va en coordenadas de DOCUMENTO
+   (absolute contra body), así que el ancla es una constante: se escribe
+   una vez y el scroll no la toca. Cero trabajo por fotograma.
+
+   APILAMIENTO (censo completo; ver también §5 grano y §6 barra)
+     lienzo --k .................. background de <html>  (§2)
+     EMISOR ...................... z-index: -1           (aquí)
+     contenido en flujo .......... auto
+     barra de estado ............. 30
+     grano ....................... 40   (mix-blend-mode: overlay)
+     logotipo .................... 41   (.no-grain, excluido del blend)
+     capa de transición de obra .. 45
+     skip-link ................... 100
+   El emisor va por debajo de todo el contenido y por encima del
+   lienzo. La fila activa de la lista conserva su fondo opaco
+   --surface-2 y por tanto OCLUYE la luz localmente: eso es correcto y
+   es justo lo que impide que la lista se lave. No se compensa. */
+.halo {
+  position: absolute;
+  inset: 0;            /* contra body: ancho de viewport, alto de documento */
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--glow-op);
+  /* Los radios se componen AQUÍ, sobre el emisor, nunca en :root: un
+     token compuesto arriba se heredaría YA SUSTITUIDO y congelaría el
+     techo con el --halo-y de :root en vez de con el de cada superficie.
+     Ver tokens.css §1b-bis.
+     Horizontal: % contra el ancho de la caja, que es el del viewport.
+     Vertical: vh, porque un % aquí sería un % del DOCUMENTO, y acotado
+     por --halo-y, que es la distancia del centro al ORIGEN del
+     documento. Eso es lo que impide que la luz se sierre contra y=0
+     con el ancla cerca del origen (la cabecera de obra está a 96px, y
+     su centro a 294px < 342px de radio: sin este min() habría borde
+     duro en el borde superior del documento).
+
+     REGLA MEDIDA, no la rompas: en un radio de radial-gradient, Chrome
+     invalida el degradado ENTERO si el radio mezcla porcentaje con
+     longitud. `calc(100% - 294px)` a solas como radio ya computa a
+     `none`; `min(38vh, 294px)` y `min(38%, 40%)` son válidos. Por eso
+     aquí no hay término de "distancia al borde INFERIOR": expresarlo
+     exigiría el alto del documento, que en CSS solo se puede escribir
+     como 100% y contaminaría el min() con un porcentaje.
+     El borde inferior queda por tanto verificado por medición, no por
+     construcción — margen medido en las seis superficies más abajo. */
+  background-image: radial-gradient(
+    var(--halo-rx-max)
+    min(var(--halo-ry-max), var(--halo-y))
+    at var(--halo-x) var(--halo-y),
+    color-mix(in oklab, var(--obra-accent) var(--halo-mix), transparent) 0%,
+    transparent 100%
+  );
+}
+
+/* Arranque del emisor. Vive AQUÍ, en CSS y sobre el propio emisor, no
+   en el guard .js + GSAP de §12: así las tres superficies arrancan
+   igual. Antes la cabecera de obra no participaba del arranque y nacía
+   a tope, y al pasar el emisor a --glow-op se quedaba en 0 para
+   siempre porque en una página de obra no corre arranquePanel().
+
+   Se anima `opacity` DIRECTAMENTE, no --glow-op. Medido: animar una
+   custom property registrada obliga a recálculo de estilo + repintado
+   en el hilo principal en cada fotograma y no es componible; es
+   exactamente el mecanismo que triplicaba el p95 de fotograma cuando
+   --halo-y se animaba por scroll. En la rampa el coste no llegaba a
+   verse (0 fotogramas largos en reposo con las dos variantes), pero no
+   hay ninguna razón para dejar la única propiedad componible del
+   proyecto pasando por una custom property.
+   fill-mode `backwards` y no `both`: durante los 100ms de retardo vale
+   el fotograma `from` (0), y al terminar NO se queda pegada al `to`
+   sino que cae al valor base, opacity: var(--glow-op) — así el token
+   del contrato sigue gobernando el estado de reposo.
+   Sin will-change: la medición no encontró ni un fotograma largo en la
+   rampa, así que promocionar la capa sería pagar un contexto de
+   apilamiento y memoria de textura a cambio de nada. */
+@keyframes kbtk-halo-encendido {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.halo {
+  animation: kbtk-halo-encendido var(--dur-reveal) var(--ease-out) 100ms backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .halo { animation: none; }
+}
+
+/* Página de obra: una página, un acento, una posición, y el centro no
+   se mueve nunca. Horizontal 50% —la cabecera va a sangre—, y pisa al
+   cálculo de rejilla de §8, que solo describe la columna del visor de
+   la home.
+   Vertical: la cabecera arranca siempre en y=96 (barra de estado) y su
+   alto depende de cuántas líneas ocupe el <h1>, que ni el generador ni
+   el CSS pueden saber. Estos son los centros medidos de las 4 obras en
+   cada breakpoint, y el valor elegido es el que minimiza la desviación
+   máxima:
+     >=1024   246.5 / 294.2 / 313.6 / 341.9  -> 294px  (desv. max 47.7)
+      >=768   223.7 / 249.1 / 268.6 / 274.6  -> 249px  (desv. max 25.4)
+       <768   238.8 / 259.0 / 259.0 / 285.8  -> 262px  (desv. max 23.5)
+   En los 12 casos el centro sigue cayendo DENTRO de la caja de la
+   cabecera. Para que fuese exacto sin JS haría falta que la cabecera
+   tuviera altura fija por breakpoint; no lo es, y no se toca aquí. */
+.pagina-obra { --halo-x: 50%; --halo-y: 262px; }
+@media (min-width: 768px)  { .pagina-obra { --halo-y: 249px; } }
+@media (min-width: 1024px) { .pagina-obra { --halo-y: 294px; } }
 
 /* ---------- 5 · grano global ----------
    Fase 6 (G02): era un feTurbulence a pantalla completa (skill
@@ -292,27 +457,25 @@ main { padding-top: var(--sp-9); }
    sitio (justo encima del panel) y mismo tratamiento. */
 .s3__estado { color: var(--g1); margin-bottom: var(--sp-4); }
 
-.s2__visor-halo {
-  position: relative;
-  isolation: isolate;
-}
-.s2__visor-halo::before {
-  content: "";
-  position: absolute;
-  /* top ampliado a propósito: el derrame de --halo (E01.a) sube
-     hasta el tercio inferior de S1. Los otros tres lados conservan
-     el margen original del halo (sp-8). */
-  inset: -520px calc(var(--sp-8) * -1) calc(var(--sp-8) * -1) calc(var(--sp-8) * -1);
-  background-image: var(--halo);
-  opacity: var(--glow-op);
-  z-index: -1;
-  pointer-events: none;
-}
-@media (max-width: 1279px) {
-  /* la caja de S1→S2 es más corta en portátiles/tablet: menos sube
-     el derrame para no invadir S3. El núcleo (primera capa) no se
-     toca. */
-  .s2__visor-halo::before { inset: -320px calc(var(--sp-8) * -1) calc(var(--sp-8) * -1) calc(var(--sp-8) * -1); }
+/* .s2__visor-ancla no lleva ya ninguna regla. Fue .s2__visor-halo (un
+   ::before con inset -520px/-64px: el borde duro medido), luego alojó
+   la marca de la view-timeline, y hoy el ancla es una constante de
+   documento que escribe main.js leyendo el bisel. Se conserva el div
+   como envoltorio de maquetación; si desaparece, no se lleva nada.
+
+   Ancla horizontal de escritorio: centro de la columna del visor.
+   Se compone SOLO con tokens del contrato, sin constantes nuevas.
+   La rejilla es de 12 columnas; .s2__listado ocupa 1-5 y .s2__visor
+   6-11 (la 12 queda vacía), así que el centro del visor cae a
+   8 columnas + 7.5 canaletas del borde interior del contenedor.
+   Verificado contra medición: 937.2px a 1440 (bisel medido: 937.15). */
+@media (min-width: 1024px) and (pointer: fine) {
+  :root {
+    --grid-cw:  min(var(--content-max), 100%);
+    --grid-col: calc((var(--grid-cw) - 2 * var(--edge) - 11 * var(--gutter)) / 12);
+    --halo-x:   calc((100% - var(--grid-cw)) / 2 + var(--edge)
+                     + 8 * var(--grid-col) + 7.5 * var(--gutter));
+  }
 }
 
 /* Bisel: componente compartido del cuarto de máquinas — mismo
@@ -434,64 +597,48 @@ main { padding-top: var(--sp-9); }
     border-radius: var(--r-panel);
   }
 
-  /* F02/halo: no hay visor en móvil, así que el mismo halo vive
-     detrás del póster de la primera fila — mismo var(--obra-accent),
-     misma mezcla (50%) y misma caída (60%) que tokens.css §1, solo
-     con el radio y el ancla recalculados para la caja del póster
-     (350px), no la del bisel (620px); ver el comentario de --halo en
-     tokens.css sobre por qué esto es una segunda declaración de
-     radial-gradient() y no un var(--halo) con variables intermedias
-     pisadas aquí (no se re-resuelven por elemento, comprobado). La
-     caja de esta ::before envuelve el póster con el mismo margen de
-     sangrado (--sp-6) arriba y abajo — altura explícita, no un 50%
-     ambiguo — y el ancla usa el mismo truco "desde abajo" que el
-     visor: sigue centrada aunque cambie el sangrado. */
-  .s2__fila:first-child { position: relative; }
-  .s2__fila:first-child::before {
-    content: "";
-    position: absolute;
-    inset: calc(var(--sp-6) * -1) calc(var(--sp-6) * -1) auto calc(var(--sp-6) * -1);
-    height: calc(var(--visor-w-mobile) / 1.6 + var(--sp-6) * 2);
-    background-image: radial-gradient(
-      300px 260px
-      at 50% calc(100% - var(--sp-6) - (var(--visor-w-mobile) / 1.6 / 2)),
-      color-mix(in oklab, var(--obra-accent) 50%, transparent) 0%,
-      transparent 65%
-    );
-    opacity: var(--glow-op);
-    z-index: -1;
-    pointer-events: none;
+  /* F02/halo: en móvil no hay visor, así que el ancla del emisor es la
+     ficha ACTIVA. Ya no se pinta nada aquí: el segundo
+     radial-gradient() literal desaparece con esta regla. El centro lo
+     escribe el IntersectionObserver de main.js en --halo-y, el mismo
+     que ya escribía --obra-accent — antes la luz estaba clavada al
+     primer <li> mientras el acento seguía a la ficha centrada, así que
+     a scrollY 700 el acento era naranja con la caja de luz todavía
+     sobre la ficha 01. Ahora acento y ancla se mueven juntos.
+     Es UNA escritura por ficha, no por fotograma: el desplazamiento va
+     en coordenadas de documento, así que entre conmutación y
+     conmutación el scroll no lo toca.
+     --halo-y transiciona para que la luz deslice entre fichas en vez
+     de saltar; usa --dur-accent, el mismo tempo que la conmutación de
+     color, para que sean el mismo gesto y no dos. Es la única
+     interpolación de --halo-y que queda en el proyecto: dura lo que la
+     conmutación y no se solapa con el scroll. */
+  :root {
+    transition: --obra-accent var(--dur-accent) var(--ease-mech),
+                --obra-ink var(--dur-accent) var(--ease-mech),
+                --halo-y var(--dur-accent) var(--ease-mech);
   }
 
   /* Arranque del panel en móvil (F02): sin GSAP, transición CSS nativa
-     sobre --boot-line/--glow-op. .s2__listado-head/-foot ya son
-     visibles en móvil (solo .s2__visor se oculta arriba), así que el
-     dibujado de reglas se reusa tal cual. Estado "apagado" bajo .js,
-     estado final al llegar .is-booted (main.js, arranquePanelMovil). */
+     sobre --boot-line. .s2__listado-head/-foot ya son visibles en móvil
+     (solo .s2__visor se oculta arriba), así que el dibujado de reglas
+     se reusa tal cual. Estado "apagado" bajo .js, estado final al
+     llegar .is-booted (main.js, arranquePanelMovil).
+     El emisor ya NO aparece en estos guards ni depende de --glow-op
+     para arrancar: se enciende solo, con su propia animación de opacity
+     en §5b, igual en las tres superficies. */
   .js .s2__listado-head,
-  .js .s2__listado-foot,
-  .js .s2__fila:first-child::before {
-    --glow-op: 0;
+  .js .s2__listado-foot {
     --boot-line: 0%;
   }
   .js.is-booted .s2__listado-head,
   .js.is-booted .s2__listado-foot {
     transition: --boot-line var(--dur-reveal) var(--ease-out);
-  }
-  .js.is-booted .s2__fila:first-child::before {
-    transition: --glow-op var(--dur-reveal) var(--ease-out) 100ms;
-  }
-  .js.is-booted .s2__listado-head,
-  .js.is-booted .s2__listado-foot,
-  .js.is-booted .s2__fila:first-child::before {
-    --glow-op: 1;
     --boot-line: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
     .js .s2__listado-head,
-    .js .s2__listado-foot,
-    .js .s2__fila:first-child::before {
-      --glow-op: 1;
+    .js .s2__listado-foot {
       --boot-line: 100%;
     }
   }
@@ -794,22 +941,20 @@ main { padding-top: var(--sp-9); }
    [data-mask] — el estado "apagado" solo existe con .js presente y
    en desktop, así que sin JS el panel nace ya en su estado final.
    El H1 no tiene guard: nunca participa del arranque. main.js
-   interpola --glow-op y --boot-line en cada carga (no solo la
-   primera de la sesión). El equivalente móvil vive en el bloque
+   interpola --boot-line en cada carga (no solo la primera de la
+   sesión); --glow-op ya no pasa por aquí, el emisor se enciende solo
+   desde §5b. El equivalente móvil vive en el bloque
    "Rama móvil" de arriba (§8), con su propia guarda por clase
    .is-booted en vez de GSAP. */
 @media (min-width: 1024px) and (pointer: fine) {
-  .js .s2__visor-halo,
+  /* El emisor arranca solo (§5b). Aquí solo el panel. */
   .js .s2__listado-head,
   .js .s2__listado-foot {
-    --glow-op: 0;
     --boot-line: 0%;
   }
   @media (prefers-reduced-motion: reduce) {
-    .js .s2__visor-halo,
     .js .s2__listado-head,
     .js .s2__listado-foot {
-      --glow-op: 1;
       --boot-line: 100%;
     }
   }
@@ -997,19 +1142,19 @@ main { padding-top: var(--sp-9); }
   navigation: auto;
 }
 
+/* overflow:hidden RETIRADO. Recortaba el ::before del halo 87px más
+   adentro que su propio inset, cortando el degradado al 68% de su alfa
+   arriba y al 80% abajo: por eso la cabecera era un rectángulo de
+   tinte plano (+17..+24 medidos) con dos filos de un píxel en y=96 e
+   y=531. Ya no hay nada que recortar aquí; la luz la pinta el emisor
+   (§5b) y position:relative se conserva solo para alojar la marca de
+   ancla. El ancla vieja, calc(100% - 257.75px), estaba derivada de
+   --sp-8 y de la mitad del bisel de S2 y no significaba nada en una
+   cabecera de 435px: fuera. */
 .obra-cabecera {
   position: relative;
-  overflow: hidden;
   padding-block: var(--sp-8) var(--sp-7);
   padding-inline: var(--edge);
-}
-.obra-cabecera::before {
-  content: "";
-  position: absolute;
-  inset: -20% -10%;
-  background-image: var(--halo);
-  z-index: -1;
-  pointer-events: none;
 }
 .obra-cabecera__inner {
   max-width: var(--content-max);

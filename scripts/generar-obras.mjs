@@ -264,6 +264,8 @@ function pagina(obras, obra, contenido, copy, copyObra) {
 
   <div class="acento-transicion" aria-hidden="true"></div>
 
+  <div class="halo" aria-hidden="true"></div>
+
   <div class="grain-overlay" aria-hidden="true"></div>
 
   <a class="skip-link" href="#main">Saltar al contenido</a>

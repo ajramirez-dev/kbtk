@@ -12,8 +12,18 @@
 @property --obra-accent { syntax: "<color>";      inherits: true;  initial-value: #EDEEF0; }
 @property --obra-ink    { syntax: "<color>";      inherits: true;  initial-value: #EDEEF0; }
 @property --glow-op     { syntax: "<number>";     inherits: true;  initial-value: 0; }
+/* --halo-y SÍ se registra: es lo único del halo que interpola, y ya
+   solo en móvil (la transición entre fichas que escribe el
+   IntersectionObserver). En escritorio y en obra es constante: en
+   coordenadas de documento el ancla no se mueve con el scroll, así que
+   ya no hay ninguna view-timeline que la lleve. --halo-x NO se registra
+   a propósito: no anima, y sin registrar se sustituye textualmente, así
+   que su calc() con % se resuelve contra la caja del emisor y no contra
+   :root. */
+@property --halo-y      { syntax: "<length-percentage>"; inherits: true; initial-value: 50%; }
 @property --reveal-y    { syntax: "<length>";     inherits: false; initial-value: 0px; }
 @property --scan-y      { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --boot-line   { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
 
 :root {
 
@@ -71,9 +81,94 @@
   --acento-soul-barber-studio: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
   --tinta-soul-barber-studio:  #81C280; /* 8.02:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
 
-  --halo: radial-gradient(60% 60% at 50% 45%,
-            color-mix(in oklab, var(--obra-accent) 20%, transparent) 0%,
-            transparent 70%);
+  /* ---------- 1b-bis · HALO · PARÁMETROS ----------
+     Aquí viven los VALORES. La única declaración de radial-gradient()
+     de todo el proyecto vive en main.css §5b (.halo), donde se pinta.
+     Por qué el token ya no es el degradado compuesto: --halo no estaba
+     registrada con @property, así que se heredaba YA SUSTITUIDA desde
+     :root y no se podía re-resolver por elemento. Ése fue el motivo
+     real de que llegaran a existir dos declaraciones de degradado
+     (escritorio y móvil) para un solo efecto. Componiendo la geometría
+     donde se pinta, un solo emisor sirve a las tres superficies.
+
+     RADIOS EN % DE LA CAJA DEL EMISOR (= el viewport), nunca en px.
+     El error de origen fue justo el contrario: 1100px x 1400px contra
+     una caja de 756x971, elipse serrada al 43% de su alfa en los
+     flancos y al 69% abajo — el borde de la caja pasaba a ser el
+     borde visible del efecto.
+     La última parada cae al 100% del radio, así que el radio ES la
+     extensión visible: si el radio cabe en el viewport, no hay borde
+     duro posible. Techo medido del ancla de escritorio: 65.1% del
+     ancho a 1440 y 61.3% a 1920 -> el margen más estrecho ronda el
+     34%, así que 30% deja holgura por los dos lados en todo el rango.
+     Si en algún ancho no cabe, se REDUCE el radio; jamás se amplía la
+     caja. */
+  --halo-mix: 20%;   /* mezcla del contrato. Estuvo en 50% y el propio
+                        fichero se contradecía: el comentario decía 20% */
+
+  /* Los dos ejes se tratan distinto, y a propósito. La caja del emisor
+     es el DOCUMENTO: ancho de viewport, alto de documento (main.css
+     §5b). Eso cambia qué significa un % en cada eje.
+
+     HORIZONTAL: el % se resuelve contra el ancho de la caja, que ES el
+     ancho del viewport, así que un % sigue siendo lo que uno espera.
+     --halo-x es estático (no anima: en escritorio es el centro de la
+     columna del visor, en móvil y en obra es 50%), así que basta con un
+     radio que quepa siempre. El margen más estrecho medido en toda la
+     franja de escritorio es 34.3% a 1024px, así que 30% deja holgura
+     por los dos lados de 1024 a 1920. Medido, no estimado.
+
+     VERTICAL: aquí el % se resolvería contra el ALTO DEL DOCUMENTO
+     (5055px en la home a 1440), no contra la pantalla, así que un 38%
+     serían 1921px de radio: absurdo. Por eso el techo vertical va en
+     unidades de viewport. 38vh son los mismos 342px a 1440x900 que
+     daba el 38% cuando la caja era el viewport: mismo tamaño de luz,
+     otra referencia. Se usa vh y no dvh a propósito: dvh cambia al
+     plegarse la barra de URL del móvil y repintaría el degradado a
+     mitad de scroll.
+
+     El radio efectivo se compone en main.css §5b como
+       min(--halo-ry-max, --halo-y)
+     es decir, nunca mayor que la distancia del centro al ORIGEN del
+     documento. Sin él, un ancla cerca del inicio —la cabecera de obra
+     está a 96px, su centro a 294px, menos que los 342px de radio—
+     serraría la luz contra y=0. Sigue siendo una invariante
+     geométrica, no un valor afinado.
+     No hay término simétrico para el borde INFERIOR del documento, y no
+     es un olvido: expresarlo exigiría el alto del documento, que en CSS
+     solo se escribe como 100%, y en un radio de radial-gradient Chrome
+     invalida el degradado ENTERO si el radio mezcla porcentaje con
+     longitud (medido: `calc(100% - 294px)` a solas como radio ya
+     computa a `none`; `min(38vh, 294px)` y `min(38%, 40%)` no). El
+     borde inferior queda verificado por medición.
+     Es la misma familia de trampa que impide acotar el eje horizontal:
+     anidar el calc() de la rejilla dentro de un min() invalida también
+     el degradado entero.
+     Se compone en main.css y no aquí porque un token compuesto en :root
+     se hereda YA SUSTITUIDO: si el techo se resolviera arriba, el
+     min() se congelaría con el --halo-y de :root y no con el que
+     escribe cada superficie. Es la misma trampa que produjo las dos
+     declaraciones de degradado anteriores. */
+  --halo-rx-max: 30%;
+  --halo-ry-max: 38vh;
+
+  /* Centro del emisor, en coordenadas de la caja del emisor, que es el
+     DOCUMENTO: --halo-x es horizontal contra el ancho del viewport,
+     --halo-y es un DESPLAZAMIENTO EN EL DOCUMENTO, no una coordenada de
+     pantalla. Por eso no se mueve al scrollear y se escribe UNA vez.
+     Estos son los valores por defecto —media pantalla hacia abajo, que
+     es lo razonable antes de que nadie ancle nada—. Quién los pisa:
+     main.css §5b (--halo-x de escritorio desde la rejilla; --halo-y de
+     la página de obra), y en la home main.js, una vez por cambio de
+     maquetación (nunca por fotograma ni por scroll).
+     50vh y no 50%: un 50% aquí sería la mitad del DOCUMENTO. */
+  --halo-x: 50%;
+  --halo-y: 50vh;
+
+  /* Estado final por defecto de --glow-op / --boot-line: visible sin
+     JS, sin arranque. Solo el guard .js (E01.c, escoped a desktop en
+     main.css §12) los rearma a 0 / 0% para el power-on de 600ms. */
+  --glow-op: 1;
 
   /* ---------- 1c · SECCIÓN CLARA (Método) ----------
      Única sección invertida del sitio: hoja de especificaciones
@@ -157,6 +252,19 @@
   --dur-reveal:   500ms;
   --stagger-row:   40ms;
   --dur-obra-reveal: 260ms;   /* dirección creativa §2.2 · flood-and-reveal al entrar en una obra */
+  /* F04: filas del índice/tabla S4 y titulares de display leen estas,
+     no --dur-reveal/--stagger-row — así el arranque del panel (F02)
+     no cambia de ritmo cuando se sube la intensidad de los reveals. */
+  --dur-reveal-row:      700ms;
+  --stagger-row-reveal:   70ms;
+  --stagger-row-headline: 80ms;
+  /* S3.b: secuencia de arranque del panel de método — un paso cada
+     180ms, el cuerpo de cada paso 90ms detrás de su número. Lee
+     --dur-reveal-row para la duración (mismo ritmo que el resto de
+     reveals de fila), no un --dur propio. */
+  --stagger-s3-paso:      180ms;
+  --stagger-s3-cuerpo:     90ms;
+  --dur-visor-debounce: 600ms; /* E02 · espera antes de play() al conmutar — si el ratón cruza varias filas de golpe, solo la última dispara vídeo */
   --ease-mech: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -172,6 +280,8 @@
     --dur-swap-out: 0ms; --dur-swap-gap: 0ms; --dur-swap-in: 0ms;
     --dur-accent: 0ms; --dur-reveal: 0ms; --stagger-row: 0ms;
     --dur-obra-reveal: 0ms;
+    --dur-reveal-row: 0ms; --stagger-row-reveal: 0ms; --stagger-row-headline: 0ms;
+    --stagger-s3-paso: 0ms; --stagger-s3-cuerpo: 0ms;
     --scan-op: 0;
   }
 }

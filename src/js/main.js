@@ -211,12 +211,47 @@
             pintarContador();
           }
         }
+
+        // Ancla del halo. En móvil no hay visor, así que el ancla es la
+        // ficha activa y la escribe este mismo observador. Solo hace
+        // falta reescribirla cuando CAMBIA la ficha: el desplazamiento
+        // va en coordenadas de documento, así que el scroll no lo
+        // invalida. Es una escritura por ficha, no por fotograma.
+        anclarHaloMovil();
       },
       { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] }
     );
 
+    // El centro se expresa en px de DOCUMENTO, no en % de pantalla: la
+    // caja del emisor es el documento entero (position:absolute contra
+    // body), así que este número es constante mientras la ficha activa
+    // no cambie y el scroll no lo mueve. Un % aquí sería un % del
+    // documento, que no significa nada.
+    // Misma función que en escritorio: por offsetParent, para que la
+    // posición de reposo no la contamine ningún desplazamiento de
+    // pintado (transform de entrada, sticky).
+    function anclarHaloMovil() {
+      const fila = document.querySelector(`.s2__fila[data-slug="${obraActiva.slug}"]`);
+      const poster = fila && fila.querySelector(".s2__fila-poster");
+      if (!poster) return;
+      const alto = poster.getBoundingClientRect().height;
+      const centro = desplazamientoEnDocumento(poster) + alto / 2;
+      document.documentElement.style.setProperty("--halo-y", `${centro.toFixed(2)}px`);
+    }
+
     posters.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    anclarHaloMovil();
+    // Reanclar tras un cambio de maquetación (resize, swap de fuente):
+    // el desplazamiento en el documento sí cambia ahí, y solo ahí.
+    const ro = new ResizeObserver(anclarHaloMovil);
+    ro.observe(document.body);
+    return () => {
+      io.disconnect();
+      ro.disconnect();
+      // al cruzar a escritorio manda el ancla del bisel: hay que soltar
+      // el valor inline o quedaría el último desplazamiento móvil.
+      document.documentElement.style.removeProperty("--halo-y");
+    };
   }
 
   /* ---------- Desktop: import() dinámico + gsap.matchMedia — A02 ----------
@@ -527,8 +562,10 @@
 
       /* ---------- Arranque del panel, 600ms, cada carga (F02) ----------
          Un único arranque: las reglas de 1px (--boot-line) se dibujan
-         de izquierda a derecha, el halo (--glow-op) sube desde 0, y
-         las cifras de la barra cuentan — las tres a la vez. Ocurre en
+         de izquierda a derecha y las cifras de la barra cuentan. El
+         emisor ya NO entra aquí: su encendido vive en CSS, sobre el
+         propio emisor (main.css §5b), para que las tres superficies
+         arranquen igual — una página de obra no ejecuta esto. Ocurre en
          cada carga de página, no solo la primera de la sesión: es lo
          que verá un cliente cuando se le enseñe la página en el móvil,
          y ahí no hay sessionStorage que valga. El H1 no entra aquí: se
@@ -555,14 +592,12 @@
           }, 0);
         }
 
-        const halo = document.querySelector(".s2__visor-halo");
-        if (halo) {
-          tl.to(halo, {
-            "--glow-op": 1,
-            duration: 0.5,
-            ease: "ease-out-kbtk",
-          }, 0.1);
-        }
+        // El halo ya NO se anima aquí. Su encendido vive en CSS, sobre
+        // el propio emisor (main.css §5b), con la misma duración
+        // (--dur-reveal) y el mismo retardo (100ms) que tenía este
+        // tween. Se movió para que las tres superficies arranquen
+        // igual: en una página de obra no corre arranquePanel(), así
+        // que con el tween aquí el emisor se quedaba a --glow-op 0.
 
         const meta = document.querySelector(".status-bar__meta");
         if (meta) {
@@ -592,6 +627,56 @@
     })();
   }
 
+  /* ---------- Ancla del emisor en escritorio (G01/G02) ----------
+     El centro de la luz es el centro del bisel del visor, en
+     coordenadas de DOCUMENTO. El visor no se pega (holgura cero con 4
+     obras: lista y visor miden lo mismo, ya medido y aceptado), así que
+     se desplaza con el documento — y por eso en coordenadas de
+     documento su centro es una CONSTANTE y basta escribirla una vez.
+     Ni un listener de scroll toca --halo-y ni --halo-x: lo único que
+     invalida el número es un cambio de maquetación, y de eso avisa el
+     ResizeObserver. La escritura se coalesce en un rAF para no leer
+     geometría en cada evento de un arrastre de resize; no es un bucle
+     por fotograma: se agenda un único fotograma por ráfaga. */
+  let anclaPedida = false;
+
+  /* Desplazamiento en el documento por la cadena de offsetParent, y NO
+     por getBoundingClientRect() + scrollY. Los dos coinciden casi
+     siempre, pero difieren justo donde importa: el rect incluye el
+     desplazamiento de PINTADO (sticky, transform) y offsetTop no.
+     Medido hoy: .s2__visor sí se pega —72.5px de recorrido antes de
+     soltarse contra el final de su área de rejilla, no los 0px que
+     dábamos por medidos—, así que rect.top + scrollY del bisel salta de
+     1017.8 a 1090.3 a mitad de scroll. Con offsetTop se queda en 1018.8
+     a cualquier scroll: eso es una constante de documento, que es lo
+     que este emisor necesita. El sticky no se toca aquí; simplemente la
+     arquitectura no depende de él. */
+  function desplazamientoEnDocumento(el) {
+    let y = 0;
+    for (let n = el; n; n = n.offsetParent) y += n.offsetTop;
+    return y;
+  }
+
+  function anclarHaloEscritorio() {
+    const bisel = document.querySelector(".s2__visor-bisel");
+    if (!bisel) return;
+    const alto = bisel.getBoundingClientRect().height;
+    // en móvil .s2__visor está en display:none -> altura 0.
+    // Ahí manda el IntersectionObserver, no esto.
+    if (!alto) return;
+    const y = desplazamientoEnDocumento(bisel) + alto / 2;
+    document.documentElement.style.setProperty("--halo-y", `${y.toFixed(2)}px`);
+  }
+
+  function pedirAnclaEscritorio() {
+    if (anclaPedida) return;
+    anclaPedida = true;
+    requestAnimationFrame(() => {
+      anclaPedida = false;
+      if (mqDesktop.matches) anclarHaloEscritorio();
+    });
+  }
+
   /* ---------- Orquestación reactiva: cruces de 1024px en vivo ---------- */
   const mqDesktop = window.matchMedia(MQ_DESKTOP);
   let desligarMovil = null;
@@ -605,6 +690,7 @@
       }
       montarVideoVisor(); // no-op si ya existe
       iniciarMovimientoDesktop(); // no-op si ya se cargó una vez
+      anclarHaloEscritorio(); // síncrono: antes de que arranque la rampa
     } else if (!desligarMovil) {
       desligarMovil = activarObservadorMovil();
     }
@@ -613,11 +699,11 @@
   /* ---------- Arranque del panel en móvil, sin GSAP (F02) ----------
      Móvil no carga GSAP nunca, así que el arranque ahí no puede
      reusar arranquePanel() de arriba. Mismo lenguaje visual (reglas
-     dibujándose vía --boot-line, halo de la primera fila vía
-     --glow-op), pero interpolado por transición CSS nativa sobre las
-     custom properties registradas en tokens.css, no por un tween de
-     GSAP. Un solo flip de clase basta: main.css (guard móvil) define
-     el estado "apagado" bajo .js y el estado final bajo .is-booted. */
+     dibujándose vía --boot-line), interpolado por transición CSS
+     nativa sobre las custom properties registradas en tokens.css, no
+     por un tween de GSAP. Un solo flip de clase basta: main.css (guard
+     móvil) define el estado "apagado" bajo .js y el estado final bajo
+     .is-booted. El emisor no participa: se enciende solo, en CSS. */
   function arranquePanelMovil() {
     if (reducidoAhora() || !window.matchMedia(MQ_MOBILE).matches) return;
     requestAnimationFrame(() => {
@@ -629,6 +715,11 @@
 
   evaluarBreakpoint();
   mqDesktop.addEventListener("change", evaluarBreakpoint);
+  // Un solo observador para las tres cosas que sí mueven el ancla en el
+  // documento: resize, swap de fuente y reflujo por carga de medios.
+  // NO hay listener de scroll: en coordenadas de documento el scroll no
+  // cambia el número.
+  new ResizeObserver(pedirAnclaEscritorio).observe(document.body);
   arranquePanelMovil();
 })();
 
