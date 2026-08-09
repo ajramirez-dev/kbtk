@@ -14,6 +14,7 @@
 @property --glow-op     { syntax: "<number>";     inherits: true;  initial-value: 0; }
 @property --reveal-y    { syntax: "<length>";     inherits: false; initial-value: 0px; }
 @property --scan-y      { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --boot-line   { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
 
 :root {
 
@@ -33,7 +34,7 @@
   --line:       rgb(237 238 240 / 0.14);  /* hairline base */
   --line-hi:    rgb(237 238 240 / 0.28);  /* hairline activa */
 
-  /* --signal: #FF3D00;  RETIRADO: dE 12.0 contra --obra-03-accent (Fachadas).
+  /* --signal: #FF3D00;  RETIRADO: dE 12.0 contra --acento-fachadas-ventiladas-vision (Fachadas).
      El color de casa no puede coincidir con el de ninguna obra.          */
   --signal:     #EDEEF0;   /* luz blanca. 17.16:1 sobre --k. Se usa como
                               BLOQUE lleno, no como tinte: por eso ningún
@@ -53,23 +54,65 @@
   /* ---------- 1b · ACENTOS POR OBRA ----------
      Los hex REALES se miden sobre las capturas en el Paso 0.
      Prohibido inventarlos aquí. Estos son marcadores.
-     GATE DE ACENTO: --obra-N-ink debe alcanzar 4.5:1 contra --k.
+     GATE DE ACENTO: --obra-N-ink debe alcanzar 4.5:1 contra
+     --surface-2, NUNCA contra --k. La tinta solo se usa impresa
+     en los metadatos de la fila activa, y esa fila tiene fondo
+     --surface-2 (bisel iluminado), no --k. El ratio contra --k
+     se anota como referencia informativa, no como gate.
      Si el acento medido no llega, se aclara SOLO el rol de tinta
      (subir L en HSL en pasos de 0.005 hasta pasar); el acento
      crudo se conserva para halo y hairline.
      Ej. medido: azul #2F6FE4 = 4.28:1 -> ink #3674E5 = 4.54:1     */
-  --obra-01-accent: #0A5CFF; /* medido vision-group-building · 3.78:1 vs --k */
-  --obra-01-ink:    #266FFF; /* 3.78:1 -> +0.055 L (11 pasos x0.005) -> 4.55:1 */
-  --obra-02-accent: #C9A227; /* medido alberto-medina · 8.23:1 vs --k */
-  --obra-02-ink:    #C9A227; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
-  --obra-03-accent: #FF5A1F; /* medido fachadas-ventiladas-vision · 6.39:1 vs --k */
-  --obra-03-ink:    #FF5A1F; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
-  --obra-04-accent: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
-  --obra-04-ink:    #81C280; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-vision-group-building: #0A5CFF; /* medido vision-group-building · 3.78:1 vs --k */
+  --tinta-vision-group-building:  #3D7EFF; /* 4.53:1 sobre --surface-2 · 5.34:1 sobre --k · 9 pasos desde el acento crudo #0A5CFF, que NO se modifica */
+  --acento-alberto-medina: #C9A227; /* medido alberto-medina · 8.23:1 vs --k */
+  --tinta-alberto-medina:  #C9A227; /* 6.99:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-fachadas-ventiladas-vision: #FF5A1F; /* medido fachadas-ventiladas-vision · 6.39:1 vs --k */
+  --tinta-fachadas-ventiladas-vision:  #FF5A1F; /* 5.42:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-soul-barber-studio: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
+  --tinta-soul-barber-studio:  #81C280; /* 8.02:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
 
-  --halo: radial-gradient(60% 60% at 50% 45%,
-            color-mix(in oklab, var(--obra-accent) 20%, transparent) 0%,
-            transparent 70%);
+  /* Un único halo, anclado al centro vertical del bisel del visor —
+     no a S1. La caja de .s2__visor-halo::before se estira hacia
+     ARRIBA (inset superior negativo, main.css) para que la cola del
+     degradado suba hasta el hero, pero un % vertical en radial-
+     gradient se resuelve contra esa caja ya estirada: "at 50% 45%"
+     se habría desplazado hacia arriba con el estiramiento, subiendo
+     el centro real del degradado a mitad de S1 en vez de dejarlo en
+     el visor (causa raíz medida: pico en el tercio medio de S1,
+     neutro justo encima del visor — una mancha flotante, no luz que
+     sube del panel).
+     Arreglo: anclar desde el borde INFERIOR de la caja con calc(),
+     que no se mueve al estirar el superior — mismo valor en el
+     breakpoint de 1279px aunque cambie el inset de arriba.
+       distancia desde abajo = --sp-8 (inset inferior) + altura del
+       visor / 2; altura del visor = --visor-w-desktop / 1.6 (ratio
+       16:10 del contrato).
+     El alcance hacia S1 se controla con el RADIO vertical, no con la
+     opacidad: mezcla en el 20% del contrato, una sola capa — nunca
+     un quinto uso del acento.
+     En móvil (main.css, sin visor) la ficha activa hace de ancla en
+     vez del bisel: MISMO var(--obra-accent), MISMA mezcla (50%) y
+     MISMA caída (60%), solo con el radio y el ancla-desde-abajo
+     recalculados para la caja del póster (350px), no la del bisel
+     (620px) — es una segunda declaración de radial-gradient() por
+     una limitación real de CSS: --halo-radio/--halo-y como custom
+     properties intermedias NO se re-resuelven por elemento cuando
+     --halo (sin registrar via @property) hereda ya sustituido desde
+     :root, así que un pisado local de esas variables en la ficha no
+     tenía efecto (comprobado en vivo). Sigue siendo el mismo halo,
+     un solo rol — la duplicación es de sintaxis, no de concepto. */
+  --halo: radial-gradient(
+            1100px 1400px
+            at 50% calc(100% - var(--sp-8) - (var(--visor-w-desktop) / 1.6 / 2)),
+            color-mix(in oklab, var(--obra-accent) 50%, transparent) 0%,
+            transparent 60%
+          );
+
+  /* Estado final por defecto de --glow-op / --boot-line: visible sin
+     JS, sin arranque. Solo el guard .js (E01.c, escoped a desktop en
+     main.css §12) los rearma a 0 / 0% para el power-on de 600ms. */
+  --glow-op: 1;
 
   /* ---------- 1c · SECCIÓN CLARA (Método) ----------
      Única sección invertida del sitio: hoja de especificaciones
@@ -152,6 +195,20 @@
   --dur-accent:   400ms;
   --dur-reveal:   500ms;
   --stagger-row:   40ms;
+  --dur-obra-reveal: 260ms;   /* dirección creativa §2.2 · flood-and-reveal al entrar en una obra */
+  /* F04: filas del índice/tabla S4 y titulares de display leen estas,
+     no --dur-reveal/--stagger-row — así el arranque del panel (F02)
+     no cambia de ritmo cuando se sube la intensidad de los reveals. */
+  --dur-reveal-row:      700ms;
+  --stagger-row-reveal:   70ms;
+  --stagger-row-headline: 80ms;
+  /* S3.b: secuencia de arranque del panel de método — un paso cada
+     180ms, el cuerpo de cada paso 90ms detrás de su número. Lee
+     --dur-reveal-row para la duración (mismo ritmo que el resto de
+     reveals de fila), no un --dur propio. */
+  --stagger-s3-paso:      180ms;
+  --stagger-s3-cuerpo:     90ms;
+  --dur-visor-debounce: 600ms; /* E02 · espera antes de play() al conmutar — si el ratón cruza varias filas de golpe, solo la última dispara vídeo */
   --ease-mech: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -166,6 +223,9 @@
   :root {
     --dur-swap-out: 0ms; --dur-swap-gap: 0ms; --dur-swap-in: 0ms;
     --dur-accent: 0ms; --dur-reveal: 0ms; --stagger-row: 0ms;
+    --dur-obra-reveal: 0ms;
+    --dur-reveal-row: 0ms; --stagger-row-reveal: 0ms; --stagger-row-headline: 0ms;
+    --stagger-s3-paso: 0ms; --stagger-s3-cuerpo: 0ms;
     --scan-op: 0;
   }
 }

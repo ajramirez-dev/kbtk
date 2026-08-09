@@ -33,7 +33,7 @@
   --line:       rgb(237 238 240 / 0.14);  /* hairline base */
   --line-hi:    rgb(237 238 240 / 0.28);  /* hairline activa */
 
-  /* --signal: #FF3D00;  RETIRADO: dE 12.0 contra --obra-03-accent (Fachadas).
+  /* --signal: #FF3D00;  RETIRADO: dE 12.0 contra --acento-fachadas-ventiladas-vision (Fachadas).
      El color de casa no puede coincidir con el de ninguna obra.          */
   --signal:     #EDEEF0;   /* luz blanca. 17.16:1 sobre --k. Se usa como
                               BLOQUE lleno, no como tinte: por eso ningún
@@ -53,19 +53,23 @@
   /* ---------- 1b · ACENTOS POR OBRA ----------
      Los hex REALES se miden sobre las capturas en el Paso 0.
      Prohibido inventarlos aquí. Estos son marcadores.
-     GATE DE ACENTO: --obra-N-ink debe alcanzar 4.5:1 contra --k.
+     GATE DE ACENTO: --obra-N-ink debe alcanzar 4.5:1 contra
+     --surface-2, NUNCA contra --k. La tinta solo se usa impresa
+     en los metadatos de la fila activa, y esa fila tiene fondo
+     --surface-2 (bisel iluminado), no --k. El ratio contra --k
+     se anota como referencia informativa, no como gate.
      Si el acento medido no llega, se aclara SOLO el rol de tinta
      (subir L en HSL en pasos de 0.005 hasta pasar); el acento
      crudo se conserva para halo y hairline.
      Ej. medido: azul #2F6FE4 = 4.28:1 -> ink #3674E5 = 4.54:1     */
-  --obra-01-accent: #0A5CFF; /* medido vision-group-building · 3.78:1 vs --k */
-  --obra-01-ink:    #266FFF; /* 3.78:1 -> +0.055 L (11 pasos x0.005) -> 4.55:1 */
-  --obra-02-accent: #C9A227; /* medido alberto-medina · 8.23:1 vs --k */
-  --obra-02-ink:    #C9A227; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
-  --obra-03-accent: #FF5A1F; /* medido fachadas-ventiladas-vision · 6.39:1 vs --k */
-  --obra-03-ink:    #FF5A1F; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
-  --obra-04-accent: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
-  --obra-04-ink:    #81C280; /* ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-vision-group-building: #0A5CFF; /* medido vision-group-building · 3.78:1 vs --k */
+  --tinta-vision-group-building:  #3D7EFF; /* 4.53:1 sobre --surface-2 · 5.34:1 sobre --k · 9 pasos desde el acento crudo #0A5CFF, que NO se modifica */
+  --acento-alberto-medina: #C9A227; /* medido alberto-medina · 8.23:1 vs --k */
+  --tinta-alberto-medina:  #C9A227; /* 6.99:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-fachadas-ventiladas-vision: #FF5A1F; /* medido fachadas-ventiladas-vision · 6.39:1 vs --k */
+  --tinta-fachadas-ventiladas-vision:  #FF5A1F; /* 5.42:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
+  --acento-soul-barber-studio: #81C280; /* medido soul-barber-studio · 9.45:1 vs --k */
+  --tinta-soul-barber-studio:  #81C280; /* 8.02:1 sobre --surface-2 · ya >= 4.5:1 -> ink = acento crudo, 0 pasos */
 
   --halo: radial-gradient(60% 60% at 50% 45%,
             color-mix(in oklab, var(--obra-accent) 20%, transparent) 0%,
@@ -152,6 +156,7 @@
   --dur-accent:   400ms;
   --dur-reveal:   500ms;
   --stagger-row:   40ms;
+  --dur-obra-reveal: 260ms;   /* dirección creativa §2.2 · flood-and-reveal al entrar en una obra */
   --ease-mech: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -166,6 +171,7 @@
   :root {
     --dur-swap-out: 0ms; --dur-swap-gap: 0ms; --dur-swap-in: 0ms;
     --dur-accent: 0ms; --dur-reveal: 0ms; --stagger-row: 0ms;
+    --dur-obra-reveal: 0ms;
     --scan-op: 0;
   }
 }

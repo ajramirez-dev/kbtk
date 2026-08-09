@@ -1,0 +1,29 @@
+{
+  "meta_descripcion": "VISION GROUP BUILDING: web entregada para el sector construcción, en Albacete. Estimador de coste y tarifas por material. Diseño y copy de KBTK Digital.",
+  "problema": "Vision Group Building SL opera talleres de mecanizado de composite en Beniparrell y soldadura en Albacete. Al buscar sus servicios industriales en internet, los resultados no mostraban sus opciones de presupuesto en línea ni las tarifas de su sede valenciana.",
+  "decisiones": [
+    {
+      "titulo": "Estimador orientativo de coste",
+      "cuerpo": "Un simulador calcula el importe aproximado según los metros cuadrados de panel composite. El sector suele ocultar tarifas y quien consulta obtiene un número orientativo de forma inmediata."
+    },
+    {
+      "titulo": "Tarifas por tipo de material",
+      "cuerpo": "La sección de servicios diferencia el mecanizado con panel propio frente al material Stacbond. Esta variación de materia prima condiciona el taller y el contratista estima el coste de partida."
+    },
+    {
+      "titulo": "Desglose por dos sedes",
+      "cuerpo": "Dos fichas dividen la planta de Beniparrell para chapa y la nave de Albacete para soldadura. Al repartir los procesos en dos provincias, la empresa aclara la especialidad técnica de cada taller."
+    },
+    {
+      "titulo": "Envío de planos por WhatsApp",
+      "cuerpo": "Un botón conecta el estimador con el canal de WhatsApp para adjuntar archivos en vector. La fabricación exige validar el trazado antes de cortar y la oficina técnica acelera el presupuesto."
+    }
+  ],
+  "ficha": {
+    "estado": "ENTREGADO",
+    "sector": "CONSTRUCCIÓN",
+    "alcance": "DISEÑO + COPY",
+    "desplegada": "",
+    "_todo_desplegada": "fecha real de puesta en producción"
+  }
+}

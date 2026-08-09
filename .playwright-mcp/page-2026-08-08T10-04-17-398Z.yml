@@ -1,0 +1,174 @@
+- generic [active] [ref=f19e1]:
+  - link "Saltar al contenido" [ref=f19e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f19e3]:
+    - generic [ref=f19e4]:
+      - link "KBTK Digital — inicio" [ref=f19e5] [cursor=pointer]:
+        - /url: /
+        - img "KBTK Digital" [ref=f19e6]
+      - paragraph [ref=f19e13]: OBRAS 04 · ENTREGADAS 03 · DEMOS CONSTRUIDAS 07
+      - generic [ref=f19e14]:
+        - paragraph [ref=f19e15]:
+          - text: ES /
+          - link "EN" [ref=f19e16] [cursor=pointer]:
+            - /url: /en/
+        - link "[ CONTACTO ]" [ref=f19e17] [cursor=pointer]:
+          - /url: "#contacto"
+  - main [ref=f19e18]:
+    - generic [ref=f19e19]:
+      - generic [ref=f19e20]:
+        - paragraph [ref=f19e21]: S1 · DECLARACIÓN
+        - paragraph [ref=f19e22]: ESTUDIO DE DISEÑO WEB Y COPY · ALBACETE
+      - heading "Su web ya existe." [level=1] [ref=f19e23]
+      - paragraph [ref=f19e24]: La construimos entera antes de que usted decida si la paga.
+      - paragraph [ref=f19e25]: 07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL
+    - generic [ref=f19e26]:
+      - generic [ref=f19e27]:
+        - heading "S2 · ÍNDICE DE OBRAS" [level=2] [ref=f19e28]
+        - paragraph [ref=f19e29]: 04 REGISTROS · 01 CARGADO EN VISOR
+      - generic [ref=f19e30]:
+        - generic [ref=f19e31]:
+          - generic [ref=f19e32]: Nº · OBRA
+          - generic [ref=f19e33]: SECTOR · ESTADO
+        - list [ref=f19e34]:
+          - listitem [ref=f19e35]:
+            - link "01 VISION GROUP BUILDING CONSTRUCCIÓN · ENTREGADO" [ref=f19e36] [cursor=pointer]:
+              - /url: /obras/vision-group-building/
+              - generic [ref=f19e37]: "01"
+              - generic [ref=f19e38]: VISION GROUP BUILDING
+              - generic [ref=f19e39]: CONSTRUCCIÓN · ENTREGADO
+          - listitem [ref=f19e40]:
+            - link "02 FACHADAS VENTILADAS VISIÓN CONSTRUCCIÓN · ENTREGADO" [ref=f19e41] [cursor=pointer]:
+              - /url: /obras/fachadas-ventiladas-vision/
+              - generic [ref=f19e42]: "02"
+              - generic [ref=f19e43]: FACHADAS VENTILADAS VISIÓN
+              - generic [ref=f19e44]: CONSTRUCCIÓN · ENTREGADO
+          - listitem [ref=f19e45]:
+            - link "03 ALBERTO MEDINA PELUQUERÍA · ENTREGADO" [ref=f19e46] [cursor=pointer]:
+              - /url: /obras/alberto-medina/
+              - generic [ref=f19e47]: "03"
+              - generic [ref=f19e48]: ALBERTO MEDINA
+              - generic [ref=f19e49]: PELUQUERÍA · ENTREGADO
+          - listitem [ref=f19e50]:
+            - link "04 SOUL BARBER STUDIO BARBERÍA · EN EXPOSICIÓN" [ref=f19e51] [cursor=pointer]:
+              - /url: /obras/soul-barber-studio/
+              - generic [ref=f19e52]: "04"
+              - generic [ref=f19e53]: SOUL BARBER STUDIO
+              - generic [ref=f19e54]: BARBERÍA · EN EXPOSICIÓN
+      - generic [ref=f19e55]:
+        - paragraph [ref=f19e56]: VISOR · REG 01 · VISION GROUP BUILDING
+        - generic [ref=f19e60]:
+          - img "Captura de la web de VISION GROUP BUILDING"
+        - paragraph [ref=f19e61]: EN LÍNEA
+        - generic [ref=f19e63]:
+          - generic [ref=f19e64]:
+            - term [ref=f19e65]: ESTADO
+            - definition [ref=f19e66]: ENTREGADO
+          - generic [ref=f19e67]:
+            - term [ref=f19e68]: SECTOR
+            - definition [ref=f19e69]: CONSTRUCCIÓN
+          - generic [ref=f19e70]:
+            - term [ref=f19e71]: ALCANCE
+            - definition [ref=f19e72]: DISEÑO + COPY
+          - generic [ref=f19e73]:
+            - term [ref=f19e74]: DESPLEGADA
+            - definition [ref=f19e75]: PENDIENTE
+        - link "[ VER LA OBRA ]" [ref=f19e76] [cursor=pointer]:
+          - /url: /obras/vision-group-building/
+      - generic [ref=f19e77]:
+        - generic [ref=f19e78]: ESTADO ACTIVO · 01 / 04
+        - generic [ref=f19e79]: CONMUTACIÓN EN CÓDIGO
+    - generic [ref=f19e81]:
+      - generic [ref=f19e82]:
+        - paragraph [ref=f19e83]: S3 · HOJA DE ESPECIFICACIONES
+        - paragraph [ref=f19e84]: MÉTODO · 04 PASOS
+      - heading "Método" [level=2] [ref=f19e85]
+      - paragraph [ref=f19e86]: Cuatro pasos, en este orden. Sin reunión inicial, sin presupuesto previo y sin brief. El riesgo lo asume el estudio hasta el paso 04.
+      - list [ref=f19e87]:
+        - listitem [ref=f19e88]:
+          - text: "01"
+          - heading "Se elige el negocio" [level=3] [ref=f19e89]
+          - paragraph [ref=f19e90]: Un negocio de Albacete que trabaja bien y se presenta mal. Lo elegimos nosotros. No hay llamada previa ni formulario que rellenar.
+        - listitem [ref=f19e91]:
+          - text: "02"
+          - heading "Se construye la página entera" [level=3] [ref=f19e92]
+          - paragraph [ref=f19e93]: "Diseño, textos y desarrollo completos. No es un mockup ni una plantilla con su logotipo: es la web terminada, con su nombre, sus servicios y sus fotos, ya desplegada en una dirección real."
+        - listitem [ref=f19e94]:
+          - text: "03"
+          - heading "Se enseña en persona, en el móvil" [level=3] [ref=f19e95]
+          - paragraph [ref=f19e96]: Vamos al local sin avisar de nada más. Se abre en su teléfono, se recorre entera y se responden las dudas ahí mismo. Diez minutos.
+        - listitem [ref=f19e97]:
+          - text: "04"
+          - heading "Se decide" [level=3] [ref=f19e98]
+          - paragraph [ref=f19e99]: "Si la quiere, se paga y se le transfiere todo: código, dominio y accesos. Si no la quiere, se apaga el mismo día y no se vuelve a mencionar."
+      - generic [ref=f19e100]:
+        - generic [ref=f19e101]: ESTUDIO KBTK DIGITAL · ALBACETE
+        - generic [ref=f19e102]: DOC 02 — MÉTODO
+        - generic [ref=f19e103]: REV 01 — 2026
+        - generic [ref=f19e104]: HOJA 1 DE 1
+    - generic [ref=f19e105]:
+      - generic [ref=f19e106]:
+        - heading "S4 · QUÉ SE ENTREGA" [level=2] [ref=f19e107]
+        - paragraph [ref=f19e108]: PRECIO ÚNICO · SIN PERMANENCIA
+      - table [ref=f19e109]:
+        - rowgroup [ref=f19e110]:
+          - row [ref=f19e111]:
+            - columnheader "PARTIDA" [ref=f19e112]
+            - columnheader "ALCANCE" [ref=f19e113]
+        - rowgroup [ref=f19e114]:
+          - row [ref=f19e115]:
+            - cell "DISEÑO" [ref=f19e116]
+            - cell "Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada." [ref=f19e117]
+          - row [ref=f19e118]:
+            - cell "COPY" [ref=f19e119]
+            - 'cell "Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local." [ref=f19e120]'
+          - row [ref=f19e121]:
+            - cell "IMAGEN" [ref=f19e122]
+            - cell "Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado." [ref=f19e123]
+          - row [ref=f19e124]:
+            - cell "TÉCNICA" [ref=f19e125]
+            - cell "Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real." [ref=f19e126]
+          - row [ref=f19e127]:
+            - cell "ENTREGA" [ref=f19e128]
+            - cell "Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia." [ref=f19e129]
+          - row [ref=f19e130]:
+            - cell "NO INCLUYE" [ref=f19e131]
+            - cell "Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales." [ref=f19e132]
+  - contentinfo [ref=f19e133]:
+    - heading "La obra 05 es la suya." [level=2] [ref=f19e134]
+    - generic [ref=f19e135]:
+      - link "KBTK Digital — inicio" [ref=f19e136] [cursor=pointer]:
+        - /url: /
+        - img "KBTK Digital" [ref=f19e137]
+      - link "[ HABLAR CON KBTK ]" [ref=f19e144] [cursor=pointer]:
+        - /url: "#contacto"
+    - list [ref=f19e145]:
+      - listitem [ref=f19e146]:
+        - link "05 SU NEGOCIO · PENDIENTE" [ref=f19e147] [cursor=pointer]:
+          - /url: "#contacto"
+          - generic [ref=f19e148]: "05"
+          - generic [ref=f19e151]: SU NEGOCIO · PENDIENTE
+    - generic [ref=f19e152]:
+      - paragraph [ref=f19e153]: CONTACTO
+      - paragraph [ref=f19e154]:
+        - text: "La vía real, mientras el formulario no está conectado:"
+        - link "contact@kbtk.dev" [ref=f19e155] [cursor=pointer]:
+          - /url: mailto:contact@kbtk.dev
+      - generic [ref=f19e156]:
+        - generic [ref=f19e157]:
+          - generic [ref=f19e158]: NOMBRE
+          - textbox "NOMBRE" [ref=f19e159]
+        - generic [ref=f19e160]:
+          - generic [ref=f19e161]: EMAIL
+          - textbox "EMAIL" [ref=f19e162]
+        - generic [ref=f19e163]:
+          - generic [ref=f19e164]: MENSAJE
+          - textbox "MENSAJE" [ref=f19e165]
+        - generic [ref=f19e166]:
+          - button "[ ENVIAR ]" [disabled] [ref=f19e167]
+          - paragraph [ref=f19e168]: FORMULARIO PENDIENTE DE CONEXIÓN
+    - paragraph [ref=f19e169]:
+      - generic [ref=f19e170]: KBTK DIGITAL · ALBACETE
+      - link "contact@kbtk.dev" [ref=f19e172] [cursor=pointer]:
+        - /url: mailto:contact@kbtk.dev
+      - generic [ref=f19e173]: © 2026

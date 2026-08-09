@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KBTK Digital — Estudio de diseño web y copy · Albacete</title>
+  <meta name="description" content="Estudio de diseño web y copy en Albacete. Construimos su web entera antes de que usted decida si la paga: sin brief ni presupuesto previo.">
+  <link rel="canonical" href="https://kbtk.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="KBTK Digital">
+  <meta property="og:url" content="https://kbtk.dev/">
+  <meta property="og:title" content="KBTK Digital — Estudio de diseño web y copy · Albacete">
+  <meta property="og:description" content="Estudio de diseño web y copy en Albacete. Construimos su web entera antes de que usted decida si la paga: sin brief ni presupuesto previo.">
+  <meta property="og:image" content="https://kbtk.dev/og/og-home-v2.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="KBTK Digital — Su web ya existe.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#08090B">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" type="image/png" href="/icon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/icon-512-maskable.png" sizes="512x512">
+  <link rel="apple-touch-icon" href="/apple-touch-icon-180.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"KBTK Digital","url":"https://kbtk.dev","logo":"https://kbtk.dev/marca/kbtk-testigo.svg","areaServed":"Albacete","email":"contact@kbtk.dev"}</script>
+  <script>
+    // síncrono, antes de cualquier hoja de estilo: marca el documento
+    // como capaz de JS. El estado oculto de fase 4 (.js [data-mask])
+    // depende de esta clase — sin ella, un fallo o bloqueo de JS deja
+    // el contenido en su estado visible por defecto, nunca en blanco.
+    document.documentElement.classList.add("js");
+  </script>
+  <link rel="stylesheet" href="/css/tokens.min.css">
+  <link rel="stylesheet" href="/css/main.min.css">
+  <script src="/data/obras.js"></script>
+  <script>
+    // síncrono, antes del primer paint: evita el flash del gris neutro
+    // de @property mientras se carga main.js (defer).
+    (function () {
+      var activa = OBRAS.find(function (o) { return o.orden === 1; }) || OBRAS[0];
+      var root = document.documentElement.style;
+      root.setProperty("--obra-accent", "var(" + activa.accentVar + ")");
+      root.setProperty("--obra-ink", "var(" + activa.inkVar + ")");
+    })();
+  </script>
+  <!-- GSAP + Lenis auto-alojados (cero CDN, misma política que las
+       fuentes) — ver scripts/copy-vendor.mjs. Fase 4.5 (A02): ya NO se
+       cargan aquí. Móvil no los necesita (sin conmutación, sin Lenis,
+       sin vídeo); main.js los importa con import() dinámico, y solo
+       dentro de la rama de escritorio. -->
+  <script src="/js/main.min.js" defer></script>
+</head>
+<body>
+
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <header data-seccion="s0" class="status-bar">
+    <div class="status-bar__grid">
+      <a class="status-bar__brand no-grain" href="/" aria-label="KBTK Digital — inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 -206 1255.787 298" role="img" aria-label="KBTK Digital"><g transform="matrix(2 0 0 2 0 -200)"><circle cx="50" cy="50" r="32.6" fill="none" stroke="currentColor" stroke-width="22.7"/><circle cx="50" cy="50" r="14.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="50" cy="50" r="7.5" fill="var(--obra-accent, currentColor)"/></g><path d="M283.853 0v-200.413h57.393v94.937l100.724-94.937h72.06l-86.888 82.38L515.926 0h-70.343L385.49-82.375l-44.244 36.92V0Zm257.39 0v-200.413H694.15q16.09 0 29.112 6.25 13.023 6.25 20.64 17.328 7.619 11.079 7.619 25.79 0 13.112-4.646 22.442-4.645 9.33-12.44 15.122-7.793 5.793-17.316 8.683v1.166q11.115 2.333 20.062 8.417 8.946 6.085 14.175 16.222t5.229 24.842q0 17.233-8.242 29.319T726.19-6.372 695.101 0Zm57.394-41.658h78.238q9.265 0 15.116-5.21 5.85-5.209 5.85-15.984 0-5.704-2.53-10.232t-7.42-7.032-11.889-2.504h-77.365Zm0-79.407h73.345q6.711 0 11.308-2.508 4.596-2.51 7.09-7.047 2.494-4.539 2.494-10.674 0-8.768-5.688-13.827-5.687-5.06-14.368-5.06h-74.181ZM852.956 0v-154.028h-80.728v-46.385H991.07v46.385h-80.721V0Zm164.293 0v-200.413h57.394v94.937l100.724-94.937h72.06l-86.889 82.38L1249.323 0h-70.344l-60.092-82.375-44.244 36.92V0Z"/><path d="M281.602 78h-16.166V28h16.166q6.367 0 10.587 3.219t6.33 8.834 2.11 12.911-2.11 12.947-6.33 8.87T281.602 78m-9.513-44.134v38.268h8.369q7.01 0 10.121-5.114t3.112-13.984q0-8.942-3.112-14.056t-10.121-5.114ZM316.36 78v-5.58h10.586V33.58H316.36V28h27.968v5.58H333.67v38.84h10.658V78Zm63.299-26.466h17.238V78h-4.864l-.572-6.867q-1.788 4.22-5.043 6.187t-7.475 1.968q-6.008 0-10.372-3.076t-6.76-8.87-2.396-14.02q0-8.512 2.54-14.414 2.539-5.9 7.081-8.977 4.542-3.075 10.623-3.075 6.58 0 11.194 3.505t6.187 11.444h-6.795q-1.001-5.15-3.827-7.117t-6.76-1.967q-6.58 0-9.942 5.472t-3.362 14.771q0 10.444 3.505 15.45 3.505 5.008 9.227 5.008 4.15 0 6.796-1.931t3.898-5.258 1.252-7.403V57.4H379.66ZM412.773 78v-5.58h10.586V33.58h-10.586V28h27.968v5.58h-10.658v38.84h10.658V78Zm80.466-44.134h-14.95V78h-6.652V33.866h-15.022V28h36.624ZM536.152 78l-4.435-14.95h-17.24L510.044 78h-6.867l15.808-50h8.37l15.736 50Zm-20.029-20.53h13.949l-7.01-23.461ZM558.106 28h6.652v44.134h23.82V78h-30.472Z"/></svg>
+      </a>
+      <p class="status-bar__meta t-data">OBRAS 04 · ENTREGADAS 03 · DEMOS CONSTRUIDAS 07</p>
+      <div class="status-bar__actions">
+        <p class="status-bar__lang t-data"><span aria-current="page">ES</span> / <a href="/en/">EN</a></p>
+        <a class="status-bar__cta t-data" href="#contacto">[ CONTACTO ]</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section data-seccion="s1" class="grid-12">
+      <header class="section-head col-span-12">
+        <p class="t-data">S1 · DECLARACIÓN</p>
+        <p class="t-data">ESTUDIO DE DISEÑO WEB Y COPY · ALBACETE</p>
+      </header>
+      <h1 class="t-display col-span-10">Su web ya existe.</h1>
+      <p class="s1__subtitular col-span-8">La construimos entera antes de que usted decida si la paga.</p>
+      <p class="s1__meta t-data col-span-10">07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL</p>
+    </section>
+
+    <section data-seccion="s2" class="s2 grid-12">
+      <header class="section-head col-span-12">
+        <h2 class="t-data">S2 · ÍNDICE DE OBRAS</h2>
+        <p class="t-data" id="s2-contador"></p>
+      </header>
+
+      <div class="s2__listado col-span-5">
+        <div class="s2__listado-head t-data">
+          <span>Nº · OBRA</span>
+          <span>SECTOR · ESTADO</span>
+        </div>
+
+        <ol class="s2__filas">
+<!-- OBRAS:INICIO -->
+        <li class="s2__fila is-active" data-slug="vision-group-building" data-fila-obra data-mask style="--accent: var(--acento-vision-group-building); --accent-ink: var(--tinta-vision-group-building);">
+          <a href="/obras/vision-group-building/">
+            <picture>
+              <source type="image/webp" srcset="/assets/obra-vision-group-building-poster-700.webp 700w, /assets/obra-vision-group-building-poster-1400.webp 1400w" sizes="350px">
+              <img class="s2__fila-poster" src="/assets/obra-vision-group-building-poster-v1.jpg" alt="Captura de la web de VISION GROUP BUILDING" width="1280" height="800" loading="eager">
+            </picture>
+            <span class="s2__num t-data">01</span>
+            <span class="s2__nombre">VISION GROUP BUILDING</span>
+            <span class="s2__meta t-data">CONSTRUCCIÓN · ENTREGADO</span>
+          </a>
+        </li>
+        <li class="s2__fila" data-slug="fachadas-ventiladas-vision" data-fila-obra data-mask>
+          <a href="/obras/fachadas-ventiladas-vision/">
+            <picture>
+              <source type="image/webp" srcset="/assets/obra-fachadas-ventiladas-vision-poster-700.webp 700w, /assets/obra-fachadas-ventiladas-vision-poster-1400.webp 1400w" sizes="350px">
+              <img class="s2__fila-poster" src="/assets/obra-fachadas-ventiladas-vision-poster-v1.jpg" alt="Captura de la web de FACHADAS VENTILADAS VISIÓN" width="1280" height="800" loading="lazy">
+            </picture>
+            <span class="s2__num t-data">02</span>
+            <span class="s2__nombre">FACHADAS VENTILADAS VISIÓN</span>
+            <span class="s2__meta t-data">CONSTRUCCIÓN · ENTREGADO</span>
+          </a>
+        </li>
+        <li class="s2__fila" data-slug="alberto-medina" data-fila-obra data-mask>
+          <a href="/obras/alberto-medina/">
+            <picture>
+              <source type="image/webp" srcset="/assets/obra-alberto-medina-poster-700.webp 700w, /assets/obra-alberto-medina-poster-1400.webp 1400w" sizes="350px">
+              <img class="s2__fila-poster" src="/assets/obra-alberto-medina-poster-v1.jpg" alt="Captura de la web de ALBERTO MEDINA" width="1280" height="800" loading="lazy">
+            </picture>
+            <span class="s2__num t-data">03</span>
+            <span class="s2__nombre">ALBERTO MEDINA</span>
+            <span class="s2__meta t-data">PELUQUERÍA · ENTREGADO</span>
+          </a>
+        </li>
+        <li class="s2__fila" data-slug="soul-barber-studio" data-fila-obra data-mask>
+          <a href="/obras/soul-barber-studio/">
+            <picture>
+              <source type="image/webp" srcset="/assets/obra-soul-barber-studio-poster-700.webp 700w, /assets/obra-soul-barber-studio-poster-1400.webp 1400w" sizes="350px">
+              <img class="s2__fila-poster" src="/assets/obra-soul-barber-studio-poster-v1.jpg" alt="Captura de la web de SOUL BARBER STUDIO" width="1280" height="800" loading="lazy">
+            </picture>
+            <span class="s2__num t-data">04</span>
+            <span class="s2__nombre">SOUL BARBER STUDIO</span>
+            <span class="s2__meta t-data">BARBERÍA · EN EXPOSICIÓN</span>
+          </a>
+        </li>
+<!-- OBRAS:FIN -->
+        </ol>
+      </div>
+
+      <div class="s2__visor col-span-6">
+        <p class="s2__visor-etiqueta t-data"></p>
+
+        <div class="s2__visor-halo">
+          <div class="s2__visor-bisel">
+            <div class="s2__visor-frame"></div>
+          </div>
+        </div>
+
+        <p class="s2__visor-estado t-data">
+          <span class="led" aria-hidden="true"></span>
+          EN LÍNEA
+        </p>
+
+        <dl class="s2__ficha">
+          <div class="s2__ficha-par">
+            <dt class="t-data">ESTADO</dt>
+            <dd class="t-data" data-campo="estado"></dd>
+          </div>
+          <div class="s2__ficha-par">
+            <dt class="t-data">SECTOR</dt>
+            <dd class="t-data" data-campo="sector"></dd>
+          </div>
+          <div class="s2__ficha-par">
+            <dt class="t-data">ALCANCE</dt>
+            <dd class="t-data">DISEÑO + COPY</dd>
+          </div>
+          <div class="s2__ficha-par">
+            <dt class="t-data">DESPLEGADA</dt>
+            <dd class="t-data"><span class="ph">PENDIENTE</span></dd>
+            <!-- TODO: fecha de despliegue de cada obra, aún sin confirmar -->
+          </div>
+        </dl>
+
+        <a class="s2__cta t-data" href="#">[ VER LA OBRA ]</a>
+      </div>
+
+      <div class="s2__listado-foot col-span-12 t-data">
+        <span id="s2-activo"></span>
+        <span>CONMUTACIÓN EN CÓDIGO</span>
+      </div>
+    </section>
+
+    <section data-seccion="s3" class="s3 grid-12">
+      <header class="section-head col-span-12">
+        <p class="t-data">S3 · HOJA DE ESPECIFICACIONES</p>
+        <p class="t-data">MÉTODO · 04 PASOS</p>
+      </header>
+
+      <p class="s3__estado t-data col-span-12">MÉTODO · 04 PASOS · RIESGO: ESTUDIO</p>
+
+      <div class="bisel s3__bisel col-span-12">
+        <h2 class="s3__titulo">Método</h2>
+        <p class="s3__intro">Cuatro pasos, en este orden. Sin reunión inicial, sin presupuesto previo y sin brief. El riesgo lo asume el estudio hasta el paso 04.</p>
+
+        <ol class="s3__pasos">
+          <li>
+            <span class="s3__paso-numero t-data" data-mask>01</span>
+            <div class="s3__paso-cuerpo" data-mask>
+              <h3 class="s3__paso-titulo">Se elige el negocio</h3>
+              <p class="s3__paso-texto">Un negocio de Albacete que trabaja bien y se presenta mal. Lo elegimos nosotros. No hay llamada previa ni formulario que rellenar.</p>
+            </div>
+          </li>
+          <li>
+            <span class="s3__paso-numero t-data" data-mask>02</span>
+            <div class="s3__paso-cuerpo" data-mask>
+              <h3 class="s3__paso-titulo">Se construye la página entera</h3>
+              <p class="s3__paso-texto">Diseño, textos y desarrollo completos. No es un mockup ni una plantilla con su logotipo: es la web terminada, con su nombre, sus servicios y sus fotos, ya desplegada en una dirección real.</p>
+            </div>
+          </li>
+          <li>
+            <span class="s3__paso-numero t-data" data-mask>03</span>
+            <div class="s3__paso-cuerpo" data-mask>
+              <h3 class="s3__paso-titulo">Se enseña en persona, en el móvil</h3>
+              <p class="s3__paso-texto">Vamos al local sin avisar de nada más. Se abre en su teléfono, se recorre entera y se responden las dudas ahí mismo. Diez minutos.</p>
+            </div>
+          </li>
+          <li>
+            <span class="s3__paso-numero t-data" data-mask>04</span>
+            <div class="s3__paso-cuerpo" data-mask>
+              <h3 class="s3__paso-titulo">Se decide</h3>
+              <p class="s3__paso-texto">Si la quiere, se paga y se le transfiere todo: código, dominio y accesos. Si no la quiere, se apaga el mismo día y no se vuelve a mencionar.</p>
+            </div>
+          </li>
+        </ol>
+
+        <footer class="s3__pie t-data">
+          <span>ESTUDIO KBTK DIGITAL · ALBACETE</span>
+          <span>DOC 02 — MÉTODO</span>
+          <span>REV 01 — 2026</span>
+          <span>HOJA 1 DE 1</span>
+        </footer>
+      </div>
+    </section>
+
+    <section data-seccion="s4" class="s4 grid-12">
+      <header class="section-head col-span-12">
+        <h2 class="t-data">S4 · QUÉ SE ENTREGA</h2>
+        <p class="t-data">PRECIO ÚNICO · SIN PERMANENCIA</p>
+      </header>
+
+      <table class="s4__tabla col-span-12">
+        <thead>
+          <tr>
+            <th class="t-data">PARTIDA</th>
+            <th class="t-data">ALCANCE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="s4__fila" data-mask>
+            <td>DISEÑO</td>
+            <td>Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada.</td>
+          </tr>
+          <tr class="s4__fila" data-mask>
+            <td>COPY</td>
+            <td>Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local.</td>
+          </tr>
+          <tr class="s4__fila" data-mask>
+            <td>IMAGEN</td>
+            <td>Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado.</td>
+          </tr>
+          <tr class="s4__fila" data-mask>
+            <td>TÉCNICA</td>
+            <td>Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real.</td>
+          </tr>
+          <tr class="s4__fila" data-mask>
+            <td>ENTREGA</td>
+            <td>Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia.</td>
+          </tr>
+          <tr class="s4__fila s4__fila--excluye" data-mask>
+            <td>NO INCLUYE</td>
+            <td>Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer data-seccion="s5" class="s5 grid-12">
+    <h2 class="t-display col-span-10" data-line-reveal>La obra 05 es la suya.</h2>
+
+    <div class="s5__actions col-span-12">
+      <a class="s5__brand no-grain" href="/" aria-label="KBTK Digital — inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 -206 1255.787 298" role="img" aria-label="KBTK Digital"><g transform="matrix(2 0 0 2 0 -200)"><circle cx="50" cy="50" r="32.6" fill="none" stroke="currentColor" stroke-width="22.7"/><circle cx="50" cy="50" r="14.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="50" cy="50" r="7.5" fill="var(--obra-accent, currentColor)"/></g><path d="M283.853 0v-200.413h57.393v94.937l100.724-94.937h72.06l-86.888 82.38L515.926 0h-70.343L385.49-82.375l-44.244 36.92V0Zm257.39 0v-200.413H694.15q16.09 0 29.112 6.25 13.023 6.25 20.64 17.328 7.619 11.079 7.619 25.79 0 13.112-4.646 22.442-4.645 9.33-12.44 15.122-7.793 5.793-17.316 8.683v1.166q11.115 2.333 20.062 8.417 8.946 6.085 14.175 16.222t5.229 24.842q0 17.233-8.242 29.319T726.19-6.372 695.101 0Zm57.394-41.658h78.238q9.265 0 15.116-5.21 5.85-5.209 5.85-15.984 0-5.704-2.53-10.232t-7.42-7.032-11.889-2.504h-77.365Zm0-79.407h73.345q6.711 0 11.308-2.508 4.596-2.51 7.09-7.047 2.494-4.539 2.494-10.674 0-8.768-5.688-13.827-5.687-5.06-14.368-5.06h-74.181ZM852.956 0v-154.028h-80.728v-46.385H991.07v46.385h-80.721V0Zm164.293 0v-200.413h57.394v94.937l100.724-94.937h72.06l-86.889 82.38L1249.323 0h-70.344l-60.092-82.375-44.244 36.92V0Z"/><path d="M281.602 78h-16.166V28h16.166q6.367 0 10.587 3.219t6.33 8.834 2.11 12.911-2.11 12.947-6.33 8.87T281.602 78m-9.513-44.134v38.268h8.369q7.01 0 10.121-5.114t3.112-13.984q0-8.942-3.112-14.056t-10.121-5.114ZM316.36 78v-5.58h10.586V33.58H316.36V28h27.968v5.58H333.67v38.84h10.658V78Zm63.299-26.466h17.238V78h-4.864l-.572-6.867q-1.788 4.22-5.043 6.187t-7.475 1.968q-6.008 0-10.372-3.076t-6.76-8.87-2.396-14.02q0-8.512 2.54-14.414 2.539-5.9 7.081-8.977 4.542-3.075 10.623-3.075 6.58 0 11.194 3.505t6.187 11.444h-6.795q-1.001-5.15-3.827-7.117t-6.76-1.967q-6.58 0-9.942 5.472t-3.362 14.771q0 10.444 3.505 15.45 3.505 5.008 9.227 5.008 4.15 0 6.796-1.931t3.898-5.258 1.252-7.403V57.4H379.66ZM412.773 78v-5.58h10.586V33.58h-10.586V28h27.968v5.58h-10.658v38.84h10.658V78Zm80.466-44.134h-14.95V78h-6.652V33.866h-15.022V28h36.624ZM536.152 78l-4.435-14.95h-17.24L510.044 78h-6.867l15.808-50h8.37l15.736 50Zm-20.029-20.53h13.949l-7.01-23.461ZM558.106 28h6.652v44.134h23.82V78h-30.472Z"/></svg>
+      </a>
+
+      <a class="s5__cta t-data" href="#contacto">[ HABLAR CON KBTK ]</a>
+    </div>
+
+    <!-- Quinta fila, mismo componente que el índice de S2 (.s2__fila) —
+         pero vive SOLO aquí: no entra en el índice de S2 ni en obras.js,
+         y por eso NO lleva data-fila-obra (ese atributo marca las filas
+         reales, generadas desde data/obras.js). Contenido inyectado en
+         build desde contenido/copy-es.json → s5.fila_05, no escrito a
+         mano aquí (scripts/generar-indice.mjs). -->
+    <ol class="s2__filas s5__fila-registro col-span-12">
+<!-- S5-FILA:INICIO -->
+        <li class="s2__fila s5__fila-obra">
+          <a href="#contacto">
+            <span class="s2__num t-data">05</span>
+            <span class="s2__nombre s5__fila-nombre"><span class="s5__cursor" aria-hidden="true"></span></span>
+            <span class="s2__meta t-data">SU NEGOCIO · PENDIENTE</span>
+          </a>
+        </li>
+<!-- S5-FILA:FIN -->
+    </ol>
+
+    <div id="contacto" class="s5__contacto col-span-12">
+      <p class="t-data s5__contacto-kicker">CONTACTO</p>
+      <p class="s5__contacto-email t-data">
+        La vía real, mientras el formulario no está conectado:
+        <a href="mailto:contact@kbtk.dev">contact@kbtk.dev</a>
+      </p>
+
+      <!-- Endpoint de Formspree pendiente de conectar. Mientras la
+           action sea este marcador, el botón de envío va disabled:
+           un formulario con endpoint falso se traga los mensajes en
+           silencio, y eso es peor que no tener formulario. -->
+      <form class="s5__form" action="ENDPOINT-FORMSPREE-PENDIENTE" method="POST">
+        <div class="s5__form-campo">
+          <label class="t-data" for="contacto-nombre">NOMBRE</label>
+          <input id="contacto-nombre" name="nombre" type="text" autocomplete="name" required>
+        </div>
+        <div class="s5__form-campo">
+          <label class="t-data" for="contacto-email">EMAIL</label>
+          <input id="contacto-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="s5__form-campo s5__form-campo--full">
+          <label class="t-data" for="contacto-mensaje">MENSAJE</label>
+          <textarea id="contacto-mensaje" name="mensaje" rows="4" required></textarea>
+        </div>
+        <div class="s5__form-pie">
+          <button class="s5__form-submit t-data" type="submit" disabled>[ ENVIAR ]</button>
+          <p class="s5__form-nota t-data">FORMULARIO PENDIENTE DE CONEXIÓN</p>
+        </div>
+      </form>
+    </div>
+
+    <p class="s5__colofon t-data col-span-12">
+      <span>KBTK DIGITAL · ALBACETE</span>
+      <span><a href="mailto:contact@kbtk.dev">contact@kbtk.dev</a></span>
+      <span>© 2026</span>
+    </p>
+  </footer>
+
+</body>
+</html>

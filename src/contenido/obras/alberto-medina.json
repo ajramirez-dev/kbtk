@@ -1,0 +1,29 @@
+{
+  "meta_descripcion": "ALBERTO MEDINA: web entregada para una peluquería de Albacete, 4,9 en Google y sin cita online. Llamada directa y carta de precios. Diseño de KBTK Digital.",
+  "problema": "Alberto Medina lleva una peluquería de hombre en Albacete, con 4,9 de valoración en Google y sin cita online: se llama y se viene. Su ficha ofrecía tres botones —cómo llegar, iniciar ruta y llamar— y ninguno llevaba a una web, porque no existía.",
+  "decisiones": [
+    {
+      "titulo": "Llamada directa en un toque",
+      "cuerpo": "El botón principal marca el número 967 61 10 74 sin pasar por formularios. Alberto no usa agenda online y coge las citas él mismo entre corte y corte; quien entra reserva su hueco al instante."
+    },
+    {
+      "titulo": "Carta de precios fija",
+      "cuerpo": "La portada detalla las tarifas completas para corte, barba y arreglos. El negocio evita sorpresas en la caja registradora y quien consulta conoce el importe exacto antes de telefonear al local."
+    },
+    {
+      "titulo": "Ubicación en Carretera de Jaén",
+      "cuerpo": "El pie de página muestra la dirección en Calle Carretera de Jaén, 48 con el horario diario. Al situarse fuera del centro, el usuario prevé el trayecto y el tiempo de aparcamiento sin sorpresas."
+    },
+    {
+      "titulo": "Aviso sobre el lavado",
+      "cuerpo": "Una nota aclara el suplemento por lavado y la tarifa especial para jubilados. Esta política de transparencia responde al modelo tradicional del sillón, permitiendo elegir el servicio adecuado."
+    }
+  ],
+  "ficha": {
+    "estado": "ENTREGADO",
+    "sector": "PELUQUERÍA",
+    "alcance": "DISEÑO + COPY",
+    "desplegada": "",
+    "_todo_desplegada": "fecha real de puesta en producción"
+  }
+}

@@ -1,0 +1,75 @@
+# Fase 6 (G05) — Netlify _headers.
+#
+# HALLAZGO: no todo lo que se sirve va versionado por nombre. Regla del
+# encargo: "si encuentras algún asset servido sin versión en el nombre,
+# PARA y enséñame la lista: con immutable, reemplazar un fichero con el
+# mismo nombre es una mentira para quien ya visitó la página."
+#
+# Versionados (-v1, -700, -1400, -528, -v2...) -> immutable seguro:
+#   /assets/* (posters, webm/mp4, "antes", textura-grano-v1.png)
+#   /og/og-*.png
+#
+# SIN versionar en el nombre -> NO llevan immutable aquí, solo un
+# max-age corto con revalidación, hasta que se decida versionarlos:
+#   /css/main.min.css, /css/tokens.min.css
+#   /js/main.min.js
+#   /data/obras.js
+#   /fuentes/*.woff2 (Archivo, Fragment Mono)
+#   /marca/*.svg, /marca/kbtk-simbolo.png
+#   /vendor/gsap/**, /vendor/lenis/*
+#   /favicon.ico, /icon-32.png, /icon-512-maskable.png,
+#     /apple-touch-icon-180.png (nombres fijos por convención de
+#     plataforma — favicon/apple-touch-icon no admiten hash en el
+#     nombre sin romper el descubrimiento automático del navegador)
+#   /manifest.webmanifest
+
+/*.html
+  Cache-Control: no-cache
+
+/
+  Cache-Control: no-cache
+
+/robots.txt
+  Cache-Control: no-cache
+
+/sitemap.xml
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og/og-*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/data/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/fuentes/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/marca/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/vendor/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/favicon.ico
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/icon-32.png
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/icon-512-maskable.png
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/apple-touch-icon-180.png
+  Cache-Control: public, max-age=3600, must-revalidate

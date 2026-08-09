@@ -14,6 +14,7 @@
   "s2": {
     "kicker": "S2 · ÍNDICE DE OBRAS",
     "kicker_derecha": "04 REGISTROS · 01 CARGADO EN VISOR",
+    "kicker_derecha_movil": "04 EN ESTE PANEL",
     "indice": {
       "cabecera_izquierda": "Nº · OBRA",
       "cabecera_derecha": "SECTOR · ESTADO",
@@ -42,6 +43,7 @@
   "s3": {
     "kicker": "S3 · HOJA DE ESPECIFICACIONES",
     "kicker_derecha": "MÉTODO · 04 PASOS",
+    "estado": "MÉTODO · 04 PASOS · RIESGO: ESTUDIO",
     "titulo": "Método",
     "intro": "Cuatro pasos, en este orden. Sin reunión inicial, sin presupuesto previo y sin brief. El riesgo lo asume el estudio hasta el paso 04.",
     "pasos": [
@@ -70,16 +72,45 @@
       { "partida": "NO INCLUYE", "alcance": "Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales." }
     ]
   },
+  "obra": {
+    "kicker_visor": "VISOR · OBRA COMPLETA",
+    "evidencia_kicker": "EVIDENCIA",
+    "evidencia_pie": "EVIDENCIA · FICHA DE GOOGLE MAPS · SIN SITIO WEB",
+    "problema_kicker": "PROBLEMA",
+    "decisiones_kicker": "DECISIONES",
+    "ficha_kicker": "FICHA DE ESPECIFICACIONES",
+    "ficha_labels": {
+      "estado": "ESTADO",
+      "sector": "SECTOR",
+      "alcance": "ALCANCE",
+      "desplegada": "DESPLEGADA"
+    },
+    "ph_desplegada": "PENDIENTE",
+    "siguiente_kicker": "SIGUIENTE OBRA",
+    "siguiente_cta": "[ VER LA OBRA ]",
+    "volver": "[ VOLVER AL PANEL ]"
+  },
   "s5": {
     "kicker": "S5 · CIERRE",
     "kicker_derecha": "SIGUIENTE REGISTRO · 05",
     "titular": "La obra 05 es la suya.",
     "cta": "[ HABLAR CON KBTK ]",
+    "fila_05": { "numero": "05", "meta": "SU NEGOCIO · PENDIENTE" },
     "colofon": {
       "estudio": "KBTK DIGITAL · ALBACETE",
-      "email": "",
-      "_todo_email": "PENDIENTE DE CONFIRMAR — nunca kbtk.digital",
+      "email": "contact@kbtk.dev",
       "copyright": "© 2026"
+    },
+    "contacto": {
+      "kicker": "CONTACTO",
+      "email_intro": "La vía real, mientras el formulario no está conectado:",
+      "form": {
+        "nombre": "NOMBRE",
+        "email": "EMAIL",
+        "mensaje": "MENSAJE",
+        "submit": "[ ENVIAR ]",
+        "nota_pendiente": "FORMULARIO PENDIENTE DE CONEXIÓN"
+      }
     }
   }
 }

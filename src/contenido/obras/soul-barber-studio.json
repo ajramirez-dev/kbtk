@@ -1,0 +1,29 @@
+{
+  "meta_descripcion": "SOUL BARBER STUDIO: web expuesta para una barbería de Albacete, 5,0 en Booksy. Pasarela directa a reserva sin publicidad ajena. Diseño de KBTK Digital.",
+  "problema": "Soul Barber Studio acumula 455 opiniones con un 5,0 de media en Booksy desde su local en la Plaza de la Catedral, 7. Sin embargo, la app intercala anuncios patrocinados de otras barberías de Albacete dentro de su propia ficha comercial.",
+  "decisiones": [
+    {
+      "titulo": "Pasarela directa a Booksy",
+      "cuerpo": "La portada agrupa toda la información del estudio y remite a Booksy solo al confirmar hora. Así se presenta la oferta del sillón sin las interrupciones publicitarias de la plataforma."
+    },
+    {
+      "titulo": "Fichas de Chema y Javi",
+      "cuerpo": "Chema Rubio y Javi Toboso disponen de espacio propio con sus fotos y opiniones reales. Esta separación responde a sus diferentes ritmos de agenda, permitiendo elegir especialista al agendar."
+    },
+    {
+      "titulo": "Desglose de ocho servicios",
+      "cuerpo": "La carta especifica la duración exacta de cada trabajo, de 15 a 45 minutos. El espacio requiere organizar los turnos con precisión y quien acude calcula el tiempo necesario antes de reservar."
+    },
+    {
+      "titulo": "Entorno de la Catedral",
+      "cuerpo": "Un bloque de ubicación detalla la dirección en Plaza de la Catedral, 7 y los horarios de apertura. La arteria peatonal impide el paso con vehículo, de modo que el visitante planifica su llegada."
+    }
+  ],
+  "ficha": {
+    "estado": "EN EXPOSICIÓN",
+    "sector": "BARBERÍA",
+    "alcance": "DISEÑO + COPY",
+    "desplegada": "",
+    "_todo_desplegada": "fecha real de puesta en producción"
+  }
+}

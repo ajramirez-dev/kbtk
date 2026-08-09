@@ -2,5 +2,24 @@
   "name": "kbtk-digital",
   "version": "0.1.0",
   "private": true,
-  "description": "kbtk.dev — portfolio KBTK Digital"
+  "description": "kbtk.dev — portfolio KBTK Digital",
+  "scripts": {
+    "dev": "node scripts/dev-server.mjs",
+    "postinstall": "node scripts/copy-vendor.mjs",
+    "build:posters": "node scripts/generar-posters.mjs",
+    "build:antes": "node scripts/generar-antes.mjs",
+    "build:indice": "node scripts/generar-indice.mjs",
+    "build:obras": "node scripts/generar-obras.mjs",
+    "build:min": "node scripts/minificar.mjs",
+    "build:dist": "node scripts/build-dist.mjs",
+    "build": "npm run build:posters && npm run build:antes && npm run build:indice && npm run build:obras && npm run build:min && npm run build:dist"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "sharp": "^0.35.3"
+  }
 }

@@ -9,7 +9,7 @@
      @import despues de @font-face, tokens-v1.css nunca se aplicaba,
      --ff-display quedaba sin definir y Archivo no llegaba a solicitarse
      -> document.fonts.check() daba false). */
-  @import url("../../raw/tokens-v1.css");
+  @import url("/css/tokens.min.css");
 
   @font-face {
     font-family: "Archivo";
@@ -88,7 +88,7 @@
 </head>
 <body>
   <div class="edge">
-    <div class="lockup" id="lockup"><!-- kbtk-logotipo-lockup.svg inline --></div>
+    <div class="lockup" id="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="32.6" fill="none" stroke="var(--w1)" stroke-width="22.7"/><circle cx="50" cy="50" r="14.4" fill="none" stroke="var(--w1)" stroke-width="1.8"/><circle cx="50" cy="50" r="7.5" fill="var(--signal)"/></svg></div>
 
     <div>
       <div class="declaracion">SU WEB YA EXISTE.</div>

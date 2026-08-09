@@ -1,0 +1,1165 @@
+/* ============================================================
+   KBTK Digital — main.css
+   Toda regla usa var(--...) del contrato en src/css/tokens.css.
+   Fase 1+2: esqueleto y secciones, sin movimiento.
+   ============================================================ */
+
+/* ---------- 0 · fuentes auto-alojadas ---------- */
+@font-face {
+  font-family: "Archivo";
+  src: url("/fuentes/Archivo[wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fragment Mono";
+  src: url("/fuentes/FragmentMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- 1 · reset mínimo ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, p, figure, ol, ul, dl, dd, table, th, td { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+table { border-collapse: collapse; width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+img, svg { display: block; max-width: 100%; height: auto; }
+/* el <picture> no debe generar caja propia: el <img> que envuelve
+   ya trae su propio display/tamaño (fase 4.5, A03) */
+picture { display: contents; }
+
+/* ---------- 2 · base ---------- */
+html { color-scheme: dark; overflow-x: hidden; }
+
+/* --obra-accent / --obra-ink se fijan en :root, nunca en un
+   contenedor — color-mix() + @property en un pseudo-elemento (--halo)
+   solo resuelve si la custom property vive en :root. Se escriben desde
+   el script síncrono en el <head> de index.html, a partir de la obra
+   por defecto en data/obras.js — no aquí, para no tener dos fuentes.
+   En fase 4, main.js reescribe estas dos variables en cada conmutación
+   (hover/foco en desktop, IntersectionObserver en móvil); por eso
+   interpolan aquí mismo, en :root, con la duración y el ease del
+   contrato — ningún JS anima el color directamente. */
+:root {
+  transition: --obra-accent var(--dur-accent) var(--ease-mech),
+              --obra-ink var(--dur-accent) var(--ease-mech);
+}
+
+body {
+  background: var(--k);
+  color: var(--w1);
+  font-family: var(--ff-body);
+  font-weight: var(--fw-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tr-body);
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--w1);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transform: translateY(-100%);
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: var(--sp-2) var(--sp-4);
+  font-family: var(--ff-mono);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------- 3 · tipografía ---------- */
+.t-display {
+  font-family: var(--ff-display);
+  font-variation-settings: "wdth" var(--wdth-display), "wght" var(--fw-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  text-transform: uppercase;
+}
+
+.t-data {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-data);
+  line-height: var(--lh-data);
+  letter-spacing: var(--tr-data);
+  text-transform: uppercase;
+}
+
+/* placeholder de dato sin confirmar — imposible publicar por descuido */
+.ph {
+  color: var(--g1);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: var(--g1);
+}
+
+/* ---------- 4 · rejilla de 12 columnas (utilidad única) ---------- */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+  row-gap: var(--sp-6);
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--edge);
+}
+
+.col-span-5  { grid-column: span 5; }
+.col-span-6  { grid-column: span 6; }
+.col-span-8  { grid-column: span 8; }
+.col-span-10 { grid-column: span 10; }
+.col-span-12 { grid-column: span 12; }
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-4);
+  padding-block: var(--sp-5);
+  color: var(--g1);
+}
+@media (max-width: 639px) {
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+}
+
+/* ---------- 5 · grano global ----------
+   Fase 6 (G02): era un feTurbulence a pantalla completa (skill
+   grano-noise). Medido: costaba ~1.3s de mediana de LCP en móvil
+   (rasterizar turbulencia a viewport completo bajo 4x de CPU
+   bloqueaba el primer pintado del H1). Sustituido por un mosaico
+   de 128x128 pre-rasterizado del MISMO filtro (misma seed, misma
+   baseFrequency, mismo numOctaves), servido como imagen de fondo
+   en repeat. Misma opacidad --grain-op, mismo aspecto a 1440. */
+.grain-overlay {
+  --grain-z: 40;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: var(--grain-op);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: var(--grain-z);
+  background-image: url("/assets/textura-grano-v1.png");
+  background-repeat: repeat;
+}
+
+/* el logotipo se pinta por encima del grano: queda excluido del blend */
+.no-grain {
+  position: relative;
+  z-index: 41;
+}
+
+/* ---------- 6 · S0 · barra de estado ---------- */
+.status-bar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 30;
+  background: var(--k);
+  border-bottom: 1px solid var(--line);
+}
+
+.status-bar__grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--edge);
+  padding-block: var(--sp-3);
+}
+
+.status-bar__brand svg { height: var(--sp-6); width: auto; color: var(--w1); }
+
+.status-bar__meta { color: var(--g1); white-space: nowrap; }
+@media (max-width: 1023px) {
+  .status-bar__meta { display: none; }
+}
+
+.status-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  white-space: nowrap;
+}
+
+.status-bar__lang a:hover,
+.status-bar__lang a:focus-visible { color: var(--w1); }
+
+.status-bar__cta {
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-chip);
+}
+.status-bar__cta[aria-disabled="true"] { cursor: not-allowed; }
+
+main { padding-top: var(--sp-9); }
+
+/* ---------- 7 · S1 · declaración ---------- */
+.s1__subtitular {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-body);
+  color: var(--w2);
+  margin-top: var(--sp-5);
+}
+
+.s1__meta {
+  color: var(--g1);
+  margin-top: var(--sp-6);
+}
+
+/* ---------- 8 · S2 · índice de obras ---------- */
+.s2 { padding-block: var(--sp-section); }
+
+.s2__listado-head,
+.s2__listado-foot {
+  display: flex;
+  justify-content: space-between;
+  color: var(--g1);
+  padding-block: var(--sp-3);
+  /* la regla de 1px es un background, no un border: así el arranque
+     de E01.c (main.js) puede dibujarla de izquierda a derecha vía
+     --boot-line sin tocar ni animar el texto de la fila. */
+  background-image: linear-gradient(to right, var(--line), var(--line));
+  background-repeat: no-repeat;
+  background-size: var(--boot-line) 1px;
+}
+.s2__listado-head { background-position: left bottom; }
+.s2__listado-foot { background-position: left top; }
+
+.s2__fila { border-bottom: 1px solid var(--line); }
+.s2__fila a {
+  display: block;
+  padding: var(--sp-5) var(--sp-3);
+}
+
+.s2__num { display: block; color: var(--g1); }
+.s2__nombre {
+  display: block;
+  font-family: var(--ff-display);
+  font-weight: var(--fw-body-md);
+  font-size: var(--fs-h3);
+  color: var(--w1);
+  margin-block: var(--sp-1);
+}
+.s2__meta { display: block; color: var(--g1); }
+
+/* --accent / --accent-ink: fijadas inline por main.js solo en la fila
+   activa, a partir de accentVar/inkVar de la obra — ninguna regla de
+   CSS puede saber de antemano qué obra está activa. */
+.s2__fila.is-active {
+  background: var(--surface-2);
+  border-bottom-color: var(--line-hi);
+}
+.s2__fila.is-active .s2__num,
+.s2__fila.is-active .s2__meta { color: var(--accent-ink); }
+
+/* ficha móvil: oculta en escritorio, la pinta main.js dentro de cada <a> */
+.s2__fila-poster {
+  display: none;
+}
+
+.s2__visor {
+  position: sticky;
+  top: calc(var(--sp-9) + var(--sp-5));
+}
+
+.s2__visor-etiqueta { color: var(--g1); margin-bottom: var(--sp-4); }
+
+/* S3.c: misma etiqueta de estado que el visor de S2 (arriba), mismo
+   sitio (justo encima del panel) y mismo tratamiento. */
+.s3__estado { color: var(--g1); margin-bottom: var(--sp-4); }
+
+.s2__visor-halo {
+  position: relative;
+  isolation: isolate;
+}
+.s2__visor-halo::before {
+  content: "";
+  position: absolute;
+  /* top ampliado a propósito: el derrame de --halo (E01.a) sube
+     hasta el tercio inferior de S1. Los otros tres lados conservan
+     el margen original del halo (sp-8). */
+  inset: -520px calc(var(--sp-8) * -1) calc(var(--sp-8) * -1) calc(var(--sp-8) * -1);
+  background-image: var(--halo);
+  opacity: var(--glow-op);
+  z-index: -1;
+  pointer-events: none;
+}
+@media (max-width: 1279px) {
+  /* la caja de S1→S2 es más corta en portátiles/tablet: menos sube
+     el derrame para no invadir S3. El núcleo (primera capa) no se
+     toca. */
+  .s2__visor-halo::before { inset: -320px calc(var(--sp-8) * -1) calc(var(--sp-8) * -1) calc(var(--sp-8) * -1); }
+}
+
+/* Bisel: componente compartido del cuarto de máquinas — mismo
+   grosor (--bezel), esquinas (--r-panel) y sombra (--shadow-panel)
+   en cualquier panel que lo use. El color de la hairline se decide
+   por contexto vía --bisel-borde (por defecto --line: sin obra, sin
+   acento; el visor de S2 lo tiñe con --obra-accent). */
+.bisel {
+  padding: var(--bezel);
+  background: var(--surface);
+  border: 1px solid var(--bisel-borde, var(--line));
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.s2__visor-bisel {
+  --bisel-borde: var(--obra-accent);
+  max-width: var(--visor-w-mobile);
+  margin-inline: auto;
+}
+@media (min-width: 768px) { .s2__visor-bisel { max-width: var(--visor-w-tablet); } }
+@media (min-width: 1024px) { .s2__visor-bisel { max-width: var(--visor-w-desktop); } }
+
+.s2__visor-frame {
+  position: relative;
+  padding: var(--sp-2);
+  background: var(--surface-2);
+  aspect-ratio: var(--visor-ratio);
+  overflow: hidden;
+}
+
+/* los 4 pósters + el único <video> del documento se apilan aquí.
+   Solo .is-active es visible — sin crossfade, corte directo (fase 4). */
+.s2__poster,
+.s2__video {
+  position: absolute;
+  inset: var(--sp-2);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.s2__poster.is-active,
+.s2__video.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.s2__visor-estado {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--w1);
+  margin-top: var(--sp-4);
+}
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--obra-accent);
+  display: inline-block;
+  animation: kbtk-led-parpadeo 1.4s ease-in-out infinite;
+}
+@keyframes kbtk-led-parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .led { animation: none; opacity: 1; }
+}
+
+.s2__ficha { margin-top: var(--sp-5); }
+.s2__ficha-par {
+  display: flex;
+  justify-content: space-between;
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+  color: var(--g1);
+}
+.s2__ficha-par dd { color: var(--w2); }
+
+.s2__cta {
+  display: inline-block;
+  margin-top: var(--sp-5);
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-chip);
+}
+.s2__cta:hover,
+.s2__cta:focus-visible {
+  background: var(--obra-accent);
+  color: var(--k);
+}
+
+/* Rama móvil = negación exacta de la cadena de escritorio usada en JS
+   ("(min-width: 1024px) and (pointer: fine)"). Si difiere de esa cadena,
+   una tableta apaisada puede caer en las dos ramas a la vez. */
+@media not all and (min-width: 1024px) and (pointer: fine) {
+  .s2__listado { grid-column: span 12; }
+  .s2__visor { display: none; }
+
+  .s2__fila a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline: 0;
+  }
+
+  .s2__fila-poster {
+    display: block;
+    width: var(--visor-w-mobile);
+    max-width: 100%;
+    aspect-ratio: var(--visor-ratio);
+    object-fit: cover;
+    margin-bottom: var(--sp-4);
+    border-radius: var(--r-panel);
+  }
+
+  /* F02/halo: no hay visor en móvil, así que el mismo halo vive
+     detrás del póster de la primera fila — mismo var(--obra-accent),
+     misma mezcla (50%) y misma caída (60%) que tokens.css §1, solo
+     con el radio y el ancla recalculados para la caja del póster
+     (350px), no la del bisel (620px); ver el comentario de --halo en
+     tokens.css sobre por qué esto es una segunda declaración de
+     radial-gradient() y no un var(--halo) con variables intermedias
+     pisadas aquí (no se re-resuelven por elemento, comprobado). La
+     caja de esta ::before envuelve el póster con el mismo margen de
+     sangrado (--sp-6) arriba y abajo — altura explícita, no un 50%
+     ambiguo — y el ancla usa el mismo truco "desde abajo" que el
+     visor: sigue centrada aunque cambie el sangrado. */
+  .s2__fila:first-child { position: relative; }
+  .s2__fila:first-child::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--sp-6) * -1) calc(var(--sp-6) * -1) auto calc(var(--sp-6) * -1);
+    height: calc(var(--visor-w-mobile) / 1.6 + var(--sp-6) * 2);
+    background-image: radial-gradient(
+      300px 260px
+      at 50% calc(100% - var(--sp-6) - (var(--visor-w-mobile) / 1.6 / 2)),
+      color-mix(in oklab, var(--obra-accent) 50%, transparent) 0%,
+      transparent 65%
+    );
+    opacity: var(--glow-op);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Arranque del panel en móvil (F02): sin GSAP, transición CSS nativa
+     sobre --boot-line/--glow-op. .s2__listado-head/-foot ya son
+     visibles en móvil (solo .s2__visor se oculta arriba), así que el
+     dibujado de reglas se reusa tal cual. Estado "apagado" bajo .js,
+     estado final al llegar .is-booted (main.js, arranquePanelMovil). */
+  .js .s2__listado-head,
+  .js .s2__listado-foot,
+  .js .s2__fila:first-child::before {
+    --glow-op: 0;
+    --boot-line: 0%;
+  }
+  .js.is-booted .s2__listado-head,
+  .js.is-booted .s2__listado-foot {
+    transition: --boot-line var(--dur-reveal) var(--ease-out);
+  }
+  .js.is-booted .s2__fila:first-child::before {
+    transition: --glow-op var(--dur-reveal) var(--ease-out) 100ms;
+  }
+  .js.is-booted .s2__listado-head,
+  .js.is-booted .s2__listado-foot,
+  .js.is-booted .s2__fila:first-child::before {
+    --glow-op: 1;
+    --boot-line: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .s2__listado-head,
+    .js .s2__listado-foot,
+    .js .s2__fila:first-child::before {
+      --glow-op: 1;
+      --boot-line: 100%;
+    }
+  }
+}
+
+/* ---------- 9 · S3 · método (segundo panel del cuarto de máquinas) ----------
+   Variante C: S3 deja de ser la sección clara. Mismo --k que el
+   resto del sitio, mismo bisel que el visor de S2 (clase compartida
+   .bisel, ver §8) — sin acento de obra, así que la hairline del
+   bisel usa su valor por defecto (--line). Texto en los roles
+   oscuros del contrato: --w1 títulos, --w2 cuerpo, --g1 numeración.
+   --paper/--paper-ink/--paper-line quedan SIN USAR aquí pero no se
+   tocan en tokens.css: en reserva por si se retoma la vía del papel. */
+.s3 { padding-block: var(--sp-9); }
+@media (max-width: 480px) {
+  .s3 { padding-block: var(--sp-7); }
+}
+
+.s3__titulo {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-display);
+  color: var(--w1);
+}
+
+.s3__intro {
+  margin-top: var(--sp-4);
+  max-width: 60ch;
+  color: var(--w2);
+}
+
+.s3__pasos {
+  margin-top: var(--sp-7);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.s3__pasos li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: var(--sp-5);
+  padding: var(--sp-6);
+}
+.s3__pasos li:nth-child(1),
+.s3__pasos li:nth-child(2) {
+  padding-top: 0;
+}
+.s3__pasos li:nth-child(3),
+.s3__pasos li:nth-child(4) {
+  border-top: 1px solid var(--line);
+}
+.s3__pasos li:nth-child(2),
+.s3__pasos li:nth-child(4) {
+  border-left: 1px solid var(--line);
+}
+
+/* S3.a: el número pasa a tamaño display — es el motivo visual del
+   panel y sustituye al acento de obra, que aquí no existe. Sigue
+   en --g1 (5.06:1 contra --k, tokens.css §1): solo cambia el
+   tamaño, no el color, así que el ratio no se mueve. Alineado con
+   el título de su paso vía "align-items: start" del grid del <li>
+   (arriba), no con margin ad-hoc. */
+.s3__paso-numero {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-h1);
+  line-height: 1;
+  letter-spacing: var(--tr-data);
+  color: var(--g1);
+}
+.s3__paso-titulo {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-body-md);
+  color: var(--w1);
+}
+.s3__paso-texto {
+  margin-top: var(--sp-2);
+  color: var(--w2);
+}
+
+.s3__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+  color: var(--g1);
+}
+
+@media (max-width: 600px) {
+  .s3__pasos { grid-template-columns: 1fr; }
+  .s3__pasos li {
+    padding-top: var(--sp-6);
+  }
+  /* misma especificidad que las reglas de escritorio (arriba) que
+     ponen border-left en las columnas pares — un reset de menor
+     especificidad no las gana aunque venga después en la hoja. */
+  .s3__pasos li:nth-child(2),
+  .s3__pasos li:nth-child(4) {
+    border-left: none;
+  }
+  .s3__pasos li:nth-child(1) {
+    padding-top: 0;
+    border-top: none;
+  }
+  .s3__pasos li:nth-child(n+2) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ---------- 10 · S4 · qué se entrega ---------- */
+.s4 { padding-block: var(--sp-section); }
+
+.s4__tabla th,
+.s4__tabla td {
+  text-align: left;
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.s4__tabla th { color: var(--g1); }
+.s4__tabla td:first-child {
+  font-family: var(--ff-mono);
+  letter-spacing: var(--tr-data);
+  color: var(--w1);
+  width: 30%;
+}
+.s4__tabla td:last-child { color: var(--w2); }
+
+/* E04: las seis filas arrancan con el mismo fondo — hover es la única
+   vía a var(--surface), y solo donde hover es real (no se queda
+   pegado en táctil). NO INCLUYE ya no se distingue por fondo: se lee
+   como excepción por una regla vertical de 2px, no por relleno. */
+@media (hover: hover) {
+  .s4__tabla tbody tr {
+    transition: background-color 240ms var(--ease-out);
+  }
+  .s4__tabla tbody tr:hover { background: var(--surface); }
+}
+
+@media (min-width: 640px) {
+  .s4__fila--excluye td:first-child {
+    border-left: 2px solid var(--line-hi);
+    padding-left: calc(var(--sp-4) - 2px);
+  }
+}
+
+@media (max-width: 639px) {
+  .s4__tabla thead { display: none; }
+  .s4__tabla, .s4__tabla tbody, .s4__tabla tr, .s4__tabla td { display: block; width: auto; }
+  .s4__tabla tr { padding-block: var(--sp-4); }
+  .s4__tabla td { padding: var(--sp-1) 0; border-bottom: none; }
+  .s4__tabla td:first-child { width: auto; padding-top: 0; }
+  .s4__fila--excluye td:first-child {
+    border-left: 2px solid var(--line-hi);
+    padding-left: var(--sp-2);
+  }
+  .s4__tabla td:last-child { padding-bottom: 0; }
+}
+
+/* ---------- 11 · S5 · cierre ---------- */
+.s5 { padding-block: var(--sp-section); }
+
+.s5__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  margin-top: var(--sp-6);
+}
+
+.s5__brand svg { height: var(--sp-7); width: auto; color: var(--w1); }
+
+.s5__cta {
+  display: inline-block;
+  white-space: nowrap;
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--r-chip);
+}
+.s5__cta[aria-disabled="true"] { cursor: not-allowed; }
+
+/* E05: quinta fila — bahía libre del panel. Mismo componente .s2__fila
+   (main.css §8), sin acento: la fila sin obra no tiene color de casa,
+   así que el cursor va en var(--w2), no en var(--obra-accent). */
+.s5__fila-registro { margin-top: var(--sp-7); border-top: 1px solid var(--line); }
+.s5__fila-obra a { padding-inline: 0; }
+.s5__cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 0.85em;
+  background: var(--w2);
+  vertical-align: text-bottom;
+  animation: kbtk-led-parpadeo 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .s5__cursor { animation: none; opacity: 1; }
+}
+
+.s5__colofon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+  color: var(--g1);
+}
+.s5__colofon a { color: inherit; }
+.s5__colofon a:hover, .s5__colofon a:focus-visible { color: var(--w1); }
+
+/* ---------- 11b · S5 · contacto (G01, fase 6) ---------- */
+.s5__contacto { margin-top: var(--sp-9); padding-top: var(--sp-7); border-top: 1px solid var(--line); }
+.s5__contacto-kicker { color: var(--g1); }
+.s5__contacto-email {
+  margin-top: var(--sp-3);
+  color: var(--w2);
+  max-width: 40ch;
+}
+.s5__contacto-email a { color: var(--w1); }
+.s5__contacto-email a:hover, .s5__contacto-email a:focus-visible { color: var(--signal); }
+
+.s5__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5) var(--sp-6);
+  max-width: 760px;
+  margin-top: var(--sp-6);
+}
+.s5__form-campo { display: flex; flex-direction: column; gap: var(--sp-2); }
+.s5__form-campo--full { grid-column: 1 / -1; }
+.s5__form-campo label { color: var(--g1); }
+.s5__form-campo input,
+.s5__form-campo textarea {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-chip);
+  color: var(--w1);
+  font-family: var(--ff-body);
+  font-size: var(--fs-body);
+  padding: var(--sp-3);
+  resize: vertical;
+}
+.s5__form-campo input:focus-visible,
+.s5__form-campo textarea:focus-visible { outline: 1px solid var(--line-hi); border-color: var(--line-hi); }
+
+.s5__form-pie {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  margin-top: var(--sp-2);
+}
+.s5__form-submit {
+  background: var(--signal);
+  color: var(--signal-ink);
+  padding: var(--sp-3) var(--sp-5);
+  border: none;
+  border-radius: var(--r-chip);
+  font-family: var(--ff-mono);
+  font-size: var(--fs-data);
+  letter-spacing: var(--tr-data);
+}
+.s5__form-submit:disabled { background: var(--surface-2); color: var(--g1); cursor: not-allowed; }
+.s5__form-nota { color: var(--alert); }
+
+@media (max-width: 767px) {
+  .s5__form { grid-template-columns: 1fr; }
+}
+
+/* ---------- 12 · Fase 4 · movimiento ---------- */
+
+/* Patrón de guarda del estado inicial. [data-mask] es un utilitario
+   genérico: cualquier elemento marcado así arranca oculto SOLO si
+   .js está presente en <html> (guion síncrono, antes del <link> a
+   la hoja de estilos). Sin JS, .js nunca se añade y el elemento
+   queda en su estado visible por defecto — nunca en blanco.
+   El transform NO se anima directamente: consume --reveal-y, que es
+   lo que main.js interpola (@property en tokens.css). */
+[data-mask] {
+  transform: translateY(var(--reveal-y, 0px));
+}
+/* Escoped a desktop (A02, fase 4.5): en móvil GSAP ya no se carga, así
+   que nada revela un [data-mask] oculto ahí — quedaría invisible para
+   siempre. Misma cadena que MQ_DESKTOP en main.js, carácter a carácter. */
+@media (min-width: 1024px) and (pointer: fine) {
+  .js [data-mask] {
+    --reveal-y: 28px;
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-mask] {
+      --reveal-y: 0px;
+      opacity: 1;
+    }
+  }
+}
+
+/* Arranque del panel, 600ms (F02): mismo patrón de guarda que
+   [data-mask] — el estado "apagado" solo existe con .js presente y
+   en desktop, así que sin JS el panel nace ya en su estado final.
+   El H1 no tiene guard: nunca participa del arranque. main.js
+   interpola --glow-op y --boot-line en cada carga (no solo la
+   primera de la sesión). El equivalente móvil vive en el bloque
+   "Rama móvil" de arriba (§8), con su propia guarda por clase
+   .is-booted en vez de GSAP. */
+@media (min-width: 1024px) and (pointer: fine) {
+  .js .s2__visor-halo,
+  .js .s2__listado-head,
+  .js .s2__listado-foot {
+    --glow-op: 0;
+    --boot-line: 0%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .s2__visor-halo,
+    .js .s2__listado-head,
+    .js .s2__listado-foot {
+      --glow-op: 1;
+      --boot-line: 100%;
+    }
+  }
+}
+
+/* F04: reveal línea a línea de titulares de display. [data-line-reveal]
+   es un utilitario explícito (como [data-mask]) — solo los elementos
+   marcados así entran en la animación, nunca todo .t-display por
+   selector genérico, así que un futuro titular no empieza a animarse
+   sin decisión deliberada. main.js envuelve el texto en spans
+   .t-display__linea (una por línea visual, medida en runtime porque
+   el tamaño es clamp() y el número de líneas cambia con el ancho).
+   Se anima --linea-clip (registrada en tokens.css), nunca clip-path
+   directamente. Escoped a desktop, igual que el resto de reveals. */
+@property --linea-clip {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+.t-display__linea {
+  display: block;
+  clip-path: inset(0 0 var(--linea-clip) 0);
+}
+@media (min-width: 1024px) and (pointer: fine) {
+  .js .t-display__linea {
+    --linea-clip: 100%;
+    transition: --linea-clip var(--dur-reveal-row) var(--ease-out)
+      calc(var(--linea-index, 0) * var(--stagger-row-headline));
+  }
+  .js .t-display__linea.is-revelada {
+    --linea-clip: 0%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .t-display__linea {
+      --linea-clip: 0%;
+      transition: none;
+    }
+  }
+}
+
+/* F04: [data-mask] en páginas de obra (obra-evidencia) — esas páginas
+   no cargan GSAP nunca (ver main.js, bloque "Fase 5"), así que el
+   reveal ahí es un IntersectionObserver + transición CSS nativa sobre
+   --reveal-y/opacity, no el tween GSAP que usa el índice. Escopado a
+   .pagina-obra específicamente para no tocar .s2__fila/.s4__fila del
+   índice, que animan estas mismas custom properties por frame desde
+   GSAP — mezclar una transición CSS ahí pelearía con el tween. */
+@media (min-width: 1024px) and (pointer: fine) {
+  /* .js vive en <html>, .pagina-obra en <body> — combinador de
+     descendiente, no compuesto, o nunca coincidiría con ningún
+     elemento real. */
+  .js .pagina-obra [data-mask] {
+    transition: --reveal-y var(--dur-reveal-row) var(--ease-out),
+                opacity var(--dur-reveal-row) var(--ease-out);
+  }
+  .js .pagina-obra [data-mask].is-revelada {
+    --reveal-y: 0px;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .pagina-obra [data-mask] {
+      transition: none;
+    }
+  }
+}
+
+/* S3.b: secuencia de arranque del panel de método — mismo patrón que
+   el bloque de arriba ([data-mask] en páginas de obra): sin GSAP,
+   IntersectionObserver + transición CSS nativa sobre --reveal-y/
+   opacity (main.js). No escopado a .pagina-obra porque S3 vive en el
+   índice, pero el mecanismo es el mismo a propósito — reutilizable en
+   una página de obra sin cambiar una línea de esto. Cada paso entra
+   180ms después del anterior (--stagger-s3-paso); dentro de un mismo
+   paso, el número entra primero y el cuerpo (título + texto) un
+   desfase corto después (--stagger-s3-cuerpo) — ambos tokens en
+   tokens.css §5, zeroed bajo prefers-reduced-motion igual que el
+   resto del contrato de movimiento. */
+@media (min-width: 1024px) and (pointer: fine) {
+  .js .s3__pasos [data-mask] {
+    transition: --reveal-y var(--dur-reveal-row) var(--ease-out),
+                opacity var(--dur-reveal-row) var(--ease-out);
+  }
+  .js .s3__pasos.is-revelada [data-mask] {
+    --reveal-y: 0px;
+    opacity: 1;
+  }
+
+  .s3__pasos li:nth-child(1) .s3__paso-numero { transition-delay: 0ms; }
+  .s3__pasos li:nth-child(1) .s3__paso-cuerpo { transition-delay: var(--stagger-s3-cuerpo); }
+  .s3__pasos li:nth-child(2) .s3__paso-numero { transition-delay: var(--stagger-s3-paso); }
+  .s3__pasos li:nth-child(2) .s3__paso-cuerpo { transition-delay: calc(var(--stagger-s3-paso) + var(--stagger-s3-cuerpo)); }
+  .s3__pasos li:nth-child(3) .s3__paso-numero { transition-delay: calc(var(--stagger-s3-paso) * 2); }
+  .s3__pasos li:nth-child(3) .s3__paso-cuerpo { transition-delay: calc(var(--stagger-s3-paso) * 2 + var(--stagger-s3-cuerpo)); }
+  .s3__pasos li:nth-child(4) .s3__paso-numero { transition-delay: calc(var(--stagger-s3-paso) * 3); }
+  .s3__pasos li:nth-child(4) .s3__paso-cuerpo { transition-delay: calc(var(--stagger-s3-paso) * 3 + var(--stagger-s3-cuerpo)); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .s3__pasos [data-mask] {
+      transition: none;
+    }
+  }
+}
+
+/* Conmutación del visor: corte a negro -> "SIN SEÑAL" -> entrada.
+   Creado por main.js, una sola vez por entrada en desktop
+   ((min-width: 1024px) and (pointer: fine)) — ver S2 más abajo. */
+.s2__visor-overlay {
+  position: absolute;
+  inset: var(--sp-2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--k);
+  opacity: 0;
+  pointer-events: none;
+}
+.s2__visor-overlay-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    transparent 0%, rgb(237 238 240 / 0.5) 50%, transparent 100%);
+  background-size: 100% 30%;
+  background-repeat: no-repeat;
+  opacity: 0;
+}
+.s2__visor-overlay-label {
+  position: relative;
+  color: var(--g1);
+  opacity: 0;
+}
+
+/* Scanline permanente: deriva sola, siempre presente (no depende de
+   JS), silenciada bajo movimiento reducido por partida doble
+   (animation: none Y --scan-op: 0 en tokens.css). */
+.s2__visor-frame::after {
+  content: "";
+  position: absolute;
+  inset: var(--sp-2);
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    transparent 0%, rgb(237 238 240 / var(--scan-op)) 50%, transparent 100%);
+  background-size: 100% 40%;
+  background-repeat: no-repeat;
+  background-position-y: var(--scan-y);
+  animation: kbtk-scan-deriva 8s linear infinite;
+}
+@keyframes kbtk-scan-deriva {
+  from { --scan-y: -20%; }
+  to   { --scan-y: 120%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .s2__visor-frame::after { animation: none; }
+}
+
+/* ---------- 13 · Fase 5 · plantilla de página de obra ---------- */
+
+/* Continuidad de color índice -> obra (dirección creativa §2.2).
+   La capa vive en AMBAS páginas vía este mismo selector (main.css es
+   compartido), pero solo la obra la anima: el índice no la usa, así
+   que ahí se queda siempre en opacidad 0. Sin @view-transition no hay
+   fallback que valga si el navegador soporta la API pero el layer no
+   existe -- por eso esto es la implementación real, no un extra. */
+.acento-transicion {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: var(--obra-accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.pagina-obra .acento-transicion {
+  animation: kbtk-obra-reveal var(--dur-obra-reveal, 260ms) var(--ease-mech) forwards;
+}
+@keyframes kbtk-obra-reveal {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Cross-document view transition -- Chrome/Edge 126+. Sin soporte,
+   la navegación es un salto normal y el fallback de arriba es lo
+   único que se ve; con soporte, ambos efectos coexisten. */
+@view-transition {
+  navigation: auto;
+}
+
+.obra-cabecera {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--sp-8) var(--sp-7);
+  padding-inline: var(--edge);
+}
+.obra-cabecera::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10%;
+  background-image: var(--halo);
+  z-index: -1;
+  pointer-events: none;
+}
+.obra-cabecera__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-cabecera__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+.obra-cabecera__nombre { max-width: 90%; }
+.obra-cabecera__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  margin-top: var(--sp-5);
+  color: var(--g1);
+}
+.obra-cabecera__meta dd { color: var(--w1); margin-top: var(--sp-1); }
+.obra-cabecera__nota {
+  margin-top: var(--sp-5);
+  color: var(--g1);
+  font-size: var(--fs-micro);
+}
+
+.obra-visor {
+  padding-block: var(--sp-7);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-visor__marco {
+  position: relative;
+  aspect-ratio: var(--visor-ratio);
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.obra-visor__poster,
+.obra-visor__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.obra-visor__video {
+  opacity: 0;
+  transition: opacity var(--dur-swap-in) var(--ease-mech);
+}
+.obra-visor__video.is-active { opacity: 1; }
+
+.obra-evidencia {
+  padding-block: var(--sp-8);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-evidencia__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+.obra-evidencia__figura { width: 264px; max-width: 100%; }
+.obra-evidencia__figura img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-panel);
+  border: 1px solid var(--line);
+}
+.obra-evidencia__figura figcaption {
+  margin-top: var(--sp-2);
+  color: var(--g1);
+}
+
+.obra-problema {
+  padding-block: var(--sp-8);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-problema__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+.obra-problema__texto {
+  max-width: 42ch;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-body);
+  color: var(--w2);
+}
+
+.obra-decisiones {
+  padding-block: var(--sp-8);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-decisiones__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+.obra-decisiones__lista {
+  margin-top: var(--sp-6);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-7);
+}
+.obra-decisiones__lista li {
+  border-top: 1px solid var(--line);
+  padding-top: var(--sp-4);
+}
+.obra-decisiones__numero { color: var(--obra-accent); }
+.obra-decisiones__titulo {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-body-md);
+  font-size: var(--fs-h3);
+  margin-top: var(--sp-2);
+}
+.obra-decisiones__cuerpo {
+  margin-top: var(--sp-2);
+  color: var(--w2);
+}
+@media (max-width: 600px) {
+  .obra-decisiones__lista { grid-template-columns: 1fr; }
+}
+
+.obra-ficha {
+  padding-block: var(--sp-8);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.obra-ficha__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+.obra-ficha__lista { margin-top: var(--sp-5); }
+.obra-ficha__par {
+  display: flex;
+  justify-content: space-between;
+  padding-block: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+  color: var(--g1);
+}
+.obra-ficha__par dd { color: var(--w2); }
+
+.obra-siguiente {
+  display: block;
+  padding-block: var(--sp-section);
+  padding-inline: var(--edge);
+  border-top: 1px solid var(--line);
+}
+.obra-siguiente__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  text-align: right;
+}
+.obra-siguiente__kicker { color: var(--g1); }
+.obra-siguiente__link { display: inline-block; margin-top: var(--sp-4); }
+/* --accent: fijada inline por el generador desde la SIGUIENTE obra, no
+   la actual — --obra-accent (global, en :root) sigue siendo el acento
+   de esta página hasta que se navega. */
+.obra-siguiente__nombre { color: var(--accent); }
+.obra-siguiente__link:hover .obra-siguiente__nombre,
+.obra-siguiente__link:focus-visible .obra-siguiente__nombre {
+  text-decoration: underline;
+}

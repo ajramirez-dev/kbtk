@@ -2,3 +2,4 @@ node_modules/
 frames/
 _trabajo/
 *.log
+dist/

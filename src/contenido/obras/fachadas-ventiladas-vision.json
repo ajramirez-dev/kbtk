@@ -1,0 +1,29 @@
+{
+  "meta_descripcion": "FACHADAS VENTILADAS VISIÓN: web entregada para construcción, en Albacete. Esquema interactivo de fachada y catálogo de oficios. Diseño y copy de KBTK Digital.",
+  "problema": "Fachadas Ventiladas Visión ejecuta envolventes y reformas integrales desde Albacete para Castilla-La Mancha, Madrid y Levante. Al buscar la firma en internet, las búsquedas no devolvían ningún desglose técnico de sus sistemas ni sus certificados de montaje.",
+  "decisiones": [
+    {
+      "titulo": "Esquema interactivo capa a capa",
+      "cuerpo": "Un selector despliega las cinco capas del sistema, desde el muro soporte al panel exterior. La exigencia de ventilación requiere 30 mm de cámara y el técnico comprueba la solución al instante."
+    },
+    {
+      "titulo": "Catálogo de cinco oficios",
+      "cuerpo": "La sección de capacidades desglosa carpintería, estructuras, albañilería, reformas y fincas. La empresa asume la obra sin subcontratas y el promotor confirma la ejecución integral del proyecto."
+    },
+    {
+      "titulo": "Diferenciación de dos vías",
+      "cuerpo": "El sitio divide los servicios para promotores y particulares en dos bloques con entregables propios. Cada perfil exige trámites distintos, permitiendo encontrar el protocolo adaptado a la obra."
+    },
+    {
+      "titulo": "Muestrario de marcas",
+      "cuerpo": "Un bloque de firmas valida el uso de sistemas como ULMA, Trespa, Stacbond o Butech. La memoria prescribe proveedores concretos y el proyectista confirma que la solución encaja en su pliego."
+    }
+  ],
+  "ficha": {
+    "estado": "ENTREGADO",
+    "sector": "CONSTRUCCIÓN",
+    "alcance": "DISEÑO + COPY",
+    "desplegada": "",
+    "_todo_desplegada": "fecha real de puesta en producción"
+  }
+}
