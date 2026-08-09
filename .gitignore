@@ -1,5 +1,9 @@
 node_modules/
-frames/
-_trabajo/
-*.log
 dist/
+.claude/
+.playwright-mcp/
+_boceto/
+_trabajo/
+*.png
+lighthouse-*.json
+.env*
