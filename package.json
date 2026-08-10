@@ -2,7 +2,7 @@
   "name": "kbtk-digital",
   "version": "0.1.0",
   "private": true,
-  "description": "kbtk.dev — portfolio KBTK Digital",
+  "description": "kbtk.digital — portfolio KBTK Digital",
   "scripts": {
     "dev": "node scripts/dev-server.mjs",
     "postinstall": "node scripts/copy-vendor.mjs",

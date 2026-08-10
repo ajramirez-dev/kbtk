@@ -17,7 +17,7 @@ const CONTENIDO_DIR = path.join(root, "src", "contenido", "obras");
 const COPY_ES = path.join(root, "src", "contenido", "copy-es.json");
 const OUT_DIR = path.join(root, "src", "obras");
 
-const BASE_URL = "https://kbtk.dev";
+const BASE_URL = "https://kbtk.digital";
 
 function leerObras() {
   const codigo = fs.readFileSync(OBRAS_JS, "utf8");
