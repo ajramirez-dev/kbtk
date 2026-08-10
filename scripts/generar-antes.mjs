@@ -60,18 +60,26 @@ async function generar() {
     const fuente = FUENTES[obra.slug];
     if (!fuente) throw new Error(`generar-antes: no hay fuente definida para "${obra.slug}"`);
 
-    const origen = path.join(root, fuente.origen);
-    if (!fs.existsSync(origen)) {
-      console.error(`falta el original: ${origen}`);
-      process.exitCode = 1;
-      continue;
-    }
-
     if (!obra.antes) throw new Error(`obras.js: falta el campo "antes" en "${obra.slug}"`);
     if (!obra.antesWebp528) throw new Error(`obras.js: falta el campo "antesWebp528" en "${obra.slug}"`);
 
     const destinoJpg = path.join(root, "public", obra.antes.replace(/^\//, ""));
     const destinoWebp = path.join(root, "public", obra.antesWebp528.replace(/^\//, ""));
+
+    // _trabajo/ no se versiona: en CI los originales no existen, pero las
+    // salidas sí están commiteadas. Se salta el paso; solo es un error si
+    // además falta la salida.
+    const origen = path.join(root, fuente.origen);
+    if (!fs.existsSync(origen)) {
+      if (fs.existsSync(destinoJpg) && fs.existsSync(destinoWebp)) {
+        console.log(`sin original (${fuente.origen}), se reutiliza lo ya generado para "${obra.slug}"`);
+        continue;
+      }
+      console.error(`falta el original y no hay salida previa: ${origen}`);
+      process.exitCode = 1;
+      continue;
+    }
+
     fs.mkdirSync(path.dirname(destinoJpg), { recursive: true });
     fs.mkdirSync(path.dirname(destinoWebp), { recursive: true });
 
