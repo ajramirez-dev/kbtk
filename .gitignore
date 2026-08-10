@@ -1,9 +1,24 @@
-node_modules/
-dist/
-.claude/
-.playwright-mcp/
-_boceto/
-_trabajo/
-*.png
-lighthouse-*.json
-.env*
+# Dependencias y builds
+node_modules
+dist
+.vercel
+
+# Herramientas y carpetas de trabajo local
+.claude
+.playwright-mcp
+_boceto
+_trabajo
+docs/
+
+# Ignorar capturas y reportes específicos de la raíz
+/1440-*.png
+/390-*.png
+/768-*.png
+/obra-*.png
+/f01-*.png
+/f05-*.png
+/transicion-*.png
+/check-*.png
+/home-*.png
+/visor-*.png
+/lighthouse-*.json
