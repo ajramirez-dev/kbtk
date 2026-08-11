@@ -60,17 +60,9 @@
     }
   },
   "s4": {
-    "kicker": "S4 · QUÉ SE ENTREGA",
-    "kicker_derecha": "PRECIO ÚNICO · SIN PERMANENCIA",
-    "tabla_cabecera": { "partida": "PARTIDA", "alcance": "ALCANCE" },
-    "partidas": [
-      { "partida": "DISEÑO", "alcance": "Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada." },
-      { "partida": "COPY", "alcance": "Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local." },
-      { "partida": "IMAGEN", "alcance": "Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado." },
-      { "partida": "TÉCNICA", "alcance": "Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real." },
-      { "partida": "ENTREGA", "alcance": "Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia." },
-      { "partida": "NO INCLUYE", "alcance": "Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales." }
-    ]
+    "_fuente": "El contenido real de S4 vive en src/data/niveles.js (NIVELES + FILAS), no aquí — mismo patrón que obras.js para S2. Estos dos textos son el único par que main.js/los generadores no leen desde JSON, se dejan para no perder el histórico de kickers de sección.",
+    "kicker": "S4 · QUÉ SE ENTREGA Y QUÉ CUESTA",
+    "kicker_derecha": "03 NIVELES · IVA INCLUIDO · UN PAGO"
   },
   "obra": {
     "kicker_visor": "VISOR · OBRA COMPLETA",

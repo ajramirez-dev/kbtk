@@ -1,7 +1,8 @@
 // Fase 6 (G05) — fusiona src/ + public/ en dist/, el único directorio
-// que Netlify puede publicar. Hasta ahora solo dev-server.mjs fusionaba
-// ambas raíces, y únicamente en local: no había ningún paso de build
-// que produjera un árbol único para producción.
+// que Vercel puede publicar (outputDirectory en vercel.json). Hasta
+// ahora solo dev-server.mjs fusionaba ambas raíces, y únicamente en
+// local: no había ningún paso de build que produjera un árbol único
+// para producción.
 // Copia SOLO lo que se sirve por URL en tiempo de ejecución — no toda
 // src/ (css/main.css, js/main.js y contenido/*.json son fuentes de
 // build, no assets servidos; sus salidas ya viven en public/css,
@@ -40,7 +41,10 @@ function construir() {
   // 2 · páginas HTML servidas desde src/ (no minificadas: main.min.css
   //     y main.min.js ya vienen minificados desde public/, el HTML no)
   copiarSiExiste(path.join(root, "src", "index.html"), path.join(DIST, "index.html"));
-  copiarSiExiste(path.join(root, "src", "en", "index.html"), path.join(DIST, "en", "index.html"));
+  // src/en/index.html NO se copia: está a 0 bytes (árbol EN aún no
+  // existe) y una página en blanco indexable es peor que ninguna
+  // página. También fuera de sitemap.xml — nunca tuvo entrada /en/.
+  copiarSiExiste(path.join(root, "src", "tarifa", "index.html"), path.join(DIST, "tarifa", "index.html"));
 
   const obrasDir = path.join(root, "src", "obras");
   if (fs.existsSync(obrasDir)) {

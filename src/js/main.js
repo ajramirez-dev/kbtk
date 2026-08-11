@@ -1024,3 +1024,105 @@
   evaluar();
   mqDesktop.addEventListener("change", evaluar);
 })();
+
+/* ============================================================
+   B — S4: selector de niveles (< 1024px, con JS).
+   scripts/generar-niveles.mjs ya deja los tres bloques en el DOM,
+   apilados y completos (fallback sin JS). Este bloque SOLO engancha
+   los botones 01/02/03 para ocultar dos y animar el tercero — no crea
+   nada, y si el contenedor está vacío avisa y sale, mismo patrón que
+   el enganche de S2 (A01) más arriba.
+   Sin GSAP: bajo 1024px main.js nunca lo carga (A02), así que la
+   mecánica de corte/hueco/entrada del conmutador de S2 se reproduce
+   aquí con setTimeout + clases sobre la transición CSS de
+   .s4__nivel[.is-saliendo/.is-activa] (main.css, §10) — misma curva
+   (--ease-mech) y mismas duraciones (--dur-swap-out/gap/in) leídas
+   del contrato, no reescritas.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const contenedor = document.querySelector(".s4__niveles");
+  if (!contenedor) return; // página sin S4 (obra, /tarifa): nada que hacer
+
+  const bloques = contenedor.querySelectorAll(".s4__nivel");
+  const selector = document.querySelector("[data-nivel-selector]");
+  if (!bloques.length || !selector) {
+    console.warn(
+      "[KBTK] .s4__niveles está vacío o falta el selector — falta ejecutar " +
+        "`npm run build:niveles` (scripts/generar-niveles.mjs) antes de servir la página."
+    );
+    return;
+  }
+
+  function reducidoAhora() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function segundos(nombreVar, porDefecto) {
+    const crudo = getComputedStyle(document.documentElement)
+      .getPropertyValue(nombreVar)
+      .trim();
+    const m = crudo.match(/^([\d.]+)(ms|s)$/);
+    if (!m) return porDefecto;
+    return m[2] === "ms" ? parseFloat(m[1]) : parseFloat(m[1]) * 1000;
+  }
+
+  let nivelActivo = selector.dataset.nivelActivo || bloques[0].dataset.nivel;
+  let cambiando = false;
+
+  function bloquePor(clave) {
+    return contenedor.querySelector(`.s4__nivel[data-nivel="${clave}"]`);
+  }
+
+  function marcarBotones(clave) {
+    selector.querySelectorAll(".s4__selector-btn").forEach((btn) => {
+      const activo = btn.dataset.nivelBtn === clave;
+      btn.classList.toggle("is-activo", activo);
+      btn.setAttribute("aria-selected", activo ? "true" : "false");
+    });
+  }
+
+  function conmutar(claveNueva) {
+    if (cambiando || claveNueva === nivelActivo) return;
+    const viejo = bloquePor(nivelActivo);
+    const nuevo = bloquePor(claveNueva);
+    if (!viejo || !nuevo) return;
+
+    if (reducidoAhora()) {
+      viejo.classList.remove("is-activa");
+      nuevo.classList.add("is-activa");
+      nivelActivo = claveNueva;
+      selector.dataset.nivelActivo = claveNueva;
+      marcarBotones(claveNueva);
+      return;
+    }
+
+    cambiando = true;
+    const durOut = segundos("--dur-swap-out", 120);
+    const durGap = segundos("--dur-swap-gap", 40);
+
+    // corte
+    viejo.classList.remove("is-activa");
+    viejo.classList.add("is-saliendo");
+
+    setTimeout(() => {
+      viejo.classList.remove("is-saliendo");
+      // hueco
+      setTimeout(() => {
+        // entrada
+        nuevo.classList.add("is-activa");
+        nivelActivo = claveNueva;
+        selector.dataset.nivelActivo = claveNueva;
+        marcarBotones(claveNueva);
+        cambiando = false;
+      }, durGap);
+    }, durOut);
+  }
+
+  selector.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".s4__selector-btn");
+    if (!btn) return;
+    conmutar(btn.dataset.nivelBtn);
+  });
+})();

@@ -22,6 +22,58 @@
   font-display: swap;
 }
 
+/* Bloque A — respaldo métrico de Archivo, contra el salto del H1 de S1
+   (LCP) a los ~800ms del swap de fuente. Causa medida: .t-display fija
+   el peso SOLO con font-variation-settings "wght" 800 (§3 más abajo),
+   que no afecta a una fuente estática — el respaldo hereda --fw-body
+   (400) del body y renderiza en Arial Regular, no en negrita, de ahí
+   el desajuste de ancho que rompe el corte de línea.
+
+   Los cuatro valores no pueden vivir en tokens.css: los descriptores
+   de @font-face no resuelven var() (no son propiedades de un elemento,
+   son metadatos de la fuente), y además son compensación métrica atada
+   a ESTE binario — si se re-subsetea Archivo, cambian solos. Un valor
+   que cambia porque cambió un archivo no pertenece a un contrato de
+   diseño.
+
+   DERIVACIÓN (con kerning GPOS aplicado a las dos fuentes — sin él el
+   cociente sale corto y dos rasgos con kerning negativo, "Y"+"A" y
+   espacio+"Y", quedan sin compensar):
+     texto medido        "SU WEB YA EXISTE." (mayúsculas: .t-display
+                          lleva text-transform: uppercase)
+     Archivo wdth118/wght800   11.76900 em
+     Arial Regular 400         9.52148 em   (local, upem 2048)
+     cociente de anchos medidos            123.60%
+     valor elegido                         126.55% — punto medio de
+       126.40–126.70%, el intervalo que da PARIDAD DE CORTE DE LÍNEA
+       (mismo nº de líneas que Archivo) en el barrido completo de 360
+       a 1600px de ancho de viewport, no solo en 390/1440. A 123.60%
+       literal quedan 8px de ese rango (378–390px) con una línea de
+       más en el respaldo.
+     verticales = métrica de Archivo ÷ size-adjust:
+       ascent  0.878 / 1.2655 = 69.38%
+       descent 0.210 / 1.2655 = 16.59%
+       line-gap 0 / 1.2655    = 0%
+     (Archivo: upem 1000, hhea/OS².typo asc 878 desc -210 gap 0,
+      USE_TYPO_METRICS activo. Arial: upem 2048, hhea asc 1854
+      desc -434 gap 67 — leído de C:\Windows\Fonts\arial.ttf.)
+
+   sha256 del woff2 del que salen estos números — si cambia, hay que
+   recalcular (scripts/check-fuentes.mjs falla si no coinciden):
+     fe940087c31315ae10216efed66fb158977e58039774d2bebed3ea7226bfdf94
+
+   Pila (tokens.css, --ff-display): Archivo PRIMERO, este respaldo
+   DESPUÉS — si local("Arial") precediera, resolvería siempre y
+   Archivo no llegaría a pintarse nunca. */
+@font-face {
+  font-family: "Archivo Respaldo";
+  src: local("Arial");
+  size-adjust: 126.55%;
+  ascent-override: 69.38%;
+  descent-override: 16.59%;
+  line-gap-override: 0%;
+}
+
 /* ---------- 1 · reset mínimo ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, h1, h2, h3, p, figure, ol, ul, dl, dd, table, th, td { margin: 0; padding: 0; }
@@ -749,54 +801,260 @@ main { padding-top: var(--sp-9); }
   }
 }
 
-/* ---------- 10 · S4 · qué se entrega ---------- */
+/* ---------- 10 · S4 · qué se entrega y qué cuesta ----------
+   Tres niveles, una sola fuente de datos (src/data/niveles.js).
+   >= 1024px: tabla real, filas = partidas, columnas = niveles
+   (.s4__tabla). < 1024px: los mismos datos apilados en 3 bloques
+   (.s4__niveles), uno por nivel — sin tarjetas, mismas hairlines.
+   Sin JS, los tres bloques se apilan completos y legibles: el
+   selector (.s4__selector) no se pinta sin .js, y sin selector no
+   hay forma de ocultar ninguno, así que el fallback es automático,
+   no un caso especial que haya que mantener aparte. */
 .s4 { padding-block: var(--sp-section); }
 
-.s4__tabla th,
-.s4__tabla td {
-  text-align: left;
-  padding: var(--sp-4);
+.s4__bloque-eyebrow { color: var(--g1); margin-bottom: var(--sp-4); }
+
+/* ---- bloque común: lo que NO cambia entre niveles, una sola vez ---- */
+.s4__comunes { margin-bottom: var(--sp-7); }
+.s4__comunes-lista { display: flex; flex-direction: column; }
+.s4__comunes-fila {
+  display: flex;
+  gap: var(--sp-6);
+  padding-block: var(--sp-3);
   border-bottom: 1px solid var(--line);
-  vertical-align: top;
 }
-.s4__tabla th { color: var(--g1); }
-.s4__tabla td:first-child {
+.s4__comunes-fila dt {
+  flex: 0 0 auto;
+  width: 9ch;
+  color: var(--g1);
+}
+.s4__comunes-fila dd { color: var(--w2); }
+@media (max-width: 639px) {
+  .s4__comunes-fila { flex-direction: column; gap: var(--sp-1); }
+  .s4__comunes-fila dt { width: auto; }
+}
+
+.s4__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+}
+.s4__pie-texto { color: var(--w2); max-width: 62ch; }
+.s4__pie-texto p + p { margin-top: var(--sp-2); }
+.s4__pie-link { color: var(--w1); white-space: nowrap; }
+@media (hover: hover) {
+  .s4__pie-link:hover { color: var(--signal); }
+}
+
+/* glosa del momento estrella: prosa, no dato — Archivo, no Fragment
+   Mono; el enlace hereda el mismo color y solo se distingue al pasar
+   el ratón, como el resto de enlaces de cuerpo del sitio. */
+.s4__glosa {
+  margin-top: var(--sp-6);
+  color: var(--w2);
+  max-width: 62ch;
+}
+.s4__glosa a { color: var(--w1); text-decoration: underline; }
+@media (hover: hover) {
+  .s4__glosa a:hover { color: var(--signal); }
+}
+
+/* ---- selector 01/02/03 (< 1024px, solo con JS) ---- */
+.s4__selector { display: none; }
+
+/* ---- tabla (>= 1024px) ---- */
+.s4__tabla { display: none; }
+
+@media (min-width: 1024px) {
+  .s4__tabla {
+    display: table;
+    border-collapse: collapse;
+  }
+
+  .s4__tabla th,
+  .s4__tabla td {
+    text-align: left;
+    padding: var(--sp-4);
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .s4__tabla thead th:first-child,
+  .s4__tabla tbody th {
+    font-family: var(--ff-mono);
+    letter-spacing: var(--tr-data);
+    color: var(--w1);
+    width: 18%;
+    font-weight: var(--fw-body);
+    text-transform: none;
+  }
+
+  .s4__tabla td { color: var(--w2); width: calc(82% / 3); }
+
+  .s4__th { vertical-align: bottom; }
+  .s4__th-numero,
+  .s4__th-base { display: block; color: var(--g1); }
+  .s4__th-nombre {
+    display: block;
+    font-family: var(--ff-display);
+    font-weight: var(--fw-display);
+    font-size: var(--fs-h3);
+    line-height: var(--lh-h);
+    text-transform: uppercase;
+    color: var(--w1);
+    margin-block: var(--sp-1);
+  }
+  .s4__th-precio {
+    display: block;
+    font-family: var(--ff-display);
+    font-weight: var(--fw-display);
+    font-size: var(--fs-h2);
+    line-height: var(--lh-h);
+    color: var(--w1);
+    margin-bottom: var(--sp-1);
+  }
+
+  /* --signal aparece UNA vez en toda la pantalla: bloque lleno en la
+     cabecera del nivel 03. Ningún otro elemento de S4 lo usa. */
+  .s4__th--destacado {
+    background: var(--signal);
+    border-bottom-color: var(--signal);
+  }
+  .s4__th--destacado .s4__th-numero,
+  .s4__th--destacado .s4__th-base,
+  .s4__th--destacado .s4__th-nombre,
+  .s4__th--destacado .s4__th-precio { color: var(--signal-ink); }
+
+  /* E04: las filas arrancan con el mismo fondo — hover es la única
+     vía a var(--surface), y solo donde hover es real (no se queda
+     pegado en táctil). */
+  @media (hover: hover) {
+    .s4__tabla tbody tr {
+      transition: background-color 240ms var(--ease-out);
+    }
+    .s4__tabla tbody tr:hover { background: var(--surface); }
+  }
+
+  /* CAMBIOS es la única fila de datos, no de prosa: Fragment Mono
+     también en sus celdas (el th de PARTIDA ya es mono, siempre). */
+  .s4__fila--mono td {
+    font-family: var(--ff-mono);
+    letter-spacing: var(--tr-data);
+    text-transform: uppercase;
+  }
+}
+
+/* ---- bloques apilados (< 1024px) ---- */
+.s4__niveles { display: flex; flex-direction: column; gap: var(--sp-7); }
+
+@media (min-width: 1024px) {
+  .s4__niveles { display: none; }
+}
+
+.s4__nivel-cabecera {
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-hi);
+  margin-bottom: var(--sp-3);
+}
+.s4__nivel-numero,
+.s4__nivel-base { display: block; color: var(--g1); }
+.s4__nivel-nombre {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h);
+  text-transform: uppercase;
+  color: var(--w1);
+  margin-block: var(--sp-1);
+}
+.s4__nivel-precio {
+  font-family: var(--ff-display);
+  font-weight: var(--fw-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h);
+  color: var(--w1);
+  margin-bottom: var(--sp-1);
+}
+
+/* --signal, misma regla que en la tabla: solo el nivel 03, solo su
+   cabecera, y es el mismo censo (tabla y bloques nunca están
+   visibles a la vez, por el breakpoint de arriba). */
+.s4__nivel--destacado .s4__nivel-cabecera {
+  background: var(--signal);
+  padding: var(--sp-4);
+  margin-bottom: 0;
+  border-bottom: none;
+}
+.s4__nivel--destacado .s4__nivel-filas { padding-top: var(--sp-3); }
+.s4__nivel--destacado .s4__nivel-numero,
+.s4__nivel--destacado .s4__nivel-base,
+.s4__nivel--destacado .s4__nivel-nombre,
+.s4__nivel--destacado .s4__nivel-precio { color: var(--signal-ink); }
+
+.s4__nivel-fila {
+  padding-block: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+.s4__nivel-fila dt { color: var(--g1); margin-bottom: var(--sp-1); }
+.s4__nivel-fila dd { color: var(--w2); }
+.s4__nivel-fila--mono dd {
   font-family: var(--ff-mono);
   letter-spacing: var(--tr-data);
+  text-transform: uppercase;
   color: var(--w1);
-  width: 30%;
-}
-.s4__tabla td:last-child { color: var(--w2); }
-
-/* E04: las seis filas arrancan con el mismo fondo — hover es la única
-   vía a var(--surface), y solo donde hover es real (no se queda
-   pegado en táctil). NO INCLUYE ya no se distingue por fondo: se lee
-   como excepción por una regla vertical de 2px, no por relleno. */
-@media (hover: hover) {
-  .s4__tabla tbody tr {
-    transition: background-color 240ms var(--ease-out);
-  }
-  .s4__tabla tbody tr:hover { background: var(--surface); }
 }
 
-@media (min-width: 640px) {
-  .s4__fila--excluye td:first-child {
-    border-left: 2px solid var(--line-hi);
-    padding-left: calc(var(--sp-4) - 2px);
+/* ---- conmutación del selector (< 1024px, con JS) ----
+   Mismo ritmo que .s2__visor-overlay: corte (--dur-swap-out) — hueco
+   (--dur-swap-gap) — entrada (--dur-swap-in), con --ease-mech. Sin
+   GSAP: bajo 1024px main.js no lo carga (A02), así que la mecánica
+   la ejecuta JS nativo (setTimeout + clases) sobre esta transición
+   CSS, leyendo los mismos tokens. Ver "S4 — selector de niveles" en
+   main.js. */
+@media (max-width: 1023px) {
+  .js .s4__selector {
+    display: flex;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-6);
   }
-}
+  .s4__selector-btn {
+    flex: 1;
+    padding: var(--sp-3);
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--g1);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: border-color 240ms var(--ease-out), color 240ms var(--ease-out);
+  }
+  .s4__selector-btn.is-activo {
+    border-color: var(--line-hi);
+    color: var(--w1);
+  }
 
-@media (max-width: 639px) {
-  .s4__tabla thead { display: none; }
-  .s4__tabla, .s4__tabla tbody, .s4__tabla tr, .s4__tabla td { display: block; width: auto; }
-  .s4__tabla tr { padding-block: var(--sp-4); }
-  .s4__tabla td { padding: var(--sp-1) 0; border-bottom: none; }
-  .s4__tabla td:first-child { width: auto; padding-top: 0; }
-  .s4__fila--excluye td:first-child {
-    border-left: 2px solid var(--line-hi);
-    padding-left: var(--sp-2);
+  .js .s4__nivel { display: none; opacity: 0; }
+  .js .s4__nivel.is-activa {
+    display: block;
+    opacity: 1;
+    transition: opacity var(--dur-swap-in) var(--ease-mech);
   }
-  .s4__tabla td:last-child { padding-bottom: 0; }
+  .js .s4__nivel.is-saliendo {
+    display: block;
+    opacity: 0;
+    transition: opacity var(--dur-swap-out) var(--ease-mech);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .s4__nivel.is-activa,
+    .js .s4__nivel.is-saliendo { transition: none; }
+  }
 }
 
 /* ---------- 11 · S5 · cierre ---------- */
@@ -1307,4 +1565,85 @@ main { padding-top: var(--sp-9); }
 .obra-siguiente__link:hover .obra-siguiente__nombre,
 .obra-siguiente__link:focus-visible .obra-siguiente__nombre {
   text-decoration: underline;
+}
+
+/* ---------- 14 · /tarifa ----------
+   Reutiliza la plantilla de página de obra (.pagina-obra en <body>,
+   misma status-bar, mismo halo, mismo grano, mismo .obra-cabecera
+   para el H1) y el mismo patrón de sección que .obra-problema/
+   .obra-evidencia/.obra-ficha: padding-block var(--sp-8), ancho
+   máximo var(--content-max), hairlines var(--line) para separar
+   filas. Sin --obra-accent (no es una obra): los acentos de color
+   no aparecen en esta página. */
+.tarifa-entradilla {
+  max-width: 48ch;
+  margin-top: var(--sp-5);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-body);
+  color: var(--w2);
+}
+
+.tarifa-extras,
+.tarifa-alojamiento,
+.tarifa-pago {
+  padding-block: var(--sp-8);
+  padding-inline: var(--edge);
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+.tarifa-extras__kicker,
+.tarifa-alojamiento__kicker,
+.tarifa-pago__kicker { color: var(--g1); margin-bottom: var(--sp-4); }
+
+.tarifa-extras__lista { margin-top: var(--sp-5); }
+.tarifa-extras__fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-4);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+.tarifa-extras__fila dt { color: var(--w2); }
+.tarifa-extras__fila dd { color: var(--w1); white-space: nowrap; }
+
+.tarifa-alojamiento__intro {
+  margin-top: var(--sp-2);
+  color: var(--w2);
+}
+.tarifa-alojamiento__opciones {
+  margin-top: var(--sp-6);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-7);
+}
+@media (max-width: 767px) {
+  .tarifa-alojamiento__opciones { grid-template-columns: 1fr; }
+}
+.tarifa-alojamiento__opcion {
+  border-top: 1px solid var(--line-hi);
+  padding-top: var(--sp-4);
+}
+.tarifa-alojamiento__opcion-nombre { color: var(--w1); margin-bottom: var(--sp-3); }
+.tarifa-alojamiento__opcion-texto { color: var(--w2); }
+/* comparte las DOS columnas, no la Opción A: por eso vive fuera de
+   .tarifa-alojamiento__opciones (ver HTML) y con su propio ancho
+   completo + hairline, en vez de colgar del último elemento de la
+   rejilla. Mismo ancho que .tarifa-alojamiento__opciones porque
+   ambos son hijos directos de .tarifa-alojamiento — ningún padding
+   propio que lo desplace. */
+.tarifa-alojamiento__nota {
+  display: block;
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+  text-align: center;
+  color: var(--w1);
+}
+
+.tarifa-pago__texto {
+  max-width: 42ch;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-body);
+  color: var(--w2);
 }

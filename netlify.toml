@@ -1,7 +1,0 @@
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-# public/_headers viaja dentro de dist/ (build-dist.mjs copia public/
-# entero) — Netlify lo detecta automáticamente en la raíz del publish
-# dir, no hace falta declarar cabeceras aquí también.

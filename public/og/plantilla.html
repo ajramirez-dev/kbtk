@@ -91,13 +91,13 @@
     <div class="lockup" id="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="32.6" fill="none" stroke="var(--w1)" stroke-width="22.7"/><circle cx="50" cy="50" r="14.4" fill="none" stroke="var(--w1)" stroke-width="1.8"/><circle cx="50" cy="50" r="7.5" fill="var(--signal)"/></svg></div>
 
     <div>
-      <div class="declaracion">SU WEB YA EXISTE.</div>
-      <div class="sub">La construimos entera antes de que usted decida si la paga.</div>
+      <div class="declaracion" data-slot="titular">{{TITULAR}}</div>
+      <div class="sub" data-slot="subtitulo">{{SUBTITULO}}</div>
     </div>
 
     <div class="footer">
       <span>KBTK.DIGITAL</span>
-      <span class="signal">07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL</span>
+      <span class="signal" data-slot="footer-derecha">{{FOOTER_DERECHA}}</span>
     </div>
   </div>
 </body>

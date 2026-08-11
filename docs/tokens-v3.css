@@ -1,5 +1,5 @@
 /* ============================================================
-   KBTK Digital — portfolio kbtk.dev
+   KBTK Digital — portfolio kbtk.digital
    tokens-v1.css · dirección "Cuarto de Máquinas"
    CONTRATO. Única fuente de estilo. Cualquier valor que no
    salga de aquí es un bug.
@@ -181,11 +181,13 @@
      Solo dos familias. Ambas OFL, auto-alojadas woff2. Cero CDN.
      Archivo gobierna display y cuerpo; Fragment Mono gobierna
      TODO dato: etiquetas, estados, cifras, rutas, fechas.
-     AVISO DE SUBSET: el display exige el eje wdth de Archivo
-     (Expanded 112–125). Si el woff2 actual se instanció fijando
-     wdth, hay que re-subsetear conservando el eje. Verificar
-     antes de construir.                                          */
-  --ff-display: "Archivo", system-ui, sans-serif;
+     SUBSET VERIFICADO (bloque A): fvar de Archivo[wdth,wght].woff2
+     conserva wght 100–900 y wdth 62–125 — 118/800 son alcanzables,
+     no hace falta re-subsetear.
+     "Archivo Respaldo" (main.css §0) es el fallback con overrides
+     métricos que pinta durante el swap de fuente — pila completa
+     abajo. */
+  --ff-display: "Archivo", "Archivo Respaldo", system-ui, sans-serif;
   --ff-body:    "Archivo", system-ui, sans-serif;
   --ff-mono:    "Fragment Mono", ui-monospace, monospace;
 

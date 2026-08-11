@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://kbtk.digital/">
   <meta property="og:title" content="KBTK Digital — Estudio de diseño web y copy · Albacete">
   <meta property="og:description" content="Estudio de diseño web y copy en Albacete. Construimos su web entera antes de que usted decida si la paga: sin brief ni presupuesto previo.">
-  <meta property="og:image" content="https://kbtk.digital/og/og-home-v2.png">
+  <meta property="og:image" content="https://kbtk.digital/og/og-home-v3.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="KBTK Digital — Su web ya existe.">
@@ -31,6 +31,12 @@
     // el contenido en su estado visible por defecto, nunca en blanco.
     document.documentElement.classList.add("js");
   </script>
+  <!-- Bloque A: precarga de Archivo antes de la hoja de estilos. El H1
+       de S1 es el elemento LCP — sin esto, el navegador no descubre la
+       fuente hasta parsear main.css, y el respaldo (más abajo, mismo
+       @font-face) pinta primero de todos modos. -->
+  <link rel="preload" as="font" type="font/woff2"
+        href="/fuentes/Archivo[wdth,wght].woff2" crossorigin>
   <link rel="stylesheet" href="/css/tokens.min.css">
   <link rel="stylesheet" href="/css/main.min.css">
   <script src="/data/obras.js"></script>
@@ -66,7 +72,10 @@
       </a>
       <p class="status-bar__meta t-data">OBRAS 04 · ENTREGADAS 03 · DEMOS CONSTRUIDAS 07</p>
       <div class="status-bar__actions">
-        <p class="status-bar__lang t-data"><span aria-current="page">ES</span> / <a href="/en/">EN</a></p>
+        <!-- EN sin enlazar: el árbol /en/ aún no existe (fase pendiente).
+             Un enlace a una página en blanco indexable es peor que
+             ningún enlace. -->
+        <p class="status-bar__lang t-data"><span aria-current="page">ES</span> / <span>EN</span></p>
         <a class="status-bar__cta t-data" href="#contacto">[ CONTACTO ]</a>
       </div>
     </div>
@@ -84,7 +93,7 @@
       <p class="s1__meta t-data col-span-10">07 CONSTRUIDAS · 03 VENDIDAS · 04 EN ESTE PANEL</p>
     </section>
 
-    <section data-seccion="s2" class="s2 grid-12">
+    <section data-seccion="s2" id="s2" class="s2 grid-12">
       <header class="section-head col-span-12">
         <h2 class="t-data">S2 · ÍNDICE DE OBRAS</h2>
         <p class="t-data" id="s2-contador"></p>
@@ -243,44 +252,206 @@
 
     <section data-seccion="s4" class="s4 grid-12">
       <header class="section-head col-span-12">
-        <h2 class="t-data">S4 · QUÉ SE ENTREGA</h2>
-        <p class="t-data">PRECIO ÚNICO · SIN PERMANENCIA</p>
+        <h2 class="t-data">S4 · QUÉ SE ENTREGA Y QUÉ CUESTA</h2>
+        <p class="t-data">03 NIVELES · IVA INCLUIDO · UN PAGO</p>
       </header>
+
+<!-- NIVELES:INICIO -->
+      <div class="s4__comunes col-span-12">
+        <p class="t-data s4__bloque-eyebrow">EN LOS TRES NIVELES</p>
+        <dl class="s4__comunes-lista">
+          <div class="s4__comunes-fila">
+            <dt class="t-data">DISEÑO</dt>
+            <dd>Estructura, jerarquía y maquetación a medida del negocio. Nunca una plantilla adaptada.</dd>
+          </div>
+          <div class="s4__comunes-fila">
+            <dt class="t-data">COPY</dt>
+            <dd>Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia.</dd>
+          </div>
+          <div class="s4__comunes-fila">
+            <dt class="t-data">IMAGEN</dt>
+            <dd>Selección, recorte y tratamiento de la fotografía.</dd>
+          </div>
+          <div class="s4__comunes-fila">
+            <dt class="t-data">TÉCNICA</dt>
+            <dd>Web desplegada, dominio conectado, medición básica, formulario o WhatsApp, y velocidad revisada en móvil real.</dd>
+          </div>
+          <div class="s4__comunes-fila">
+            <dt class="t-data">ENTREGA</dt>
+            <dd>Código y accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="s4__selector t-data col-span-12" role="tablist" aria-label="Nivel" data-nivel-selector data-nivel-activo="flagship">
+          <button type="button" class="s4__selector-btn" data-nivel-btn="pagina" role="tab" aria-selected="false">01</button>
+          <button type="button" class="s4__selector-btn" data-nivel-btn="oficio" role="tab" aria-selected="false">02</button>
+          <button type="button" class="s4__selector-btn is-activo" data-nivel-btn="flagship" role="tab" aria-selected="true">03</button>
+      </div>
+
+      <p class="t-data s4__bloque-eyebrow col-span-12">LO QUE CAMBIA DE UN NIVEL A OTRO</p>
 
       <table class="s4__tabla col-span-12">
         <thead>
           <tr>
-            <th class="t-data">PARTIDA</th>
-            <th class="t-data">ALCANCE</th>
+            <th class="t-data" scope="col">NIVEL</th>
+          <th class="s4__th" scope="col" data-nivel="pagina">
+            <span class="s4__th-numero t-data">NIVEL 01</span>
+            <span class="s4__th-nombre">PÁGINA</span>
+            <span class="s4__th-precio">1.100 €</span>
+            <span class="s4__th-base t-data">909,09 € + 21 % IVA</span>
+          </th>
+          <th class="s4__th" scope="col" data-nivel="oficio">
+            <span class="s4__th-numero t-data">NIVEL 02</span>
+            <span class="s4__th-nombre">PÁGINA + OFICIO</span>
+            <span class="s4__th-precio">1.800 €</span>
+            <span class="s4__th-base t-data">1.487,60 € + 21 % IVA</span>
+          </th>
+          <th class="s4__th s4__th--destacado" scope="col" data-nivel="flagship">
+            <span class="s4__th-numero t-data">NIVEL 03</span>
+            <span class="s4__th-nombre">FLAGSHIP</span>
+            <span class="s4__th-precio">2.200 €</span>
+            <span class="s4__th-base t-data">1.818,18 € + 21 % IVA</span>
+          </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="s4__fila" data-mask>
-            <td>DISEÑO</td>
-            <td>Estructura, jerarquía y maquetación de todas las secciones. Una sola página, hecha a la medida del negocio, no una plantilla adaptada.</td>
-          </tr>
-          <tr class="s4__fila" data-mask>
-            <td>COPY</td>
-            <td>Todos los textos escritos desde cero: titulares, cuerpo, botones y microcopia. Escritos después de ver cómo habla el negocio en su local.</td>
-          </tr>
-          <tr class="s4__fila" data-mask>
-            <td>IMAGEN</td>
-            <td>Selección, recorte y tratamiento de la fotografía existente. Si no la hay, se produce o se sustituye por material de archivo revisado.</td>
-          </tr>
-          <tr class="s4__fila" data-mask>
-            <td>TÉCNICA</td>
-            <td>Web desplegada, dominio conectado, medición básica, formulario o WhatsApp y velocidad revisada en móvil real.</td>
-          </tr>
-          <tr class="s4__fila" data-mask>
-            <td>ENTREGA</td>
-            <td>Transferencia del código y de todos los accesos a nombre del cliente. Un pago. Sin cuota mensual y sin permanencia.</td>
-          </tr>
-          <tr class="s4__fila s4__fila--excluye" data-mask>
-            <td>NO INCLUYE</td>
-            <td>Tienda online. Reservas con pasarela de pago. Blog. Área privada. Mantenimiento mensual. Publicidad. Redes sociales.</td>
-          </tr>
+        <tr class="s4__fila" data-mask>
+          <th scope="row" class="t-data">PREVIO</th>
+            <td data-nivel="pagina">Briefing a distancia</td>
+            <td data-nivel="oficio">Visita al local</td>
+            <td data-nivel="flagship">Visita al local</td>
+        </tr>
+        <tr class="s4__fila" data-mask>
+          <th scope="row" class="t-data">FOTOGRAFÍA</th>
+            <td data-nivel="pagina">La suya, tratada</td>
+            <td data-nivel="oficio">Sesión en el local, 2 h</td>
+            <td data-nivel="flagship">Sesión en el local, 2 h</td>
+        </tr>
+        <tr class="s4__fila" data-mask>
+          <th scope="row" class="t-data">MOVIMIENTO</th>
+            <td data-nivel="pagina">Entradas por sección</td>
+            <td data-nivel="oficio">Coreografía completa</td>
+            <td data-nivel="flagship">Coreografía completa, más una escena que se recuerda</td>
+        </tr>
+        <tr class="s4__fila" data-mask>
+          <th scope="row" class="t-data">ALCANCE</th>
+            <td data-nivel="pagina">Una página</td>
+            <td data-nivel="oficio">Una página</td>
+            <td data-nivel="flagship">Dos páginas, o dos idiomas</td>
+        </tr>
+        <tr class="s4__fila s4__fila--mono" data-mask>
+          <th scope="row" class="t-data">CAMBIOS</th>
+            <td data-nivel="pagina">1 ronda · 15 días</td>
+            <td data-nivel="oficio">2 rondas · 30 días</td>
+            <td data-nivel="flagship">3 rondas · 90 días</td>
+        </tr>
         </tbody>
       </table>
+
+      <div class="s4__niveles col-span-12">
+        <div class="s4__nivel" data-nivel="pagina">
+          <header class="s4__nivel-cabecera">
+            <span class="s4__nivel-numero t-data">NIVEL 01</span>
+            <h3 class="s4__nivel-nombre">PÁGINA</h3>
+            <p class="s4__nivel-precio">1.100 €</p>
+            <p class="s4__nivel-base t-data">909,09 € + 21 % IVA</p>
+          </header>
+          <dl class="s4__nivel-filas">
+          <div class="s4__nivel-fila">
+            <dt class="t-data">PREVIO</dt>
+            <dd>Briefing a distancia</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">FOTOGRAFÍA</dt>
+            <dd>La suya, tratada</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">MOVIMIENTO</dt>
+            <dd>Entradas por sección</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">ALCANCE</dt>
+            <dd>Una página</dd>
+          </div>
+          <div class="s4__nivel-fila s4__nivel-fila--mono">
+            <dt class="t-data">CAMBIOS</dt>
+            <dd>1 ronda · 15 días</dd>
+          </div>
+          </dl>
+        </div>
+        <div class="s4__nivel" data-nivel="oficio">
+          <header class="s4__nivel-cabecera">
+            <span class="s4__nivel-numero t-data">NIVEL 02</span>
+            <h3 class="s4__nivel-nombre">PÁGINA + OFICIO</h3>
+            <p class="s4__nivel-precio">1.800 €</p>
+            <p class="s4__nivel-base t-data">1.487,60 € + 21 % IVA</p>
+          </header>
+          <dl class="s4__nivel-filas">
+          <div class="s4__nivel-fila">
+            <dt class="t-data">PREVIO</dt>
+            <dd>Visita al local</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">FOTOGRAFÍA</dt>
+            <dd>Sesión en el local, 2 h</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">MOVIMIENTO</dt>
+            <dd>Coreografía completa</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">ALCANCE</dt>
+            <dd>Una página</dd>
+          </div>
+          <div class="s4__nivel-fila s4__nivel-fila--mono">
+            <dt class="t-data">CAMBIOS</dt>
+            <dd>2 rondas · 30 días</dd>
+          </div>
+          </dl>
+        </div>
+        <div class="s4__nivel s4__nivel--destacado is-activa" data-nivel="flagship">
+          <header class="s4__nivel-cabecera">
+            <span class="s4__nivel-numero t-data">NIVEL 03</span>
+            <h3 class="s4__nivel-nombre">FLAGSHIP</h3>
+            <p class="s4__nivel-precio">2.200 €</p>
+            <p class="s4__nivel-base t-data">1.818,18 € + 21 % IVA</p>
+          </header>
+          <dl class="s4__nivel-filas">
+          <div class="s4__nivel-fila">
+            <dt class="t-data">PREVIO</dt>
+            <dd>Visita al local</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">FOTOGRAFÍA</dt>
+            <dd>Sesión en el local, 2 h</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">MOVIMIENTO</dt>
+            <dd>Coreografía completa, más una escena que se recuerda</dd>
+          </div>
+          <div class="s4__nivel-fila">
+            <dt class="t-data">ALCANCE</dt>
+            <dd>Dos páginas, o dos idiomas</dd>
+          </div>
+          <div class="s4__nivel-fila s4__nivel-fila--mono">
+            <dt class="t-data">CAMBIOS</dt>
+            <dd>3 rondas · 90 días</dd>
+          </div>
+          </dl>
+        </div>
+      </div>
+<!-- NIVELES:FIN -->
+
+      <p class="s4__glosa col-span-12">Esa escena es la que hace que la página no se olvide. Puede ver la de cada negocio en el <a href="#s2">índice de arriba</a>.</p>
+
+      <div class="s4__pie col-span-12">
+        <div class="s4__pie-texto">
+          <p>Ninguno de los tres incluye tienda online, reservas con pasarela de pago, blog, área privada, publicidad ni redes sociales.</p>
+          <p>El dominio va siempre a nombre del cliente. Alojamiento y mantenimiento son opcionales.</p>
+        </div>
+        <a class="s4__pie-link t-data" href="/tarifa/">[ VER TARIFA COMPLETA ]</a>
+      </div>
     </section>
 
   </main>
@@ -348,6 +519,7 @@
     <p class="s5__colofon t-data col-span-12">
       <span>KBTK DIGITAL · ALBACETE</span>
       <span><a href="mailto:contact@kbtk.digital">contact@kbtk.digital</a></span>
+      <span><a href="/tarifa/">TARIFA COMPLETA</a></span>
       <span>© 2026</span>
     </p>
   </footer>

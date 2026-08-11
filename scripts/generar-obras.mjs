@@ -91,7 +91,7 @@ function barraEstado(copy) {
       <a class="status-bar__brand no-grain" href="/" aria-label="KBTK Digital — inicio">${LOGO_SVG}</a>
       <p class="status-bar__meta t-data">${esc(copy.s0.meta_obras)}</p>
       <div class="status-bar__actions">
-        <p class="status-bar__lang t-data"><span aria-current="page">ES</span> / <a href="/en/">EN</a></p>
+        <p class="status-bar__lang t-data"><span aria-current="page">ES</span> / <span>EN</span></p>
         <a class="status-bar__cta t-data" href="/#contacto">${esc(copy.s0.cta_contacto)}</a>
       </div>
     </div>
@@ -233,7 +233,7 @@ function pagina(obras, obra, contenido, copy, copyObra) {
   <meta property="og:url" content="${url}">
   <meta property="og:title" content="${esc(obra.nombre)} — Caso de estudio · KBTK Digital">
   <meta property="og:description" content="${esc(contenido.meta_descripcion)}">
-  <meta property="og:image" content="${BASE_URL}/og/og-${obra.slug}-v1.png">
+  <meta property="og:image" content="${BASE_URL}/og/og-${obra.slug}-v3.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="${esc(obra.nombre)} — caso de estudio de KBTK Digital">

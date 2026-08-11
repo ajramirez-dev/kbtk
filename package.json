@@ -10,9 +10,13 @@
     "build:antes": "node scripts/generar-antes.mjs",
     "build:indice": "node scripts/generar-indice.mjs",
     "build:obras": "node scripts/generar-obras.mjs",
+    "build:niveles": "node scripts/generar-niveles.mjs",
     "build:min": "node scripts/minificar.mjs",
     "build:dist": "node scripts/build-dist.mjs",
-    "build": "npm run build:posters && npm run build:antes && npm run build:indice && npm run build:obras && npm run build:min && npm run build:dist"
+    "build": "npm run build:posters && npm run build:antes && npm run build:indice && npm run build:obras && npm run build:niveles && npm run build:min && npm run build:dist",
+    "build:og": "node scripts/generar-og.mjs",
+    "check:fuentes": "node scripts/check-fuentes.mjs",
+    "check:lighthouse": "node scripts/check-lighthouse.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",
@@ -20,6 +24,8 @@
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
+    "lighthouse": "^13.4.1",
+    "playwright": "^1.62.1",
     "sharp": "^0.35.3"
   }
 }

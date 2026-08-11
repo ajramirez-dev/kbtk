@@ -10,6 +10,12 @@ _boceto
 _trabajo
 docs/
 
+# Fuente de los vídeos de scroll (PNG por fotograma) — los vídeos ya
+# están generados y viven en public/assets/*.webm/*.mp4, que sí se
+# rastrean. frames/ no se sirve nunca; solo hace falta si algún vídeo
+# hay que regenerarlo.
+frames/
+
 # Ignorar capturas y reportes específicos de la raíz
 /1440-*.png
 /390-*.png
