@@ -422,6 +422,16 @@
   // Maestra: no pinta nada, solo marca el final de los 1700 ms.
   const maestra = mover(raiz, [{ opacity: 1 }, { opacity: 1 }]);
 
+  // La red de seguridad del <head> arranca con un plazo fijo desde el
+  // documento por si este script nunca llega a ejecutarse. Si se llega
+  // hasta aquí, se reprograma con margen sobre la duración real de ESTA
+  // apertura (1700 ms + 1500 de colchón), para que una carga lenta de
+  // main.js no le robe presupuesto a la animación misma. No existe bajo
+  // ?apertura=freeze (el <head> no lo define ahí), de ahí la guarda.
+  if (typeof window.__aperturaArranco === "function") {
+    window.__aperturaArranco(TOTAL + 1500);
+  }
+
   const congelada = /[?&]apertura=freeze/.test(location.search);
   let ultimoSeek = 0;
 

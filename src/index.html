@@ -34,15 +34,28 @@
     // Red de seguridad de la apertura. El overlay solo se pinta bajo
     // .js, así que sin JS no existe; pero si esta clase se pone y
     // main.min.js no llega a ejecutarse (404, red caída), la cortina
-    // dejaría la home en negro para siempre. A los 3s se retira pase
-    // lo que pase. Si la animación corrió, esto es un no-op: el nodo
-    // ya no está y la clase ya está puesta.
+    // dejaría la home en negro para siempre. Arranca con un plazo fijo
+    // de 3s desde el propio documento —cubre el caso "nunca llega a
+    // cargar"—, pero en cuanto la apertura arranca de verdad (main.js
+    // va en defer y puede tardar en llegar en redes lentas) se
+    // reprograma con margen sobre SU duración real, no sobre el
+    // parseo del documento: si no, el plazo fijo compite por el mismo
+    // presupuesto que la descarga del script, y en una red lenta corta
+    // la animación a mitad de camino. Medido: con ~1.5 Mbps el margen
+    // hasta el remate natural cae de ~1070 ms (red rápida) a ~600 ms.
+    // Si la animación corrió, todo esto es un no-op: el nodo ya no
+    // está y la clase ya está puesta.
     if (!/[?&]apertura=freeze/.test(location.search)) {
-      setTimeout(function () {
-        document.documentElement.classList.add("apertura-hecha");
-        var o = document.getElementById("apertura");
-        if (o) o.remove();
-      }, 3000);
+      var idRedSeguridad = setTimeout(cerrarPorRedSeguridad, 3000);
+      window.__aperturaArranco = function (margenMs) {
+        clearTimeout(idRedSeguridad);
+        idRedSeguridad = setTimeout(cerrarPorRedSeguridad, margenMs);
+      };
+    }
+    function cerrarPorRedSeguridad() {
+      document.documentElement.classList.add("apertura-hecha");
+      var o = document.getElementById("apertura");
+      if (o) o.remove();
     }
   </script>
   <!-- Bloque A: precarga de Archivo antes de la hoja de estilos. El H1
