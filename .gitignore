@@ -16,6 +16,9 @@ docs/
 # hay que regenerarlo.
 frames/
 
+# Export de Claude Design — referencia visual y numérica, no fuente de verdad
+/Animate logotipo y sitio/
+
 # Ignorar capturas y reportes específicos de la raíz
 /1440-*.png
 /390-*.png

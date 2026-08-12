@@ -18,4 +18,5 @@
 ## Deuda conocida
 
 - **Long task de 572 ms en el arranque de S2.** Existe sin overlay de apertura y es el techo real de la home: sin overlay son 90 clavado, no 92. No se ha tocado; cualquier trabajo sobre el umbral de 90 que no la ataque está limando lo que sobra alrededor.
+  - **Hipótesis a verificar cuando se ataque esta long task:** `main.js` escribe `--obra-accent` y `--obra-ink` en `documentElement` en cada conmutación del visor. `--grid-col` y `--halo-x` (`main.css:527-528`) son `calc()` con `var()` anidado dentro de `:root`, así que se re-sustituyen en cada una de esas escrituras. Candidato: moverlas a literales o sacarlas de `:root`. Sin verificar todavía — no tocar hasta medir.
 - **El revelado de KBTK anima `clip-path`.** Se intentó cambiarlo por `transform` (dos variantes; las dos reproducen el revelado con menos de 3 de diferencia media), pero las dos exigen pasar de `inset()` a `clip-path: url()` y eso rasteriza el borde superior de las letras de otra manera: la aceptación del relevo pasa de 4,811 a 6,970 sobre un umbral de 8. Revertido. Si se retoma, con la medida hecha en el preview.
