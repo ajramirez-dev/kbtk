@@ -1,4 +1,510 @@
 /* ============================================================
+   KBTK Digital — apertura de la home
+   1700 ms exactos, en CADA carga de "/" y solo ahí: llegar a una
+   obra desde el índice y comerse la cortina otra vez rompería el
+   momento estrella, así que el enganche es la existencia de
+   #apertura, que solo sirve src/index.html. Sin sessionStorage.
+
+   EL CONTRATO DEL LCP MANDA SOBRE TODO LO DEMÁS
+   El overlay ya está en el DOM cuando corre esto: es markup servido,
+   con sus estilos EN LÍNEA en el <head> y antes de la hoja de
+   estilos (index.html). Aquí no se crea la cortina, solo se anima.
+   El H1 de S1 se pinta normal, detrás, desde el primer fotograma: no
+   se toca ni se retrasa. El overlay es position:fixed —fuera de
+   flujo, CLS intacto— y solo se animan transform, opacity y
+   clip-path. Ni una propiedad que provoque layout.
+
+   POR QUÉ WAAPI Y NO GSAP NI @keyframes
+   1. transform/opacity van al compositor.
+   2. Las conmutaciones duras se expresan con steps(1, jump-end) como
+      fotogramas clave, así que no hay un solo setTimeout que pueda
+      derivar: el barrido es exacto por construcción.
+   3. Todas comparten la MISMA línea de tiempo del documento y el mismo
+      startTime, y cada una está acotada a su propia ventana (delay +
+      duration). Consecuencia directa: el relevo del logotipo ocurre en
+      UN fotograma, porque las dos opacidades —vector a 0 y logotipo
+      real a 1— son cortes en el mismo instante de esa línea de tiempo,
+      no dos callbacks que se persiguen.
+   4. document.getAnimations() permite buscar un instante exacto, que
+      es lo que hace verificables las capturas (scripts/check-apertura.mjs).
+   GSAP no entra: en móvil no se carga nunca (fase 4.5, A02) y la
+   apertura es idéntica en los dos viewports.
+
+   LOS DATOS NO SE ESCRIBEN AQUÍ
+   Las obras salen de OBRAS (data/obras.js, ya cargado síncrono en el
+   <head>) y los acentos se leen de tokens.css POR SU NOMBRE, el que
+   trae cada obra en accentVar. Ni un hex, ni un nombre de obra en
+   este fichero: añadir la obra 05 no toca ni una línea de aquí, solo
+   cambia ms_por_obra = 500 / obras.length.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const raiz = document.getElementById("apertura");
+  if (!raiz) return; // no es la home
+
+  const HECHA = "apertura-hecha";
+  function cerrar() {
+    // La clase suelta al logotipo real del header (index.html, bloque
+    // en línea) y el overlay se ELIMINA del DOM, no se deja en
+    // display:none. Idempotente: la red de seguridad de 3s del <head>
+    // llama a lo mismo.
+    document.documentElement.classList.add(HECHA);
+    raiz.remove();
+  }
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    cerrar(); // el CSS ya lo tenía en display:none; esto solo limpia
+    return;
+  }
+
+  const cs = getComputedStyle(document.documentElement);
+  const tk = (nombre) => cs.getPropertyValue(nombre).trim();
+
+  /* ---------- Contrato: colores y curvas, leídos por nombre ---------- */
+  const W1 = tk("--w1");
+  const W2 = tk("--w2");
+  const G1 = tk("--g1");
+  const ACENTO_ACTIVO = tk("--obra-accent"); // el del núcleo del logotipo real
+  const EASE_OUT = tk("--ease-out");   // entrada rápida, frenada seca
+  const EASE_MECH = tk("--ease-mech"); // conmutador, sin rebote
+
+  /* ---------- Guion, en ms. Total 1700, exacto ----------
+     Las duraciones de la apertura NO viven en tokens.css a propósito:
+     ese fichero es el contrato de diseño del sitio y su diff literal
+     contra docs/tokens-v3.css es una invariante del flujo. */
+  const TOTAL = 1700;
+  const T = {
+    entradaLinea: 260,   // la línea entra desde el borde izquierdo
+    finBarrido: 500,     // fase 1 · el canal recorre el índice entero
+    apagadoNombre: 560,  // el nombre se apaga en 60 ms
+    finColapso: 900,     // fase 2 · la línea se contrae en su punto medio
+    aroVisible: 900,     // fase 3 · el aro aparece de golpe en --w2
+    kbtkIn: 920,
+    nucleoBlanco: 1060,  // un color -> blanco, 160 ms. Nunca dos a la vez
+    nucleoPequeno: 1140,
+    finAnillo: 1200,     // el anillo de 1px muere
+    digital: 1170,
+    cortina: 1200,       // fase 4
+    virajeIn: 1520,      // el vector se iguala al logotipo real...
+    virajeOut: 1600,     // ...y termina ANTES del relevo
+    relevo: 1640,
+  };
+
+  /* ---------- Geometría del lockup ----------
+     Idéntica a la del logotipo del header (index.html): mismo viewBox,
+     mismos círculos, mismas trayectorias. Eso es lo que hace posible
+     el relevo a píxel. Verificado contra el DOM: el matrix(2 0 0 2 0
+     -200) del header sobre cx 50 · cy 50 · r 32.6 · sw 22.7 da
+     exactamente el aro exterior cx 100 · cy -100 · r 65.2 · sw 45.4, y
+     el anillo interior r 28.8 · sw 3.6. El núcleo real es r 15. */
+  const VB_W = 1255.787;
+  const VB_H = 298;
+  const SYM_X = 100;  // centro del testigo en el eje x del viewBox
+  const SYM_Y = 106;  // ...y en el eje y, medido desde el borde superior
+  const ARO_R = 65.2;
+  const NUCLEO_R = 15;
+
+  const caja = raiz.getBoundingClientRect();
+  const vw = caja.width;
+  const vh = caja.height;
+
+  /* Un solo corte para toda la apertura (largo de la línea y número de
+     columnas de la cortina). Se repite en el <style> en línea de
+     index.html y las dos copias tienen que decir lo mismo, carácter a
+     carácter. */
+  const ANCHO_GRANDE = window.matchMedia("(min-width: 768px)").matches;
+
+  // Una sola fórmula reproduce los dos tamaños medidos del boceto:
+  // 1440 -> 628 px de lockup (escala 0.5) y 390 -> 251.2 (escala 0.2).
+  // Verificado contra el DOM: da cx 456.0 a 1440 y cx 89.4 a 390.
+  const anchoLockup = Math.min(628, vw * 0.644);
+  const sHero = anchoLockup / VB_W;
+  const cxHero = (vw - anchoLockup) / 2 + SYM_X * sHero;
+  const cyHero = vh / 2;
+
+  /* Los dos valores medidos del boceto: media línea de 230 px a 1440 y
+     de 78 px a 390. No es una proporción única porque a 390 no cabría:
+     con el 0.366 de escritorio, FACHADAS VENTILADAS VISIÓN se sale del
+     hueco por 8.8 px en Fragment Mono (medido) — y por menos de 0 en el
+     respaldo monoespaciado, con lo que caber o no dependería de si la
+     fuente ya ha pintado. La puerta la vigila scripts/check-apertura.mjs:
+     una obra futura con nombre largo falla en rojo, no desborda en
+     silencio. */
+  const medioLargo = (ANCHO_GRANDE ? 0.366 : 0.311) * anchoLockup;
+
+  const logoReal = document.querySelector(".status-bar__brand");
+
+  const situar = (cx, cy, s) =>
+    `translate(${cx - SYM_X * s}px, ${cy - SYM_Y * s}px) scale(${s})`;
+
+  /* ---------- Los registros ---------- */
+  const obras = [...OBRAS].sort((a, b) => a.orden - b.orden);
+  const acentos = obras.map((ob) => tk(ob.accentVar));
+  const msPorObra = T.finBarrido / obras.length; // 4 -> 125 · 10 -> 50
+
+  /* ---------- Piezas ----------
+     El lockup se clona de su <template>: hasta aquí era contenido
+     inerte, fuera del primer pintado. Ver el comentario del template en
+     index.html. */
+  raiz.appendChild(document.getElementById("apertura-lockup").content.cloneNode(true));
+
+  const canal = raiz.querySelector(".apertura__canal");
+  const linea = raiz.querySelector(".apertura__linea");
+  const nombres = raiz.querySelector(".apertura__nombres");
+  const lockup = raiz.querySelector(".apertura__lockup");
+  const aro = raiz.querySelector(".apertura__aro");
+  const nucleo = raiz.querySelector(".apertura__nucleo");
+  const pulso = raiz.querySelector(".apertura__pulso");
+  const kbtk = raiz.querySelector(".apertura__kbtk");
+  const digital = raiz.querySelector(".apertura__digital");
+
+  /* El anillo ya NO usa vector-effect="non-scaling-stroke". Mantener el
+     trazo a 1 px mientras el círculo se escala obliga a rehacer su
+     geometría en cada fotograma —56 eventos de maquetación él solo,
+     medidos— y el ancho constante no era un requisito, solo la forma
+     más cómoda de escribirlo. Se fija una vez, en unidades del viewBox,
+     para que a scale(1) mida exactamente 1 px en pantalla. */
+  pulso.setAttribute("stroke-width", (1 / sHero).toFixed(3));
+
+  linea.style.left = `${cxHero - medioLargo}px`;
+  linea.style.top = `${cyHero - 1}px`;
+  linea.style.width = `${medioLargo * 2}px`;
+
+  // Un <span> por registro, apilados: solo uno visible por vez. Así el
+  // barrido no toca textContent ni depende de un temporizador.
+  nombres.style.left = `${cxHero + medioLargo + 16}px`;
+  nombres.style.top = `${cyHero - 5}px`;
+  const rotulos = obras.map((ob, i) => {
+    const span = document.createElement("span");
+    span.textContent = ob.nombre;
+    span.style.color = acentos[i];
+    nombres.appendChild(span);
+    return span;
+  });
+  const colaNombre = rotulos.reduce((max, s) => Math.max(max, s.offsetWidth), 0);
+
+  /* ---------- Fase 4 · la cortina: la rejilla del sitio ----------
+     Doce columnas iguales en escritorio, cuatro por debajo de 768px.
+     Los números salen de que la fase dura 500 ms EXACTOS:
+       escritorio  11 escalones x 24 + 236 = 500
+       móvil        3 escalones x 80 + 260 = 500
+     El escalón de escritorio no es de 40 ms: con 12 columnas, 11 x 40
+     dejarían 60 ms de recorrido por columna y la cortina no se leería
+     como un movimiento, sino como un parpadeo. */
+  const COLS = ANCHO_GRANDE ? 12 : 4;
+  const PASO = COLS === 12 ? 24 : 80;
+  const RECORRIDO = COLS === 12 ? 236 : 260;
+  const columnas = [...raiz.querySelectorAll(".apertura__cortina i")].slice(0, COLS);
+
+  /* ---------- El guion, en fotogramas clave ----------
+     NINGUNA animación dura los 1700 ms: cada una vive exactamente su
+     ventana con tramo(desde, hasta) —o 1 ms con corte(ms) si lo suyo es
+     un salto— sobre la misma línea de tiempo. Solo la maestra ocupa el
+     total, y no pinta nada: es el reloj.
+
+     Y es una decisión MEDIDA, aplicada a TODAS: una animación en curso paga
+     recálculo de estilo y —si toca una propiedad no componible, o si el
+     objetivo es hijo de un SVG— repintado en el hilo principal en CADA
+     fotograma que esté activa, cambie de valor o no; y las columnas
+     mantienen una capa promocionada mientras dure la suya. Dejarlas
+     vivas los 1700 ms costaba: TBT de la home 34 ms -> 212 ms y la
+     mediana de Performance por debajo del umbral de 90 de CLAUDE.md.
+     Acotada cada una a su propia ventana con tramo(), el resultado en
+     pantalla es idéntico —el relleno hacia atrás y hacia delante da los
+     mismos valores fuera de ella— y el trabajo desaparece.
+     Buscar un instante sigue funcionando porque __aperturaSeek resta el
+     retardo de cada animación. */
+  const comun = { duration: TOTAL, fill: "both" };
+  const tramo = (desde, hasta) => ({ delay: desde, duration: hasta - desde });
+  /* Un corte duro EN un instante: la animación solo está viva 1 ms. El
+     valor de antes lo pone el CSS —"forwards" no rellena hacia atrás— y
+     el de después lo deja el relleno hacia delante. Es la forma más
+     barata de escribir "esto cambia aquí y nunca más".
+     La ventana empieza EN ms y el salto es jump-start, no jump-end:
+     medido, un tramo [ms-1, ms] con jump-end deja el valor viejo en el
+     propio ms y cambia en ms+1 —DIGITAL encendía a 1171—, mientras que
+     jump-start entrega el valor nuevo en el primer instante del tramo,
+     que es exactamente ms. */
+  const corte = (ms) => ({ delay: ms, duration: 1, fill: "forwards" });
+  const SALTO = "steps(1, jump-end)";       // cambia al FINAL del tramo
+  const SALTO_YA = "steps(1, jump-start)";  // ...o en su primer instante
+  const anim = [];
+  const mover = (el, kfs, extra) => {
+    const a = el.animate(kfs, Object.assign({}, comun, extra));
+    anim.push(a);
+    return a;
+  };
+
+  /* Y en cuanto una pieza termina lo suyo, deja de existir para el
+     motor: display:none la saca del árbol de cajas —ni maquetación, ni
+     pintado, ni capa— y a los 1700 ms cerrar() saca del DOM el overlay
+     entero. Acotar la animación quita el trabajo por fotograma; esto
+     quita lo que cuesta seguir estando.
+     Con ?apertura=freeze las animaciones están PAUSADAS y nunca
+     "terminan", así que la verificación sigue viendo la apertura
+     completa en cualquier instante. */
+  const apagarAlTerminar = (el, a) => {
+    a.finished.then(() => { el.style.display = "none"; }, () => {});
+  };
+
+  // FASE 1 · EL CANAL — el grupo entero entra desde fuera del borde
+  // izquierdo y se queda. Se queda QUIETO desde los 260 ms: la animación
+  // termina ahí, no a los 1700.
+  mover(canal, [
+    { transform: `translateX(${-(cxHero + medioLargo + colaNombre + 16)}px)`, easing: EASE_OUT },
+    { transform: "translateX(0)" },
+  ], tramo(0, T.entradaLinea));
+
+  // Conmutación del color de la línea: un corte por registro, sin
+  // fundido. Es un conmutador, no un crossfade.
+  mover(
+    linea,
+    [
+      ...acentos.map((c, i) => ({
+        backgroundColor: c,
+        offset: (i * msPorObra) / T.finBarrido,
+        easing: "steps(1, jump-end)",
+      })),
+      { backgroundColor: acentos[acentos.length - 1], offset: 1 },
+    ],
+    tramo(0, T.finBarrido)
+  );
+
+  // Cada rótulo, encendido solo en su ranura. El último se queda hasta
+  // los 500 ms y se apaga en 60. Los cuatro viven en la ventana del
+  // barrido —0 a 560— y no un milisegundo más.
+  const enNombre = (ms) => ms / T.apagadoNombre;
+  rotulos.forEach((span, i) => {
+    const ultimo = i === obras.length - 1;
+    const kfs = [];
+    if (i > 0) kfs.push({ opacity: 0, offset: 0, easing: SALTO });
+    kfs.push({ opacity: 1, offset: enNombre(i * msPorObra), easing: SALTO });
+    if (ultimo) {
+      kfs.push({ opacity: 1, offset: enNombre(T.finBarrido), easing: "linear" });
+      kfs.push({ opacity: 0, offset: 1, easing: SALTO });
+    } else {
+      kfs.push({ opacity: 0, offset: enNombre((i + 1) * msPorObra), easing: SALTO });
+      kfs.push({ opacity: 0, offset: 1 });
+    }
+    mover(span, kfs, tramo(0, T.apagadoNombre));
+  });
+
+  // FASE 2 · EL COLAPSO — la línea se contrae hacia su punto medio, que
+  // es exactamente donde va a aparecer el aro. A los 900 ms el canal
+  // entero —línea y los cuatro rótulos— ya no pinta nada: se apaga.
+  const colapso = mover(linea, [
+    { transform: "scaleX(1)", easing: EASE_OUT },
+    { transform: "scaleX(0)" },
+  ], tramo(T.finBarrido, T.finColapso));
+  apagarAlTerminar(canal, colapso);
+
+  // FASE 3 · LA FUSIÓN — el aro aparece de golpe a los 900 ms, y el
+  // vector se apaga en el fotograma del relevo. Dos cortes de 1 ms en
+  // vez de una opacidad viva 1700: entre medias el valor no cambia, y
+  // el CSS ya deja el lockup en opacity 0 hasta el primero.
+  mover(lockup, [{ opacity: 0, easing: SALTO_YA }, { opacity: 1 }], corte(T.aroVisible));
+  const salidaLockup = mover(lockup, [{ opacity: 1, easing: SALTO_YA }, { opacity: 0 }], corte(T.relevo));
+  apagarAlTerminar(lockup, salidaLockup);
+
+  mover(
+    aro,
+    [
+      { stroke: W2, offset: 0, easing: "steps(1, jump-end)" },
+      { stroke: W1, offset: 1 },
+    ],
+    tramo(T.aroVisible, T.nucleoBlanco)
+  );
+
+  /* El núcleo entra con el color del ÚLTIMO registro del barrido y
+     alcanza temperatura: un filamento, un solo color a blanco. En ningún
+     fotograma hay dos colores. Al final toma --obra-accent, que es con
+     lo que el header real pinta su núcleo — sin eso, el relevo no
+     coincidiría.
+     El color y la escala van SEPARADOS a propósito: la escala es
+     componible y el color no, y un solo efecto con las dos habría
+     bajado la escala al hilo principal durante toda la ventana.
+     Y son DOS animaciones, no una de 900 a 1600: entre los 1060 y los
+     1520 el color es blanco y no se mueve. Una sola ventana mantenía
+     460 ms de repintado por fotograma para pintar siempre lo mismo. */
+  const ultimoAcento = acentos[acentos.length - 1];
+  const relleno = { fill: "forwards" }; // "fill" aquí es el modo de relleno
+  mover(
+    nucleo,
+    [{ fill: ultimoAcento, easing: "linear" }, { fill: W1 }],
+    Object.assign(tramo(T.aroVisible, T.nucleoBlanco), relleno)
+  );
+  mover(
+    nucleo,
+    [{ fill: W1, easing: "linear" }, { fill: ACENTO_ACTIVO }],
+    Object.assign(tramo(T.virajeIn, T.virajeOut), relleno)
+  );
+  mover(nucleo, [
+    { transform: "scale(1.8)", easing: EASE_OUT },
+    { transform: "scale(1)" },
+  ], tramo(T.nucleoBlanco, T.nucleoPequeno));
+
+  // Un anillo de 1 px que sale del núcleo y muere a ~1,9 veces el radio
+  // del aro. Anillo, no fogonazo relleno. Vive 140 ms y se apaga: fuera
+  // de su ventana el CSS ya lo deja en opacity 0, así que no necesita
+  // relleno ninguno.
+  const anillo = mover(
+    pulso,
+    [
+      { opacity: 1, transform: `scale(${NUCLEO_R / ARO_R})`, easing: EASE_OUT },
+      { opacity: 0, transform: "scale(1.9)" },
+    ],
+    Object.assign(tramo(T.nucleoBlanco, T.finAnillo), { fill: "none" })
+  );
+  apagarAlTerminar(pulso, anillo);
+
+  /* KBTK se descubre de abajo arriba. Los dos porcentajes salen de la
+     altura de caja alta (200.413) sobre el viewBox de 298.
+     Esto sigue animando clip-path a sabiendas. Se intentó cambiarlo por
+     transform de las dos formas que conservan las letras quietas —grupo
+     recortado con otro dentro compensando el desplazamiento, y recorte
+     fijo con la ventana moviéndose— y las dos reproducen el revelado
+     (< 3 de diferencia media a 920/1000/1080/1170, contra un listón de
+     3). Pero las dos obligan a pasar de inset() a clip-path: url(), y
+     ahí el borde superior de las letras se rasteriza distinto: la
+     aceptación del relevo pasaba de 4.811 a 6.970 sobre un umbral de 8,
+     el mismo número en las dos variantes. A cambio, el TBT se movía
+     dentro del ruido de la máquina. Revertido: el relevo es el fotograma
+     que tiene que ser exacto. Si esto se vuelve a tocar, que sea con la
+     medida hecha en el preview, no en dev-server. */
+  mover(
+    kbtk,
+    [
+      { clipPath: "inset(98.125% 0 1.875% 0)", offset: 0, easing: EASE_OUT },
+      { clipPath: "inset(1.875% 0 1.875% 0)", offset: 1 },
+    ],
+    tramo(T.kbtkIn, T.digital)
+  );
+
+  // DIGITAL aparece de golpe en --g1 y vira a --w1 durante el viaje: el
+  // header real lo pinta con currentColor, que es --w1, y el relevo
+  // exige que el fotograma anterior y el posterior sean el mismo píxel.
+  // Opacidad y color, otra vez separados: una es componible y el otro no.
+  mover(digital, [{ opacity: 0, easing: SALTO_YA }, { opacity: 1 }], corte(T.digital));
+  mover(
+    digital,
+    [
+      { fill: G1, offset: 0, easing: "linear" },
+      { fill: W1, offset: 1 },
+    ],
+    tramo(T.virajeIn, T.virajeOut)
+  );
+
+  // FASE 4 · LA CORTINA — la página no se descubre: la descubre su
+  // propia estructura, columna a columna, de izquierda a derecha.
+  columnas.forEach((col, i) => {
+    const arranca = T.cortina + i * PASO;
+    const subida = mover(
+      col,
+      [
+        { transform: "translateY(0)", offset: 0, easing: EASE_MECH },
+        { transform: "translateY(-100%)", offset: 1 },
+      ],
+      tramo(arranca, arranca + RECORRIDO)
+    );
+    // Arriba y fuera de la pantalla, pero seguía siendo una capa
+    // promocionada con su animación rellenando. Cada columna se apaga
+    // en cuanto llega.
+    apagarAlTerminar(col, subida);
+  });
+
+  // EL RELEVO — el logotipo real del header espera en opacity 0 (CSS en
+  // línea del <head>) y se enciende en el mismo fotograma en que el
+  // vector se apaga: los dos son cortes de 1 ms sobre la misma línea de
+  // tiempo, en el mismo instante. Ningún rectángulo tapando nada.
+  const animLogo = mover(logoReal, [{ opacity: 0, easing: SALTO_YA }, { opacity: 1 }], corte(T.relevo));
+
+  // Maestra: no pinta nada, solo marca el final de los 1700 ms.
+  const maestra = mover(raiz, [{ opacity: 1 }, { opacity: 1 }]);
+
+  const congelada = /[?&]apertura=freeze/.test(location.search);
+  let ultimoSeek = 0;
+
+  /* ---------- EL VIAJE A LA BARRA · se mide TARDE, y a propósito ------
+     El destino no se puede medir aquí arriba. La caja del logotipo del
+     header no es estable en el primer fotograma: el reset de main.css
+     (§1, `img, svg { max-width: 100% }`) deja que las acciones de la
+     barra —"ES / EN" y el CTA, ambos en Fragment Mono— le coman ancho,
+     así que cuando la fuente aterriza el logotipo REAL cambia de
+     tamaño. Medido a 390: 134.36 px de ancho antes del swap y 118.81
+     después. main.js va en defer, así que corre a un lado o al otro de
+     ese salto según cómo venga la carga: medir al arrancar convertía el
+     aterrizaje en una lotería, y el test del relevo lo cazó (76.0 de
+     diferencia media en móvil, contra un umbral de 8).
+     Se mide cuando la maquetación ya está quieta y se engancha el
+     resultado a la MISMA línea de tiempo vía startTime, así que no hay
+     deriva de fase por crearlo tarde.
+
+     Y se mide sobre la caja de CONTENIDO, no sobre la del elemento: con
+     preserveAspectRatio por defecto (xMidYMid meet) un elemento de
+     118.81x32 dibuja el lockup a escala 0.0946 y lo centra en vertical,
+     dejando 1.9px de aire arriba y abajo. De ahí sale también por qué
+     el boceto anotaba una escala móvil más pequeña (0.0839): la sacó de
+     una captura, donde el logotipo ya estaba encogido. */
+  lockup.style.transform = situar(cxHero, cyHero, sHero); // base sin animación
+
+  let viaje = null;
+  function crearViaje() {
+    const r = logoReal.querySelector("svg").getBoundingClientRect();
+    const s = Math.min(r.width / VB_W, r.height / VB_H);
+    const cx = r.left + (r.width - VB_W * s) / 2 + SYM_X * s;
+    const cy = r.top + (r.height - VB_H * s) / 2 + SYM_Y * s;
+
+    if (viaje) {
+      anim.splice(anim.indexOf(viaje), 1);
+      viaje.cancel();
+    }
+    // Acotado al viaje de verdad: antes de los 1200 el lockup está
+    // quieto en el hero y después del relevo ya no se ve. El relleno
+    // hacia atrás y hacia delante da esos mismos dos valores.
+    viaje = mover(lockup, [
+      { transform: situar(cxHero, cyHero, sHero), easing: EASE_OUT },
+      { transform: situar(cx, cy, s) },
+    ], tramo(T.cortina, T.relevo));
+    if (congelada) {
+      viaje.pause();
+      viaje.currentTime = ultimoSeek;
+    } else {
+      // misma fase que el resto, sin deriva por haberlo creado tarde
+      viaje.startTime = maestra.startTime === null ? document.timeline.currentTime : maestra.startTime;
+    }
+  }
+  // document.fonts.ready es el único evento que mueve esta caja, y cae
+  // muy por delante de los 900 ms en que el lockup se hace visible.
+  document.fonts.ready.then(crearViaje, crearViaje);
+
+  /* ---------- Gancho de verificación ----------
+     Solo con ?apertura=freeze. Congela la línea de tiempo en t=0 y deja
+     buscar un instante exacto, que es lo que permite capturar los
+     fotogramas de 0/300/600/900/1100/1400/1700 ms sin depender del
+     reloj. En producción no se activa nunca. */
+  if (congelada) {
+    anim.forEach((a) => a.pause());
+    // Un solo origen para todas: currentTime ya incluye el delay del
+    // efecto —el retardo vive DENTRO del modelo de tiempo del efecto, no
+    // fuera—, así que las acotadas con tramo() se buscan igual que las
+    // que duran los 1700 ms. Fuera de su ventana, fill "both" devuelve
+    // exactamente el valor de relleno, que es el que toca.
+    window.__aperturaSeek = (ms) => {
+      ultimoSeek = ms;
+      anim.forEach((a) => { a.pause(); a.currentTime = ms; });
+    };
+    window.__aperturaSeek(0);
+    return;
+  }
+
+  maestra.finished.then(() => {
+    cerrar();
+    animLogo.cancel(); // la clase ya lo deja en opacity 1: sin parpadeo
+  }, () => {});
+})();
+
+/* ============================================================
    KBTK Digital — main.js
    Fase 4.5: correcciones de arquitectura y rendimiento.
    A01 — El índice de S2 ya no lo crea este script: lo genera

@@ -30,6 +30,20 @@
     // depende de esta clase — sin ella, un fallo o bloqueo de JS deja
     // el contenido en su estado visible por defecto, nunca en blanco.
     document.documentElement.classList.add("js");
+
+    // Red de seguridad de la apertura. El overlay solo se pinta bajo
+    // .js, así que sin JS no existe; pero si esta clase se pone y
+    // main.min.js no llega a ejecutarse (404, red caída), la cortina
+    // dejaría la home en negro para siempre. A los 3s se retira pase
+    // lo que pase. Si la animación corrió, esto es un no-op: el nodo
+    // ya no está y la clase ya está puesta.
+    if (!/[?&]apertura=freeze/.test(location.search)) {
+      setTimeout(function () {
+        document.documentElement.classList.add("apertura-hecha");
+        var o = document.getElementById("apertura");
+        if (o) o.remove();
+      }, 3000);
+    }
   </script>
   <!-- Bloque A: precarga de Archivo antes de la hoja de estilos. El H1
        de S1 es el elemento LCP — sin esto, el navegador no descubre la
@@ -37,6 +51,140 @@
        @font-face) pinta primero de todos modos. -->
   <link rel="preload" as="font" type="font/woff2"
         href="/fuentes/Archivo[wdth,wght].woff2" crossorigin>
+  <!-- Fragment Mono se precarga SOLO en la home: los nombres del barrido
+       de la apertura se pintan en los primeros 500 ms, antes de que la
+       fuente se descubra al parsear main.css. Sin esto, el barrido
+       arranca en la monoespaciada de respaldo y cambia de anchos a
+       mitad de fase. Coste vigilado: ver la medición de LCP antes/después
+       en el informe de esta fase. -->
+  <link rel="preload" as="font" type="font/woff2"
+        href="/fuentes/FragmentMono-Regular.woff2" crossorigin>
+  <!-- ==========================================================
+       APERTURA DE LA HOME · estilos en línea, a propósito
+       El overlay tiene que existir en el PRIMER pintado: si apareciera
+       después de la hoja de estilos habría un flash de la página
+       debajo. Por eso este bloque va aquí, antes de los <link>, y por
+       eso el markup se sirve en el HTML en vez de inyectarse (un script
+       del <head> no puede escribir en <body>, y uno en <body>
+       bloquearía el parseo justo antes del H1, que es el LCP).
+       Todo cuelga de html.js: sin JS no hay nadie que retire la
+       cortina, así que sin JS no se pinta. Y todos los selectores
+       cuelgan de #apertura para ganar por especificidad a main.css,
+       que se carga después de esto.
+       Nada de aquí genera layout: position:fixed, fuera de flujo.
+       ========================================================== -->
+  <style>
+    #apertura { display: none; }
+    html.js #apertura {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 200;      /* censo en main.css §5b: barra 30, grano 40,
+                            logotipo 41, transición de obra 45, skip 100 */
+      pointer-events: none;   /* el scroll no se bloquea en ningún momento */
+    }
+
+    /* La cortina no es un fondo con columnas encima: las columnas SON
+       la cortina, opacas desde el primer fotograma. El corte de 768 se
+       repite en main.js (const ANCHO_GRANDE) — mismas dos copias. */
+    #apertura .apertura__cortina { position: absolute; inset: 0; }
+    #apertura .apertura__cortina i {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: calc(100% / 12 + 1px);  /* +1px: mata la costura por
+                                        redondeo subpíxel */
+      background: var(--k);
+    }
+    /* Los doce left, literales. Eran
+       calc(var(--i) * 100% / var(--ncols)), y un calc() con un var() sin
+       registrar dentro se vuelve a sustituir en CADA recálculo de
+       estilo: estas doce columnas se recalculan en todos los fotogramas
+       de la cortina. Medido: 4,71 -> 2,25 ms por fotograma. El número de
+       columnas ya no es una variable de CSS; vive en la media query y en
+       main.js (const COLS), dos copias que tienen que decir lo mismo. */
+    #apertura .apertura__cortina i:nth-child(1)  { left: 0 }
+    #apertura .apertura__cortina i:nth-child(2)  { left: 8.3333% }
+    #apertura .apertura__cortina i:nth-child(3)  { left: 16.6667% }
+    #apertura .apertura__cortina i:nth-child(4)  { left: 25% }
+    #apertura .apertura__cortina i:nth-child(5)  { left: 33.3333% }
+    #apertura .apertura__cortina i:nth-child(6)  { left: 41.6667% }
+    #apertura .apertura__cortina i:nth-child(7)  { left: 50% }
+    #apertura .apertura__cortina i:nth-child(8)  { left: 58.3333% }
+    #apertura .apertura__cortina i:nth-child(9)  { left: 66.6667% }
+    #apertura .apertura__cortina i:nth-child(10) { left: 75% }
+    #apertura .apertura__cortina i:nth-child(11) { left: 83.3333% }
+    #apertura .apertura__cortina i:nth-child(12) { left: 91.6667% }
+    @media (max-width: 767px) {
+      #apertura .apertura__cortina i { width: calc(100% / 4 + 1px) }
+      #apertura .apertura__cortina i:nth-child(2) { left: 25% }
+      #apertura .apertura__cortina i:nth-child(3) { left: 50% }
+      #apertura .apertura__cortina i:nth-child(4) { left: 75% }
+      #apertura .apertura__cortina i:nth-child(n+5) { display: none }
+    }
+
+    #apertura .apertura__canal { position: absolute; inset: 0; }
+    #apertura .apertura__linea { position: absolute; height: 2px; }
+    #apertura .apertura__nombres { position: absolute; }
+    #apertura .apertura__nombres span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      white-space: nowrap;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: var(--tr-data);
+      text-transform: uppercase;
+    }
+
+    #apertura .apertura__lockup {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1255.787px;
+      height: 298px;
+      transform-origin: 0 0;
+      opacity: 0;
+    }
+    #apertura .apertura__lockup svg {
+      width: 1255.787px;
+      height: 298px;
+      overflow: visible;
+    }
+    #apertura .apertura__aro { stroke: var(--w2); }
+    #apertura .apertura__nucleo { fill: var(--w1); }
+    #apertura .apertura__nucleo,
+    #apertura .apertura__pulso { transform-box: fill-box; transform-origin: center; }
+    #apertura .apertura__pulso { stroke: var(--w1); opacity: 0; }
+    /* El revelado de KBTK anima clip-path, y se queda así. Se probaron
+       las dos formas de sustituirlo por transform —grupo recortado con
+       otro dentro compensando, y recorte fijo con la ventana
+       desplazándose— y las dos pasan el revelado (< 3 de diferencia
+       media en los cuatro instantes), pero las dos exigen cambiar el
+       inset() por un clip-path: url(), y ese cambio raster iza el borde
+       superior de las letras de otra manera: el relevo pasaba de 4.8 a
+       7.0 de diferencia media contra el logotipo real, sobre un umbral
+       de 8. El ahorro no se distinguía del ruido de la máquina. No
+       compensa: el relevo es el fotograma que tiene que ser exacto. */
+    #apertura .apertura__kbtk { clip-path: inset(98.125% 0 1.875% 0); }
+    #apertura .apertura__kbtk path { fill: var(--w1); }
+    #apertura .apertura__digital { fill: var(--g1); opacity: 0; }
+
+    /* EL RELEVO. El logotipo real del header espera aquí, en opacity 0,
+       y se enciende en el mismo fotograma en que el vector se apaga.
+       Ningún rectángulo tapando nada. Este bloque solo existe en la
+       home, así que .status-bar__brand de las páginas de obra y el
+       .s5__brand del pie no se ven afectados. */
+    html.js .status-bar__brand { opacity: 0; }
+    html.js.apertura-hecha .status-bar__brand { opacity: 1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html.js #apertura { display: none; }
+      html.js .status-bar__brand { opacity: 1; }
+    }
+  </style>
   <link rel="stylesheet" href="/css/tokens.min.css">
   <link rel="stylesheet" href="/css/main.min.css">
   <script src="/data/obras.js"></script>
@@ -58,6 +206,43 @@
   <script src="/js/main.min.js" defer></script>
 </head>
 <body>
+
+  <!-- ============================================================
+       APERTURA DE LA HOME · 1700 ms, en cada carga, solo aquí
+       Servido en el HTML, no inyectado: tiene que cubrir desde el
+       primer fotograma. Sus estilos van en línea en el <head>, antes
+       de la hoja de estilos, y la coreografía en js/main.js.
+       Los NOMBRES no se escriben aquí: los crea main.js leyendo
+       data/obras.js, para que añadir la obra 05 no toque este fichero.
+       El SVG es el MISMO lockup del header de abajo —mismo viewBox,
+       mismos círculos, mismas trayectorias—: es lo que permite que el
+       relevo sea un cambio de opacidad y no un salto.
+       El aro va con la geometría ya multiplicada por el matrix(2 ...)
+       del header: cx 100 · cy -100 · r 65.2 · sw 45.4, y el anillo
+       interior r 28.8 · sw 3.6.
+       ============================================================ -->
+  <div id="apertura" aria-hidden="true">
+    <div class="apertura__cortina">
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="apertura__canal">
+      <span class="apertura__linea"></span>
+      <span class="apertura__nombres"></span>
+    </div>
+    <!-- El lockup va en un <template> y NO suelto en el overlay: su
+         contenido es inerte —ni estilo, ni maquetación, ni pintado—
+         hasta que main.js lo clona. Lo que tiene que existir en el
+         primer pintado es la CORTINA, que es lo que impide el flash;
+         el lockup no se ve hasta los 900 ms. Medido: dejar este SVG
+         (1255x298 y ~2000 órdenes de trazado) vivo desde el arranque
+         lo metía en la ventana del LCP para nada. -->
+    <template id="apertura-lockup">
+    <div class="apertura__lockup">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -206 1255.787 298" fill="none" aria-hidden="true" focusable="false"><g class="apertura__aro"><circle cx="100" cy="-100" r="65.2" fill="none" stroke-width="45.4"/><circle cx="100" cy="-100" r="28.8" fill="none" stroke-width="3.6"/></g><circle class="apertura__nucleo" cx="100" cy="-100" r="15"/><circle class="apertura__pulso" cx="100" cy="-100" r="65.2" fill="none" stroke-width="1"/><g class="apertura__kbtk"><rect x="0" y="-206" width="1255.787" height="298" fill="none"/><path d="M283.853 0v-200.413h57.393v94.937l100.724-94.937h72.06l-86.888 82.38L515.926 0h-70.343L385.49-82.375l-44.244 36.92V0Zm257.39 0v-200.413H694.15q16.09 0 29.112 6.25 13.023 6.25 20.64 17.328 7.619 11.079 7.619 25.79 0 13.112-4.646 22.442-4.645 9.33-12.44 15.122-7.793 5.793-17.316 8.683v1.166q11.115 2.333 20.062 8.417 8.946 6.085 14.175 16.222t5.229 24.842q0 17.233-8.242 29.319T726.19-6.372 695.101 0Zm57.394-41.658h78.238q9.265 0 15.116-5.21 5.85-5.209 5.85-15.984 0-5.704-2.53-10.232t-7.42-7.032-11.889-2.504h-77.365Zm0-79.407h73.345q6.711 0 11.308-2.508 4.596-2.51 7.09-7.047 2.494-4.539 2.494-10.674 0-8.768-5.688-13.827-5.687-5.06-14.368-5.06h-74.181ZM852.956 0v-154.028h-80.728v-46.385H991.07v46.385h-80.721V0Zm164.293 0v-200.413h57.394v94.937l100.724-94.937h72.06l-86.889 82.38L1249.323 0h-70.344l-60.092-82.375-44.244 36.92V0Z"/></g><path class="apertura__digital" d="M281.602 78h-16.166V28h16.166q6.367 0 10.587 3.219t6.33 8.834 2.11 12.911-2.11 12.947-6.33 8.87T281.602 78m-9.513-44.134v38.268h8.369q7.01 0 10.121-5.114t3.112-13.984q0-8.942-3.112-14.056t-10.121-5.114ZM316.36 78v-5.58h10.586V33.58H316.36V28h27.968v5.58H333.67v38.84h10.658V78Zm63.299-26.466h17.238V78h-4.864l-.572-6.867q-1.788 4.22-5.043 6.187t-7.475 1.968q-6.008 0-10.372-3.076t-6.76-8.87-2.396-14.02q0-8.512 2.54-14.414 2.539-5.9 7.081-8.977 4.542-3.075 10.623-3.075 6.58 0 11.194 3.505t6.187 11.444h-6.795q-1.001-5.15-3.827-7.117t-6.76-1.967q-6.58 0-9.942 5.472t-3.362 14.771q0 10.444 3.505 15.45 3.505 5.008 9.227 5.008 4.15 0 6.796-1.931t3.898-5.258 1.252-7.403V57.4H379.66ZM412.773 78v-5.58h10.586V33.58h-10.586V28h27.968v5.58h-10.658v38.84h10.658V78Zm80.466-44.134h-14.95V78h-6.652V33.866h-15.022V28h36.624ZM536.152 78l-4.435-14.95h-17.24L510.044 78h-6.867l15.808-50h8.37l15.736 50Zm-20.029-20.53h13.949l-7.01-23.461ZM558.106 28h6.652v44.134h23.82V78h-30.472Z"/></svg>
+    </div>
+    </template>
+  </div>
 
   <div class="halo" aria-hidden="true"></div>
 

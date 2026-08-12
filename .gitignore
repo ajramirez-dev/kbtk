@@ -29,3 +29,5 @@ frames/
 /visor-*.png
 /lighthouse-*.json
 /capturas-animacion/
+.vercel
+.env*
