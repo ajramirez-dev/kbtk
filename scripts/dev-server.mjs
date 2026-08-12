@@ -40,7 +40,16 @@ http
       if (!filePath.startsWith(base)) continue;
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         const ext = path.extname(filePath);
-        res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
+        // Sin cabecera de cache, un navegador puede aplicar caching
+        // heuristico y servir una version vieja de un fichero que ya
+        // cambio en disco — confunde cualquier verificacion local sobre
+        // si el codigo probado es el actual. Este servidor es solo para
+        // verificacion: nunca debe servir nada que no sea lo que hay en
+        // disco ahora mismo.
+        res.writeHead(200, {
+          "Content-Type": MIME[ext] || "application/octet-stream",
+          "Cache-Control": "no-store",
+        });
         fs.createReadStream(filePath).pipe(res);
         return;
       }

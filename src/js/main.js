@@ -524,9 +524,17 @@
    A02 — GSAP + ScrollTrigger + CustomEase + Lenis ya no se cargan
    con <script> estático: solo se importan (import() dinámico) al
    entrar en la rama de escritorio. Móvil no descarga ni un byte.
+   A03 — Arranca en requestAnimationFrame, no en la misma tarea que la
+   apertura. Las dos IIFEs son parte del mismo script defer y se
+   ejecutaban una detrás de otra sin ceder el hilo: el trabajo de esta
+   sección competía por el mismo fotograma que el arranque del barrido
+   de la apertura (0-500ms) y en una carga fría (sin caché de bytecode
+   de V8, sin nada tibio) se lo comía entero — la cortina y el KBTK se
+   veían, el barrido de colores no. Un solo rAF garantiza que el primer
+   fotograma de la apertura se pinta antes de que esto empiece.
    ============================================================ */
 
-(function () {
+function iniciarS2() {
   "use strict";
 
   const MQ_DESKTOP = "(min-width: 1024px) and (pointer: fine)";
@@ -1237,7 +1245,8 @@
   // cambia el número.
   new ResizeObserver(pedirAnclaEscritorio).observe(document.body);
   arranquePanelMovil();
-})();
+}
+requestAnimationFrame(iniciarS2);
 
 /* ============================================================
    Fase 5 — página de obra: visor a tamaño completo.

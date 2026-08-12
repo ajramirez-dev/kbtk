@@ -686,15 +686,11 @@
     <div id="contacto" class="s5__contacto col-span-12">
       <p class="t-data s5__contacto-kicker">CONTACTO</p>
       <p class="s5__contacto-email t-data">
-        La vía real, mientras el formulario no está conectado:
+        También directo:
         <a href="mailto:contact@kbtk.digital">contact@kbtk.digital</a>
       </p>
 
-      <!-- Endpoint de Formspree pendiente de conectar. Mientras la
-           action sea este marcador, el botón de envío va disabled:
-           un formulario con endpoint falso se traga los mensajes en
-           silencio, y eso es peor que no tener formulario. -->
-      <form class="s5__form" action="ENDPOINT-FORMSPREE-PENDIENTE" method="POST">
+      <form class="s5__form" action="https://formspree.io/f/xyegjpbl" method="POST">
         <div class="s5__form-campo">
           <label class="t-data" for="contacto-nombre">NOMBRE</label>
           <input id="contacto-nombre" name="nombre" type="text" autocomplete="name" required>
@@ -708,8 +704,7 @@
           <textarea id="contacto-mensaje" name="mensaje" rows="4" required></textarea>
         </div>
         <div class="s5__form-pie">
-          <button class="s5__form-submit t-data" type="submit" disabled>[ ENVIAR ]</button>
-          <p class="s5__form-nota t-data">FORMULARIO PENDIENTE DE CONEXIÓN</p>
+          <button class="s5__form-submit t-data" type="submit">[ ENVIAR ]</button>
         </div>
       </form>
     </div>
